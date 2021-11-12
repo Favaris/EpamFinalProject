@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<!-- <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n" />-->
+			<PatternLayout pattern=
+				"%sn %d{yyyy/MM/dd HH:mm:ss,SSS} %r [%-6p] [%t] %c{3} %C{3}.%M(%F:%L) – %m%n"/>
+		</Console>
+ 		<File name="File" fileName="${sys:logFile}" append="true">
+			<PatternLayout>
+				<Pattern>%highlight{%d{HH:mm:ss.SSS} %-5level [%t] %c{1}: %msg %throwable{short.message}%n}</Pattern>
+			</PatternLayout>
+		</File>
+	</Appenders>
+	<Loggers>
+		<Logger name="com.my" level="trace">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Root level="debug">
+			<AppenderRef ref="File" />
+		</Root>
+	</Loggers>
+</Configuration>

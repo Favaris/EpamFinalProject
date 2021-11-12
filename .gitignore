@@ -50,3 +50,6 @@ buildNumber.properties
 
 ### Gradle ###
 build/
+
+# User files
+.txt
