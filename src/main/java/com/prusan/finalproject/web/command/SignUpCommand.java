@@ -24,7 +24,6 @@ public class SignUpCommand implements Command {
         String password = req.getParameter("password");
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
-        doValidation(req, login, password, name, surname);
 
         if (!doValidation(req, login, password, name, surname)) {
             return new Chain("jsp/sign_up.jsp", true);
