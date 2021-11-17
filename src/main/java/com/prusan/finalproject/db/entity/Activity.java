@@ -1,9 +1,12 @@
 package com.prusan.finalproject.db.entity;
 
+import java.util.List;
+
 public class Activity {
     private Integer id;
     private String name;
     private String description;
+    private List<Category> categories;
 
     public Activity() {
     }
@@ -49,5 +52,13 @@ public class Activity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 }

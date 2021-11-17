@@ -36,7 +36,7 @@ public class Validator {
         // validating pattern for user password (could be replaced later)
         fields.put(USER_PASSWORD, Pattern.compile(".{4,32}?"));
         // validating pattern for user's name AND surname
-        fields.put(USER_NAME, Pattern.compile("([A-Z][a-z]{1,30}|[А-Я]ІЇЄЁ[а-яіїєґё]{1,30})"));
+        fields.put(USER_NAME, Pattern.compile("([A-Z][a-z]{1,30}|[А-ЯІЇЄЁ][а-яіїєґё]{1,30})"));
     }
 
     public boolean validate(Integer field, String value) {

@@ -6,14 +6,19 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Simple container for all types of commands.
+ */
 public class CommandContainer {
     private static final Map<String, Command> commands;
     private static final Logger log = LogManager.getLogger(CommandContainer.class);
 
     static {
         commands = new HashMap<>();
-        commands.put("sign_in", new SignInCommand());
-        commands.put("sign_up", new SignUpCommand());
+        commands.put("signIn", new SignInCommand());
+        commands.put("signUp", new SignUpCommand());
+        commands.put("signOut", new SignOutCommand());
+        commands.put("downloadActivities", new DownloadActivitiesCommand());
     }
 
     public static Command getCommand(String command) {

@@ -1,4 +1,4 @@
-package com.prusan.finalproject.db;
+package com.prusan.finalproject.db.util;
 
 import com.prusan.finalproject.db.util.DBUtils;
 import org.junit.jupiter.api.Test;

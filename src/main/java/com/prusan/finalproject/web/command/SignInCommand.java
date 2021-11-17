@@ -36,7 +36,9 @@ public class SignInCommand implements Command {
                     log.debug("retrieved a user by login '{}' and pass", login);
                     HttpSession ses = req.getSession();
                     ses.setAttribute("user", u);
-                    return new Chain("jsp/user_page.jsp", false);
+
+                    req.setAttribute("nextChain", new Chain("jsp/user/userPage.jsp", false));
+                    return new Chain("controller?command=downloadActivities", true);
                 }
             } catch (IncorrectCredentialsException e) {
                 log.debug("incorrect credentials with login: {}", e.getLogin());
@@ -46,7 +48,7 @@ public class SignInCommand implements Command {
             }
         }
 
-        return new Chain("jsp/sign_in.jsp", true);
+        return new Chain("jsp/guest/signIn.jsp", true);
     }
 
 }

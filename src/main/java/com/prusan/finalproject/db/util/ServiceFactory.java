@@ -3,6 +3,7 @@ package com.prusan.finalproject.db.util;
 import com.prusan.finalproject.db.dao.ActivityDAO;
 import com.prusan.finalproject.db.dao.CategoryDAO;
 import com.prusan.finalproject.db.dao.UserDAO;
+import com.prusan.finalproject.db.service.ActivityService;
 import com.prusan.finalproject.db.service.UserService;
 
 /**
@@ -10,6 +11,7 @@ import com.prusan.finalproject.db.service.UserService;
  */
 public interface ServiceFactory {
     UserService getUserService();
+    ActivityService getActivityService();
 
     UserDAO getUserDAO();
     ActivityDAO getActivityDAO();

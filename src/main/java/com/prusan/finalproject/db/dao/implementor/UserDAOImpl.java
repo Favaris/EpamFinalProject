@@ -48,7 +48,7 @@ public class UserDAOImpl extends UserDAO {
                 }
             }
         } catch (SQLException throwables) {
-            log.warn("unable to insert user {} with the following exception: ", user, throwables);
+            log.warn("exception in #add(user={})", user, throwables);
             throw new DAOException("can not insert user", throwables);
         } finally {
             try {
@@ -108,8 +108,11 @@ public class UserDAOImpl extends UserDAO {
             ps.setString(++k, user.getSurname());
             ps.setInt(++k, user.getId());
 
-            ps.executeUpdate();
-            log.debug("updated a user {}", user);
+            if (ps.executeUpdate() > 0) {
+                log.debug("updated a user {}", user);
+            } else {
+                log.debug("unable to update a user {}", user);
+            }
         } catch (SQLException throwables) {
             log.warn("unable to update a user {} by id", user, throwables);
             throw new DAOException("can not update user", throwables);
@@ -124,7 +127,7 @@ public class UserDAOImpl extends UserDAO {
             ps.executeUpdate();
             log.debug("removed a user #{} from the db", id);
         } catch (SQLException ex) {
-            log.warn("unable to remove user #{} from the db", id, ex);
+            log.warn("exception in #remove(id={}) ", id, ex);
             throw new DAOException(ex);
         }
     }
@@ -159,9 +162,10 @@ public class UserDAOImpl extends UserDAO {
                 return u;
             }
         } catch (SQLException throwables) {
-            log.debug("unable to find user by login {}:", login, throwables);
+            log.warn("exception in #getByLogin(login={})", login, throwables);
             throw new DAOException(throwables);
         }
+        log.debug("unable to find user by login {}:", login);
         return null;
     }
 

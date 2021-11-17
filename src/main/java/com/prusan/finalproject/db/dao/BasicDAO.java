@@ -21,17 +21,24 @@ public abstract class BasicDAO<T> {
     /**
      * Default method for convenience in DAO implementors. Used to close Connection, Statement, ResultSet objects.
      * @param closeables Connection, Statement or ResultSet objects.
-     * @throws DAOException thrown if we were unable to close.
+     * @throws DAOException all suppressed exceptions that were caught.
      */
     protected static void close(AutoCloseable... closeables) throws DAOException {
+        DAOException e = null;
         for (AutoCloseable ac : closeables) {
             if (ac != null) {
                 try {
                     ac.close();
                 } catch (Exception ex) {
-                    throw new DAOException("Unable to close the resource " + ac, ex);
+                    if (e == null) {
+                        e = new DAOException(ex);
+                    }
+                    e.addSuppressed(ex);
                 }
             }
+        }
+        if (e != null) {
+            throw e;
         }
     }
 }

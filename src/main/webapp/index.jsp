@@ -6,10 +6,10 @@
 </head>
 <body>
 <br/>
-<form action="jsp/sign_up.jsp">
+<form action="jsp/guest/signUp.jsp">
     <button>Sign up!</button>
 </form>
-<form action="jsp/sign_in.jsp">
+<form action="jsp/guest/signIn.jsp">
     <button>Sign in!</button>
 </form>
 </body>
