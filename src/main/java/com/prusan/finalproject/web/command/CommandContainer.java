@@ -19,6 +19,9 @@ public class CommandContainer {
         commands.put("signUp", new SignUpCommand());
         commands.put("signOut", new SignOutCommand());
         commands.put("downloadActivities", new DownloadActivitiesCommand());
+        commands.put("addUserActivityRequest", new AddUserActivityRequestCommand());
+        commands.put("showUsersRequests", new DownloadUsersRequestsCommand());
+
     }
 
     public static Command getCommand(String command) {

@@ -7,6 +7,7 @@ import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.Validator;
+import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,7 +31,7 @@ public class SignUpCommand implements Command {
         String surname = req.getParameter("surname");
 
         if (!doValidation(req, login, password, name, surname)) {
-            return new Chain("jsp/guest/signUp.jsp", true);
+            return new Chain(Pages.SIGN_UP_JSP, true);
         }
 
         User u = new User(login, password, name, surname);
@@ -41,14 +42,14 @@ public class SignUpCommand implements Command {
             us.save(u);
             HttpSession s = req.getSession();
             s.setAttribute("user", u);
-            return new Chain("jsp/user/userPage.jsp", false);
+            return new Chain(Pages.USER_PAGE_JSP, false);
         } catch (LoginIsTakenException ex) {
             log.debug("unable to create new user: login {} ", ex.getLogin());
             req.setAttribute("err_msg", "This login is already taken. Try another one.");
         } catch (ServiceException e) {
             log.debug("unable to add a user {}", u, e);
         }
-        return new Chain("jsp/guest/signUp.jsp", true);
+        return new Chain(Pages.SIGN_UP_JSP, true);
     }
 
     private boolean doValidation(HttpServletRequest req, String login, String password, String name, String surname) {

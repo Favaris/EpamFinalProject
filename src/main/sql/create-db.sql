@@ -102,3 +102,12 @@ CREATE TABLE IF NOT EXISTS users_m2m_activities (
 
 INSERT INTO users VALUES (DEFAULT, "admin1", "admin", "admin", "admin", "admin");
 SELECT * from users;
+
+INSERT INTO activities VALUES (DEFAULT, "act1", "desc1");
+SELECT * FROM activities;
+
+INSERT INTO categories VALUES (DEFAULT, "cat3"), (DEFAULT, "cat2");
+SELECT * FROM categories;
+
+INSERT INTO categories_m2m_activities VALUES (1, 1), (2, 1), (3, 1);
+SELECT * FROM categories_m2m_activities;

@@ -7,6 +7,7 @@ import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.Validator;
+import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +20,6 @@ import javax.servlet.http.HttpSession;
  */
 public class SignInCommand implements Command {
     private static final Logger log = LogManager.getLogger(SignInCommand.class);
-    private static final Validator validator = Validator.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -37,8 +37,7 @@ public class SignInCommand implements Command {
                     HttpSession ses = req.getSession();
                     ses.setAttribute("user", u);
 
-                    req.setAttribute("nextChain", new Chain("jsp/user/userPage.jsp", false));
-                    return new Chain("controller?command=downloadActivities", true);
+                    return new Chain(Pages.USER_PAGE_JSP, false);
                 }
             } catch (IncorrectCredentialsException e) {
                 log.debug("incorrect credentials with login: {}", e.getLogin());
@@ -48,7 +47,7 @@ public class SignInCommand implements Command {
             }
         }
 
-        return new Chain("jsp/guest/signIn.jsp", true);
+        return new Chain(Pages.SIGN_IN_JSP, true);
     }
 
 }

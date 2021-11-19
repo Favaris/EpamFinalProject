@@ -1,4 +1,4 @@
-package com.prusan.finalproject.web.controller;
+package com.prusan.finalproject.web;
 
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.command.CommandContainer;

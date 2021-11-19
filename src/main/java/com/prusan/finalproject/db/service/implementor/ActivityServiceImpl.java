@@ -3,9 +3,13 @@ package com.prusan.finalproject.db.service.implementor;
 import com.prusan.finalproject.db.dao.ActivityDAO;
 import com.prusan.finalproject.db.dao.CategoryDAO;
 import com.prusan.finalproject.db.dao.DAOException;
+import com.prusan.finalproject.db.dao.UserDAO;
 import com.prusan.finalproject.db.entity.Activity;
 import com.prusan.finalproject.db.entity.Category;
+import com.prusan.finalproject.db.entity.User;
+import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.ActivityService;
+import com.prusan.finalproject.db.service.exception.DependencyAlreadyExistsException;
 import com.prusan.finalproject.db.service.exception.NameIsTakenException;
 import com.prusan.finalproject.db.service.exception.NoSuchActivityException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
@@ -16,7 +20,9 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Activity Service default implementor. Uses DBUtils.getConnection() connection. For it to work properly, it is needed to set all dao implementor fields on this object.
@@ -27,6 +33,11 @@ public class ActivityServiceImpl implements ActivityService {
 
     private ActivityDAO activityDAO;
     private CategoryDAO categoryDAO;
+    private UserDAO userDAO;
+
+    public void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
     public void setCategoryDAO(CategoryDAO categoryDAO) {
         this.categoryDAO = categoryDAO;
@@ -50,6 +61,8 @@ public class ActivityServiceImpl implements ActivityService {
             for (Category category : activity.getCategories()) {
                 activityDAO.addCategory(con, category.getId(), activity.getId());
             }
+
+            con.commit();
             log.debug("saved an activity {}", activity);
         } catch (SQLException throwables) {
             log.error("unable to get connection", throwables);
@@ -62,12 +75,15 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public void addCategories(List<Category> categories) throws ServiceException {
-        try (Connection con = dbUtils.getConnection(false)) {
-
+    public void addUserActivity(UserActivity ua) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+           activityDAO.addUserActivity(con, ua);
         } catch (SQLException throwables) {
             log.error("unable to get connection", throwables);
             throw new ServiceException("unable to get connection", throwables);
+        } catch (DAOException e) {
+            log.debug("unable to add UserActivity: {}", ua, e);
+            throw new DependencyAlreadyExistsException("this user activity already exists: " + ua, e);
         }
     }
 
@@ -109,6 +125,24 @@ public class ActivityServiceImpl implements ActivityService {
         } catch (DAOException e) {
             log.error("unable to get all activities", e);
             throw new ServiceException("unable to get all activities", e);
+        }
+    }
+
+    /**
+     * Gets a List of all users' activities that are not accepted or requested for abandon.
+     */
+    @Override
+    public List<UserActivity> getUsersRequests() throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            List<UserActivity> list = activityDAO.getRequestedUserActivities(con);
+            log.debug("retrieved a list with users requests with size={}", list.size());
+            return list;
+        } catch (SQLException throwables) {
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("unable to get connection", throwables);
+        } catch (DAOException e) {
+            log.error("unable to get all users' requests", e);
+            throw new ServiceException("unable to get all users' requests", e);
         }
     }
 

@@ -10,7 +10,6 @@ import java.io.IOException;
 /**
  * Filter that changes encoding of every client request.
  */
-@WebFilter("/EncodingFilter")
 public class EncodingFilter implements Filter {
     private static final Logger log = LogManager.getLogger(EncodingFilter.class);
 

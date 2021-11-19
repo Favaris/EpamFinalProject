@@ -9,7 +9,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Filter that clears all error messages that were set while signing in. NOT USED.
+ * Filter that clears all error messages that were set while signing in.
+ * <pre>NOT USED.</pre>
  */
 @WebFilter("/SignUpErrorMessagesFilter")
 public class SignUpErrorMessagesFilter implements Filter {

@@ -1,4 +1,4 @@
-package com.prusan.finalproject.web;
+package com.prusan.finalproject.web.listener;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

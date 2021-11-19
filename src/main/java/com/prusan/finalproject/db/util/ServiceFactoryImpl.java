@@ -34,6 +34,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
         ActivityServiceImpl as = new ActivityServiceImpl();
         as.setActivityDAO(getActivityDAO());
         as.setCategoryDAO(getCategoryDAO());
+        as.setUserDAO(getUserDAO());
         log.debug("returned an ActivityService instance: {}", as);
         return as;
     }

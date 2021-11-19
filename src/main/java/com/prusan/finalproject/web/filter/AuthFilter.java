@@ -1,5 +1,6 @@
 package com.prusan.finalproject.web.filter;
 
+import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,11 +16,9 @@ import java.util.Set;
 /**
  * Filter for cases when already logged user tries to sign in or sign up as another user.
  */
-@WebFilter("/AuthFilter")
 public class AuthFilter implements Filter {
     private static final Logger log = LogManager.getLogger(AuthFilter.class);
     private static final Set<String> commands;
-    private static final String PATH = "jsp/guest/";
 
     static {
         commands = new HashSet<>();
@@ -42,7 +41,7 @@ public class AuthFilter implements Filter {
         if (s.getAttribute("user") != null && commands.contains(command)) {
             log.debug("logged user tries to {}, sending him to error page", command);
             s.setAttribute("err_msg", "true");
-            httpResp.sendRedirect(PATH + "error.jsp");
+            httpResp.sendRedirect(Pages.ERROR_JSP);
             return;
         }
         chain.doFilter(request, response);

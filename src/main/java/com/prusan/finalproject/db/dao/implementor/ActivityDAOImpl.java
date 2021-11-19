@@ -4,6 +4,7 @@ import com.prusan.finalproject.db.dao.ActivityDAO;
 import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.entity.Activity;
 import com.prusan.finalproject.db.entity.Category;
+import com.prusan.finalproject.db.entity.UserActivity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,6 +24,8 @@ public class ActivityDAOImpl extends ActivityDAO {
     public static final String DELETE_ACTIVITY_BY_ID = "DELETE FROM activities WHERE id = ?";
     public static final String INSERT_CATEGORY_BY_IDS = "INSERT INTO categories_m2m_activities VALUES (?, ?)";
     public static final String GET_ALL_CATEGORIES_IDS = "SELECT category_id FROM categories_m2m_activities WHERE activity_id = ?";
+    public static final String INSERT_USER_ACTIVITY = "INSERT INTO users_m2m_activities VALUES (?, ?, ?, ?, ?)";
+    public static final String GET_REQUESTED_USERS_ACTIVITIES = "SELECT * FROM users_m2m_activities ua, activities a WHERE (ua.accepted = 0 OR ua.requested_abandon = 1) AND a.id = ua.activity_id";
 
 
     @Override
@@ -98,6 +101,42 @@ public class ActivityDAOImpl extends ActivityDAO {
                 log.warn("unable to close resource {}", rs, ex);
             }
         }
+    }
+
+    @Override
+    public void addUserActivity(Connection con, UserActivity ua) throws DAOException {
+        try (PreparedStatement ps = con.prepareStatement(INSERT_USER_ACTIVITY)) {
+            int k = 0;
+            ps.setInt(++k, ua.getUserId());
+            ps.setInt(++k, ua.getActivityId());
+            ps.setBoolean(++k, ua.isAccepted());
+            ps.setInt(++k, ua.getMinutesSpent());
+            ps.setBoolean(++k, ua.isRequestedAbandon());
+
+            ps.executeUpdate();
+            log.debug("inserted UserActivity {}", ua);
+        } catch (SQLException throwables) {
+            log.error("unable to insert user_activity dependence {}", ua, throwables);
+            throw new DAOException(throwables);
+        }
+    }
+
+    @Override
+    public List<UserActivity> getRequestedUserActivities(Connection con) throws DAOException {
+        List<UserActivity> uas = new ArrayList<>();
+        try (Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(GET_REQUESTED_USERS_ACTIVITIES)) {
+            while (rs.next()) {
+                UserActivity ua = getUserActivity(rs);
+                log.debug("retrieved a user activity {}", ua);
+                uas.add(ua);
+            }
+        } catch (SQLException throwables) {
+            log.error("unable to retrieve all requested user activities");
+            throw new DAOException("unable to retrieve all requested user activities", throwables);
+        }
+
+        return uas;
     }
 
     /**
@@ -232,5 +271,19 @@ public class ActivityDAOImpl extends ActivityDAO {
         ac.setDescription(rs.getString("description"));
         log.debug("retrieved an activity: {}", ac);
         return ac;
+    }
+
+    private UserActivity getUserActivity(ResultSet rs) throws SQLException {
+        UserActivity ua = new UserActivity();
+        ua.setUserId(rs.getInt("user_id"));
+        ua.setActivityId(rs.getInt("activity_id"));
+        ua.setAccepted(rs.getBoolean("accepted"));
+        ua.setMinutesSpent(rs.getInt("minutes_spent"));
+        ua.setId(rs.getInt("id"));
+        ua.setName(rs.getString("name"));
+        ua.setDescription(rs.getString("description"));
+        ua.setRequestedAbandon(rs.getBoolean("requested_abandon"));
+        log.debug("retrieved a user activity: {}", ua);
+        return ua;
     }
 }

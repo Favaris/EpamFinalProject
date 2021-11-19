@@ -1,12 +1,6 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Favaris
-  Date: 11/12/2021
-  Time: 1:21 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ include file="/WEB-INF/jspf/taglibs.jspf" %>
+
 <html>
 <head>
     <title>user page</title>
@@ -27,21 +21,10 @@ role: ${sessionScope.user.role}
     <button type="submit">Sign out.</button>
 </form>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>name</th>
-        <th>categories</th>
-        <th>description</th>
-        <th></th>
-    </tr>
-    </thead>
-    <c:forEach var="activity" items="${sessionScope.activities}">
-        <td>${activity.name}</td>
-        <td>${activity.categories}</td>
-        <td>${activity.description}</td>
-    </c:forEach>
+<form action="${pageContext.request.contextPath}/controller">
+    <input type="hidden" name="command" value="downloadActivities"/>
+    <input type="submit" value="Activities"/>
+</form>
 
-</table>
 </body>
 </html>

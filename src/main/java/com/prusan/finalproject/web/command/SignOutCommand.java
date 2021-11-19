@@ -1,6 +1,7 @@
 package com.prusan.finalproject.web.command;
 
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,6 +24,6 @@ public class SignOutCommand implements Command {
             log.debug("session invalidated: {}", session);
         }
 
-        return new Chain("index.jsp", false);
+        return new Chain(Pages.INDEX_JSP, false);
     }
 }

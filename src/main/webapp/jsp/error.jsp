@@ -1,12 +1,5 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Favaris
-  Date: 11/16/2021
-  Time: 4:27 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ include file="/WEB-INF/jspf/taglibs.jspf" %>
 
 <html>
 <head>

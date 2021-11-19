@@ -1,8 +1,9 @@
 package com.prusan.finalproject.db.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Activity {
+public class Activity implements Serializable {
     private Integer id;
     private String name;
     private String description;
