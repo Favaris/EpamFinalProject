@@ -21,6 +21,9 @@ public class CommandContainer {
         commands.put("downloadActivities", new DownloadActivitiesCommand());
         commands.put("addUserActivityRequest", new AddUserActivityRequestCommand());
         commands.put("showUsersRequests", new DownloadUsersRequestsCommand());
+        commands.put("acceptRequest", new AcceptRequestCommand());
+        commands.put("downloadUsersActivities", new DownloadUsersActivitiesCommand());
+
 
     }
 

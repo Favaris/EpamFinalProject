@@ -6,6 +6,7 @@ package com.prusan.finalproject.web.constant;
 public abstract class Pages {
     private Pages() {}
 
+
     public static final String INDEX_JSP = "index.jsp";
 
     public static final String ACTIVITIES_JSP = "jsp/activities.jsp";
@@ -14,6 +15,7 @@ public abstract class Pages {
     public static final String ERROR_JSP = "jsp/error.jsp";
 
     public static final String USER_PAGE_JSP = "jsp/user/userPage.jsp";
+    public static final String RUNNING_ACTIVITIES_JSP = "jsp/user/runningActivities.jsp";
 
     public static final String ADMIN_PAGE_JSP = "jsp/admin/adminPage.jsp";
     public static final String REQUESTS_JSP = "jsp/admin/requests.jsp";

@@ -1,21 +1,21 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/jspf/taglibs.jspf" %>
-
+<%@taglib tagdir="/WEB-INF/tags/html" prefix="my"%>
+<!DOCTYPE html>
 <html>
-<head>
-    <title>${sessionScope.user.login} - activities</title>
-</head>
+<my:header title="${sessionScope.user.login} - activities"/>
 <body>
 <table class="table">
     <thead>
     <tr>
-        <th>name</th>
-        <th>categories</th>
-        <th>description</th>
-        <th></th>
+        <th scope="col">name</th>
+        <th scope="col">categories</th>
+        <th scope="col">description</th>
     </tr>
     </thead>
+    <tbody>
     <c:forEach var="activity" items="${requestScope.activities}">
+        <tr>
         <td>${activity.name}</td>
         <td>
             <c:forEach var="cat" items="${activity.categories}">
@@ -39,9 +39,9 @@
                 </c:otherwise>
             </c:choose>
         </td>
-
+        </tr>
     </c:forEach>
-
+    </tbody>
 </table>
 </body>
 </html>

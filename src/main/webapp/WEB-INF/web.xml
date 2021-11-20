@@ -20,6 +20,10 @@
         <filter-name>AuthFilter</filter-name>
         <url-pattern>/controller</url-pattern>
     </filter-mapping>
+    
+    <welcome-file-list>
+        <welcome-file>jsp/signIn.jsp</welcome-file>
+    </welcome-file-list>
 
 <!--    <filter>-->
 <!--        <filter-name>SecurityFilter</filter-name>-->

@@ -3,6 +3,7 @@ package com.prusan.finalproject.db.service.implementor;
 import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.dao.UserDAO;
 import com.prusan.finalproject.db.entity.User;
+import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.exception.IncorrectCredentialsException;
 import com.prusan.finalproject.db.service.exception.LoginIsTakenException;
 import com.prusan.finalproject.db.service.exception.NoSuchUserException;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * UserService interface implementor. Uses DBUtils class for retrieving connections.
@@ -69,11 +71,13 @@ public class UserServiceImpl implements UserService {
             u = userDAO.getByLoginAndPassword(con, login, pass);
         } catch (SQLException throwables) {
             log.error("unable to get the connection", throwables);
+            throw new ServiceException("unable to get the connection", throwables);
         } catch (DAOException e) {
             log.warn("unable to get user by login '{}' and pass", login, e);
             throw new ServiceException(e);
         }
         if (u != null) {
+            log.debug("returned a user by login and pass {}", u);
             return u;
         }
         throw new IncorrectCredentialsException(login);

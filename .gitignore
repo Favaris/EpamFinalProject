@@ -52,4 +52,5 @@ buildNumber.properties
 build/
 
 # User files
-.txt
+*.txt
+*.mwb

@@ -26,6 +26,9 @@ public class ActivityDAOImpl extends ActivityDAO {
     public static final String GET_ALL_CATEGORIES_IDS = "SELECT category_id FROM categories_m2m_activities WHERE activity_id = ?";
     public static final String INSERT_USER_ACTIVITY = "INSERT INTO users_m2m_activities VALUES (?, ?, ?, ?, ?)";
     public static final String GET_REQUESTED_USERS_ACTIVITIES = "SELECT * FROM users_m2m_activities ua, activities a WHERE (ua.accepted = 0 OR ua.requested_abandon = 1) AND a.id = ua.activity_id";
+    public static final String UPDATE_USER_ACTIVITY = "UPDATE users_m2m_activities ua SET accepted = ?, minutes_spent = ?, requested_abandon = ? WHERE activity_id = ? AND user_id = ?";
+    public static final String DELETE_USER_ACTIVITY = "DELETE FROM users_m2m_activities WHERE user_id = ? AND activity_id = ?";
+    public static final String GET_USER_ACTIVITY = "SELECT * FROM users_m2m_activities ua, activities a WHERE ua.user_id = ? AND ua.activity_id = ? AND ua.activity_id = a.id";
 
 
     @Override
@@ -117,6 +120,69 @@ public class ActivityDAOImpl extends ActivityDAO {
             log.debug("inserted UserActivity {}", ua);
         } catch (SQLException throwables) {
             log.error("unable to insert user_activity dependence {}", ua, throwables);
+            throw new DAOException(throwables);
+        }
+    }
+
+    @Override
+    public UserActivity getUserActivity(Connection con, int userId, int activityId) throws DAOException {
+        ResultSet rs = null;
+        try (PreparedStatement ps = con.prepareStatement(GET_USER_ACTIVITY)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, activityId);
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                UserActivity ua = getUserActivity(rs);
+                log.debug("retrieved a user activity by ids {}", ua);
+                return ua;
+            }
+        } catch (SQLException throwables) {
+            log.error("error in getUserActivity(userId={}, activityId={})", userId, activityId, throwables);
+            throw new DAOException(throwables);
+        } finally {
+            try {
+                close(rs);
+            } catch (DAOException e) {
+                log.warn("unable to close the result set {}", rs, e);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void updateUserActivity(Connection con, UserActivity ua) throws DAOException {
+        try (PreparedStatement ps = con.prepareStatement(UPDATE_USER_ACTIVITY)) {
+            int k = 0;
+            ps.setBoolean(++k, ua.isAccepted());
+            ps.setInt(++k, ua.getMinutesSpent());
+            ps.setBoolean(++k, ua.isRequestedAbandon());
+            ps.setInt(++k, ua.getActivityId());
+            ps.setInt(++k, ua.getUserId());
+
+            if (ps.executeUpdate() > 0) {
+                log.debug("updated a user activity: {}", ua);
+            } else {
+                log.debug("did not find a user activity to update: {}", ua);
+            }
+        } catch (SQLException throwables) {
+            log.error("unable to update user_activity {}", ua, throwables);
+            throw new DAOException(throwables);
+        }
+    }
+
+    @Override
+    public void deleteUserActivity(Connection con, int userId, int activityId) throws DAOException {
+        try (PreparedStatement ps = con.prepareStatement(DELETE_USER_ACTIVITY)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, activityId);
+            if (ps.executeUpdate() > 0) {
+                log.debug("deleted a user activity by userId={}, activityId={}", userId, activityId);
+            } else {
+                log.debug("unable to find a user activity by userId={}, activityId={}", userId, activityId);
+            }
+        } catch (SQLException throwables) {
+            log.error("error in #deleteUserActivity(userId={}, activityId={})", userId, activityId, throwables);
             throw new DAOException(throwables);
         }
     }
@@ -260,7 +326,8 @@ public class ActivityDAOImpl extends ActivityDAO {
                 log.debug("unable to delete an activity #id={}", id);
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("error in #remove(id={})", id, throwables);
+            throw new DAOException(throwables);
         }
     }
 
@@ -273,7 +340,7 @@ public class ActivityDAOImpl extends ActivityDAO {
         return ac;
     }
 
-    private UserActivity getUserActivity(ResultSet rs) throws SQLException {
+    protected static UserActivity getUserActivity(ResultSet rs) throws SQLException {
         UserActivity ua = new UserActivity();
         ua.setUserId(rs.getInt("user_id"));
         ua.setActivityId(rs.getInt("activity_id"));

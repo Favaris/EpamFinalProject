@@ -84,9 +84,9 @@ DROP TABLE IF EXISTS users_m2m_activities;
 CREATE TABLE IF NOT EXISTS users_m2m_activities (
 	user_id INT NOT NULL,
     activity_id INT NOT NULL,
-    accepted TINYINT DEFAULT 0,
+    accepted BIT DEFAULT 0,
     minutes_spent INT UNSIGNED DEFAULT 0,
-    requested_abandon TINYINT DEFAULT 0,
+    requested_abandon BIT DEFAULT 0,
 	PRIMARY KEY (user_id, activity_id),
     CONSTRAINT fk_user_id 
 		FOREIGN KEY (user_id)
@@ -100,14 +100,5 @@ CREATE TABLE IF NOT EXISTS users_m2m_activities (
         ON UPDATE CASCADE
 );
 
-INSERT INTO users VALUES (DEFAULT, "admin1", "admin", "admin", "admin", "admin");
+INSERT INTO users VALUES (DEFAULT, "admin", "admin", "admin", "admin", "admin");
 SELECT * from users;
-
-INSERT INTO activities VALUES (DEFAULT, "act1", "desc1");
-SELECT * FROM activities;
-
-INSERT INTO categories VALUES (DEFAULT, "cat3"), (DEFAULT, "cat2");
-SELECT * FROM categories;
-
-INSERT INTO categories_m2m_activities VALUES (1, 1), (2, 1), (3, 1);
-SELECT * FROM categories_m2m_activities;

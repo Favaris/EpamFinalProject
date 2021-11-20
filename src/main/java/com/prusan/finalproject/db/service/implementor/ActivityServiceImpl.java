@@ -146,6 +146,74 @@ public class ActivityServiceImpl implements ActivityService {
         }
     }
 
+    /**
+     * Gets a list of all user's activities that are accepted and not requested for abandonment.
+     * @throws ServiceException if some connection error occurs.
+     */
+    @Override
+    public List<UserActivity> getAllRunningUsersActivities(int userId) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            List<UserActivity> list = userDAO.getRunningActivities(con, userId);
+            log.debug("got a list of running activities, list size: {}", list.size());
+
+            for (UserActivity ua : list) {
+                setCategories(con, ua);
+            }
+
+            return list;
+        } catch (SQLException throwables) {
+            log.error("unable to get the connection", throwables);
+            throw new ServiceException("unable to get the connection", throwables);
+        } catch (DAOException e) {
+            log.error("unable to get all running activities", e);
+            throw new ServiceException("error while trying to load all running activities", e);
+        }
+    }
+
+    @Override
+    public UserActivity getUserActivity(int userId, int activityId) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            return activityDAO.getUserActivity(con, userId, activityId);
+        } catch (SQLException throwables) {
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("unable to get connection", throwables);
+        } catch (DAOException e) {
+            log.error("unable to get UserActivity by userId={}, activityId={}", userId, activityId, e);
+            throw new ServiceException(e);
+        }
+    }
+
+    /**
+     * Updates given user activity.
+     * @throws ServiceException if there are connection issues with the db.
+     */
+    @Override
+    public void updateUserActivity(UserActivity ua) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            activityDAO.updateUserActivity(con, ua);
+            log.debug("updated a user activity {}", ua);
+        } catch (SQLException throwables) {
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("unable to get connection", throwables);
+        } catch (DAOException e) {
+            log.error("error in updateUserActivity({})", ua, e);
+            throw new ServiceException("unable to delete user activity", e);
+        }
+    }
+
+    @Override
+    public void deleteUserActivity(int userId, int activityId) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            activityDAO.deleteUserActivity(con, userId, activityId);
+        } catch (SQLException throwables) {
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("unable to get connection", throwables);
+        } catch (DAOException e) {
+            log.error("error in updateUserActivity(userId={}, activityId={})", userId, activityId, e);
+            throw new ServiceException("unable to delete user activity", e);
+        }
+    }
+
     @Override
     public void delete(int id) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {

@@ -32,11 +32,11 @@ public class DownloadUsersRequestsCommand implements Command {
         try {
             List<UserActivity> list = as.getUsersRequests();
 
-            Map<User, UserActivity> map = new HashMap<>();
+            Map<UserActivity, User> map = new HashMap<>();
             for (UserActivity ua : list) {
                 User u = us.getById(ua.getUserId());
-                map.put(u, ua);
-                log.debug("retrieved a new request: ({}, {})", u, ua);
+                map.put(ua, u);
+                log.debug("retrieved a new request: ({}, {})", ua, u);
             }
 
             req.setAttribute("requests", map);

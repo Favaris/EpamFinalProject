@@ -19,5 +19,11 @@ public abstract class ActivityDAO extends BasicDAO<Activity> {
 
     public abstract void addUserActivity(Connection con, UserActivity ua) throws DAOException;
 
+    public abstract UserActivity getUserActivity(Connection con, int userId, int activityId) throws DAOException;
+
+    public abstract void updateUserActivity(Connection con, UserActivity ua) throws DAOException;
+
+    public abstract void deleteUserActivity(Connection con, int userId, int activityId) throws DAOException;
+
     public abstract List<UserActivity> getRequestedUserActivities(Connection con) throws DAOException;
 }

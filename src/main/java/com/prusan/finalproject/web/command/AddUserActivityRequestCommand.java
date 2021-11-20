@@ -45,6 +45,6 @@ public class AddUserActivityRequestCommand implements Command {
             return new Chain(Pages.ERROR_JSP, true);
         }
 
-        return new Chain(Pages.ACTIVITIES_JSP, true);
+        return new DownloadActivitiesCommand().execute(req, resp);
     }
 }

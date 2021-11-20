@@ -23,5 +23,13 @@ public interface ActivityService {
 
     List<UserActivity> getUsersRequests() throws ServiceException;
 
+    List<UserActivity> getAllRunningUsersActivities(int userId) throws ServiceException;
+
+    UserActivity getUserActivity(int userId, int activityId) throws ServiceException;
+
+    void updateUserActivity(UserActivity ua) throws ServiceException;
+
+    void deleteUserActivity(int userId, int activityId) throws ServiceException;
+
     void delete(int id) throws ServiceException;
 }

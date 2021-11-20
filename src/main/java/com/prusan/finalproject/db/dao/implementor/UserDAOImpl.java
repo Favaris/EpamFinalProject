@@ -3,6 +3,7 @@ package com.prusan.finalproject.db.dao.implementor;
 import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.dao.UserDAO;
 import com.prusan.finalproject.db.entity.User;
+import com.prusan.finalproject.db.entity.UserActivity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,6 +23,7 @@ public class UserDAOImpl extends UserDAO {
     private static final String DELETE_USER_BY_ID = "DELETE FROM users WHERE id = ?";
     private static final String SELECT_ALL_USERS = "SELECT * FROM users";
     public static final String SELECT_USER_BY_LOGIN = "SELECT * FROM users u WHERE u.login = ?";
+    public static final String GET_ALL_ACCEPTED_ACTIVITIES_BY_ID = "SELECT * FROM users_m2m_activities ua, activities a WHERE ua.user_id = ? AND accepted = 1 AND requested_abandon = 0 AND a.id = ua.activity_id";
 
     /**
      * Inserts a user with the given fields. For passed user object, updates the id field if the insertion was successful.
@@ -184,6 +186,30 @@ public class UserDAOImpl extends UserDAO {
         return null;
     }
 
+    /**
+     * Retrieves a list of all user's activities that are accepted and not requested for abandonment.
+     */
+    @Override
+    public List<UserActivity> getRunningActivities(Connection con, int id) throws DAOException {
+        ResultSet rs = null;
+        try (PreparedStatement ps = con.prepareStatement(GET_ALL_ACCEPTED_ACTIVITIES_BY_ID)) {
+            ps.setInt(1, id);
+
+            rs = ps.executeQuery();
+            List<UserActivity> uas = new ArrayList<>();
+            while (rs.next()) {
+                UserActivity ua = ActivityDAOImpl.getUserActivity(rs);
+                log.debug("retrieved accepted user activity {}", ua);
+                uas.add(ua);
+            }
+            log.debug("retrieved a list of all accepted user activities, list size: {}", uas.size());
+            return uas;
+        } catch (SQLException throwables) {
+            log.error("error in getRunningActivities(id={})", id, throwables);
+            throw new DAOException(throwables);
+        }
+    }
+
     private User getUser(ResultSet rs) throws SQLException {
         User u = new User();
         u.setId(rs.getInt("id"));
@@ -194,4 +220,6 @@ public class UserDAOImpl extends UserDAO {
         u.setRole(rs.getString("role"));
         return u;
     }
+
+
 }
