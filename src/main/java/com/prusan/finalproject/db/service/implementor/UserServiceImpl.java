@@ -83,6 +83,25 @@ public class UserServiceImpl implements UserService {
         throw new IncorrectCredentialsException(login);
     }
 
+    /**
+     * Return a list of all users with role='user'.
+     * @throws ServiceException if there are some connection issues with the db.
+     */
+    @Override
+    public List<User> getAllWithRoleUser() throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            List<User> users = userDAO.getAllWithRoleUser(con);
+            log.debug("retrieved a list of all users with role='user', list size: {}", users.size());
+            return users;
+        } catch (SQLException throwables) {
+            log.error("unable to get the connection", throwables);
+            throw new ServiceException("unable to get the connection", throwables);
+        } catch (DAOException e) {
+            log.error("unable to get all users with role='user'");
+            throw new ServiceException("error while downloading all users", e);
+        }
+    }
+
     @Override
     public void delete(int id) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {

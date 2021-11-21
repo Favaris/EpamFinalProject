@@ -17,8 +17,13 @@
     </form>
 
     <form action="${root}/controller">
-        <input type="hidden" name="command" value="downloadActivities"/>
-        <input type="submit" value="Activities"/>
+        <input type="hidden" name="command" value="showAllUsers"/>
+        <button type="submit">Show users</button>
+    </form>
+
+    <form action="${root}/controller">
+        <input type="hidden" name="command" value="signOut"/>
+        <button type="submit">Sign out.</button>
     </form>
 </body>
 </html>

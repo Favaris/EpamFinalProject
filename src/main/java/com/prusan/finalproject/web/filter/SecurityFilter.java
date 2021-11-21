@@ -25,7 +25,6 @@ public class SecurityFilter implements Filter {
         Set<String> admin = new HashSet<>();
         admin.add(DBConstants.ADMIN);
 
-        permissions.put(Pages.INDEX_JSP, logged);
         //........
         //TODO:IMPLEMENT THIS PROPERLY!!!!!
     }

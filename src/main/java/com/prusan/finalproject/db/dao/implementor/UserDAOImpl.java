@@ -24,6 +24,8 @@ public class UserDAOImpl extends UserDAO {
     private static final String SELECT_ALL_USERS = "SELECT * FROM users";
     public static final String SELECT_USER_BY_LOGIN = "SELECT * FROM users u WHERE u.login = ?";
     public static final String GET_ALL_ACCEPTED_ACTIVITIES_BY_ID = "SELECT * FROM users_m2m_activities ua, activities a WHERE ua.user_id = ? AND accepted = 1 AND requested_abandon = 0 AND a.id = ua.activity_id";
+    public static final String GET_ALL_ADMINS = "SELECT * FROM users WHERE role='admin'";
+    public static final String GET_ALL_WITH_ROLE_USER = "SELECT * FROM users WHERE role='user'";
 
     /**
      * Inserts a user with the given fields. For passed user object, updates the id field if the insertion was successful.
@@ -208,6 +210,50 @@ public class UserDAOImpl extends UserDAO {
             log.error("error in getRunningActivities(id={})", id, throwables);
             throw new DAOException(throwables);
         }
+    }
+
+    /**
+     * Returns a list of users with role='admin'
+     * @throws DAOException if there are some issues with the connection to the db.
+     */
+    @Override
+    public List<User> getAllAdmins(Connection con) throws DAOException {
+        List<User> admins = new ArrayList<>();
+        try (Statement ps = con.createStatement();
+            ResultSet rs = ps.executeQuery(GET_ALL_ADMINS)) {
+            while (rs.next()) {
+                User u = getUser(rs);
+                log.debug("retrieved an admin user: {}", u);
+                admins.add(u);
+            }
+            log.debug("got a list of all admins, list size: {}", admins.size());
+        } catch (SQLException throwables) {
+            log.error("error in getAllAdmins()", throwables);
+            throw new DAOException(throwables);
+        }
+        return admins;
+    }
+
+    /**
+     * Returns a list of users with role='user'.
+     * @throws DAOException if there are some issues with the connection to the db.
+     */
+    @Override
+    public List<User> getAllWithRoleUser(Connection con) throws DAOException {
+        List<User> users = new ArrayList<>();
+        try (Statement ps = con.createStatement();
+             ResultSet rs = ps.executeQuery(GET_ALL_WITH_ROLE_USER)) {
+            while (rs.next()) {
+                User u = getUser(rs);
+                log.debug("retrieved a user with role='user': {}", u);
+                users.add(u);
+            }
+            log.debug("got a list of all users with role='user', list size: {}", users.size());
+        } catch (SQLException throwables) {
+            log.error("error in getAllWithRoleUser()", throwables);
+            throw new DAOException(throwables);
+        }
+        return users;
     }
 
     private User getUser(ResultSet rs) throws SQLException {

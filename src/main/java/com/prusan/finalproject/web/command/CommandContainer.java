@@ -23,8 +23,9 @@ public class CommandContainer {
         commands.put("showUsersRequests", new DownloadUsersRequestsCommand());
         commands.put("acceptRequest", new AcceptRequestCommand());
         commands.put("downloadUsersActivities", new DownloadUsersActivitiesCommand());
-
-
+        commands.put("denyRequest", new DenyRequestCommand());
+        commands.put("showAllUsers", new DownloadAllUsersCommand());
+        commands.put("showEditUserPage", new DownloadUserCommand());
     }
 
     public static Command getCommand(String command) {
