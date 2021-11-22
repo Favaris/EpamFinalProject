@@ -6,7 +6,6 @@ import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.dao.UserDAO;
 import com.prusan.finalproject.db.entity.Activity;
 import com.prusan.finalproject.db.entity.Category;
-import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.ActivityService;
 import com.prusan.finalproject.db.service.exception.DependencyAlreadyExistsException;
@@ -20,9 +19,8 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Activity Service default implementor. Uses DBUtils.getConnection() connection. For it to work properly, it is needed to set all dao implementor fields on this object.
@@ -71,6 +69,38 @@ public class ActivityServiceImpl implements ActivityService {
             rollback(con);
             log.debug("unable to save activity {}", activity, e);
             throw new NameIsTakenException("Activity with name '" + activity.getName() + "' already exists. Please, try another name.", e);
+        } finally {
+            close(con);
+        }
+    }
+
+    @Override
+    public void update(Activity activity) throws ServiceException {
+        Connection con = null;
+        try {
+            con = dbUtils.getConnection(false);
+            activityDAO.update(con, activity);
+            log.debug("updated info about activity {}", activity);
+            activityDAO.deleteAllCategories(con, activity.getId());
+            log.debug("deleted all categories of activity {}", activity);
+
+            for (Category cat : activity.getCategories()) {
+                activityDAO.addCategory(con, cat.getId(), activity.getId());
+                log.debug("added a category with id={} for activity {}", cat.getId(), activity);
+            }
+            log.debug("successfully added new categories for activity {}", activity);
+
+            con.commit();
+        } catch (SQLException throwables) {
+            rollback(con);
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("unable to get connection", throwables);
+        } catch (DAOException e) {
+            rollback(con);
+            log.error("unable to update an activity {}", activity, e);
+            throw new ServiceException("Can not save this activity", e);
+        } finally {
+            close(con);
         }
     }
 
@@ -173,7 +203,13 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public UserActivity getUserActivity(int userId, int activityId) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
-            return activityDAO.getUserActivity(con, userId, activityId);
+            UserActivity ua = activityDAO.getUserActivity(con, userId, activityId);
+            if (ua == null) {
+                log.debug("no such user activity, userId={}, activityId={}", userId, activityId);
+                throw new NoSuchActivityException("This activity does not exist");
+            }
+            log.debug("retrieved a user activity: {}", ua);
+            return ua;
         } catch (SQLException throwables) {
             log.error("unable to get connection", throwables);
             throw new ServiceException("unable to get connection", throwables);
@@ -227,8 +263,34 @@ public class ActivityServiceImpl implements ActivityService {
         }
     }
 
+    /**
+     * Returns a list of all activities that are not taken by this user. An activity is 'taken' by a certain user even if it is not yet accepted by an admin.
+     */
+    @Override
+    public List<Activity> getAllActivitiesNotTakenByUser(int userId) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            List<Activity> userActivities = activityDAO.getActivitiesByUserId(con, userId);
+            log.debug("retrieved a list of all user's activities by userId={}, list size={}", userId, userActivities.size());
+            List<Activity> activities = activityDAO.getAll(con);
+            log.debug("retrieved a list of all activities, list size={}", activities.size());
+
+            List<Activity> result = activities.stream()
+                    .filter(activity -> !userActivities.contains(activity))
+                    .collect(Collectors.toList());
+            log.debug("created a list of all activities that are not taken by this user, list size={}", result.size());
+
+            return result;
+        } catch (SQLException throwables) {
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("unable to get connection", throwables);
+        } catch (DAOException e) {
+            log.error("error while trying to download all activities and user's activities, userId={}", userId, e);
+            throw new ServiceException("Can not download a list of activities", e);
+        }
+    }
+
     private void setCategories(Connection con, Activity ac) throws DAOException {
-        List<Integer> catIds = activityDAO.getAllCategoriesIds(con, ac.getId());
+        List<Integer> catIds = activityDAO.getCategoriesIds(con, ac.getId());
 
         List<Category> categories = new ArrayList<>();
         for (Integer catId : catIds) {
@@ -245,6 +307,16 @@ public class ActivityServiceImpl implements ActivityService {
                 con.rollback();
             } catch (SQLException ex) {
                 log.error("unable to rollback connection", ex);
+            }
+        }
+    }
+
+    private void close(Connection con) {
+        if (con !=null) {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                log.warn("unable to close a connection {}", con, e);
             }
         }
     }

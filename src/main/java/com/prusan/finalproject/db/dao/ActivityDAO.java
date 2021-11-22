@@ -15,7 +15,9 @@ public abstract class ActivityDAO extends BasicDAO<Activity> {
 
     public abstract void addCategory(Connection con, int categoryId, int activityId) throws DAOException;
 
-    public abstract List<Integer> getAllCategoriesIds(Connection con, int id) throws DAOException;
+    public abstract List<Integer> getCategoriesIds(Connection con, int id) throws DAOException;
+
+    public abstract void deleteAllCategories(Connection con, int activityId) throws DAOException;
 
     public abstract void addUserActivity(Connection con, UserActivity ua) throws DAOException;
 
@@ -26,4 +28,6 @@ public abstract class ActivityDAO extends BasicDAO<Activity> {
     public abstract void deleteUserActivity(Connection con, int userId, int activityId) throws DAOException;
 
     public abstract List<UserActivity> getRequestedUserActivities(Connection con) throws DAOException;
+
+    public abstract List<Activity> getActivitiesByUserId(Connection con, int userId) throws DAOException;
 }

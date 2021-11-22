@@ -14,13 +14,14 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
- * Downloads all info about the user by its id. Retrieves this id from request attribute 'id'. Downloads user and his running activities in request attributes as 'userToEdit' and 'userToEditActivities'.
+ * Downloads all info about the user by its id. Retrieves this id from request attribute 'id'. Downloads user and his running activities in session attributes as 'userToEdit' and 'userToEditActivities'.
  */
-public class DownloadUserCommand implements Command {
-    private static final Logger log = LogManager.getLogger(DownloadUserCommand.class);
+public class PrepareForUserEditingCommand implements Command {
+    private static final Logger log = LogManager.getLogger(PrepareForUserEditingCommand.class);
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -30,24 +31,26 @@ public class DownloadUserCommand implements Command {
         ServiceFactory sf = ServiceFactory.getInstance();
         UserService us = sf.getUserService();
         ActivityService as = sf.getActivityService();
+        HttpSession s = req.getSession();
 
         try {
             User u = us.getById(userId);
             log.debug("retrieved a user {}", u);
             List<UserActivity> userActivities = as.getAllRunningUsersActivities(userId);
             log.debug("retrieved user's activities list, list size: {}", userActivities.size());
-            req.setAttribute("userToEdit", u);
-            req.setAttribute("userToEditActivities", userActivities);
-            log.debug("set retrieved entities as request attributes");
-            return new Chain(Pages.USER_EDIT_PAGE_JSP, true);
+            s.setAttribute("userToEdit", u);
+            s.setAttribute("userToEditActivities", userActivities);
+            log.debug("set retrieved entities as session attributes");
+
+            return new Chain(Pages.USER_EDIT_PAGE_JSP, false);
         } catch (NoSuchUserException ex) {
             log.debug("no such user with id={}", userId);
-            req.setAttribute("err_msg", "User not exists");
-            return new Chain(Pages.ERROR_JSP, true);
+            s.setAttribute("err_msg", "User not exists");
+            return new Chain(Pages.ERROR_JSP, false);
         } catch (ServiceException e) {
             log.error("error while trying to load a user by id={}", userId, e);
-            req.setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, true);
+            s.setAttribute("err_msg", e.getMessage());
+            return new Chain(Pages.ERROR_JSP, false);
         }
     }
 }

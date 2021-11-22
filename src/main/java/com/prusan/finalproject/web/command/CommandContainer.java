@@ -18,14 +18,18 @@ public class CommandContainer {
         commands.put("signIn", new SignInCommand());
         commands.put("signUp", new SignUpCommand());
         commands.put("signOut", new SignOutCommand());
-        commands.put("downloadActivities", new DownloadActivitiesCommand());
+        commands.put("downloadActivities", new DownloadAllActivitiesCommand());
         commands.put("addUserActivityRequest", new AddUserActivityRequestCommand());
         commands.put("showUsersRequests", new DownloadUsersRequestsCommand());
         commands.put("acceptRequest", new AcceptRequestCommand());
         commands.put("downloadUsersActivities", new DownloadUsersActivitiesCommand());
         commands.put("denyRequest", new DenyRequestCommand());
         commands.put("showAllUsers", new DownloadAllUsersCommand());
-        commands.put("showEditUserPage", new DownloadUserCommand());
+        commands.put("showEditUserPage", new PrepareForUserEditingCommand());
+        commands.put("updateUser", new UpdateUserCommand());
+        commands.put("showActivityEditPage", new PrepareForActivityEditingCommand());
+        commands.put("updateActivity", new UpdateActivityCommand());
+        commands.put("deleteActivity", new DeleteActivityCommand());
     }
 
     public static Command getCommand(String command) {

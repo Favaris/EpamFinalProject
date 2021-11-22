@@ -1,5 +1,6 @@
 package com.prusan.finalproject.db.dao;
 
+import com.prusan.finalproject.db.entity.Activity;
 import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.entity.UserActivity;
 

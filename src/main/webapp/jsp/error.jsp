@@ -5,6 +5,8 @@
 <html>
 <my:header title="${sessionScope.user.login} - error!!"/>
 <body>
+<%@ include file="/WEB-INF/jspf/navbar.jspf" %>
+
     ${requestScope.err_msg}
 </body>
 </html>

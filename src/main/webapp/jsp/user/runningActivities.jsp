@@ -5,6 +5,8 @@
 <html>
 <my:header title="${sessionScope.user.login} - running activities"/>
 <body>
+<%@ include file="/WEB-INF/jspf/navbar.jspf" %>
+
 <table class="table">
     <thead>
     <tr>

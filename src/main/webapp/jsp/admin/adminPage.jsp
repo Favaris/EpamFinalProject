@@ -5,21 +5,12 @@
 <html>
 <my:header title="${sessionScope.user.login} - admin page"/>
 <body>
+<%@ include file="/WEB-INF/jspf/navbar.jspf" %>
+
     you are logged as ${sessionScope.user.login} admin.
-    <form action="${root}/controller">
-        <input type="hidden" name="command" value="downloadActivities"/>
-        <input type="submit" value="Activities"/>
-    </form>
 
-    <form action="${root}/controller">
-        <input type="hidden" name="command" value="showUsersRequests">
-        <input type="submit" value="Users' requests">
-    </form>
 
-    <form action="${root}/controller">
-        <input type="hidden" name="command" value="showAllUsers"/>
-        <button type="submit">Show users</button>
-    </form>
+
 
     <form action="${root}/controller">
         <input type="hidden" name="command" value="signOut"/>

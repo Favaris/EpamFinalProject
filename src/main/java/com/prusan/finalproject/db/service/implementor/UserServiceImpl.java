@@ -41,9 +41,23 @@ public class UserServiceImpl implements UserService {
             userDAO.add(con, user);
         } catch (SQLException throwables) {
             log.error("unable to get the connection", throwables);
+            throw new ServiceException(throwables);
         } catch (DAOException e) {
             log.debug("unable to add given user {} ", user, e);
             throw new LoginIsTakenException(user.getLogin());
+        }
+    }
+
+    @Override
+    public void update(User user) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            userDAO.update(con, user);
+        } catch (SQLException throwables) {
+            log.error("unable to get the connection", throwables);
+            throw new ServiceException(throwables);
+        } catch (DAOException e) {
+            log.error("error in #update({})", user, e);
+            throw new ServiceException("Can not update a user " + user, e);
         }
     }
 

@@ -14,7 +14,7 @@
 <div class="main">
     <div class="col-md-6 col-sm-12">
         <div class="login-form">
-            <form action="${pageContext.request.contextPath}/controller" method="post">
+            <form action="${root}/controller" method="post">
                 <input type="hidden" name="command" value="signIn"/>
                 <div class="form-group">
                     <label>Login</label>
@@ -24,11 +24,11 @@
                     <label>Password</label>
                     <input type="password" name="password" class="form-control" required="required" placeholder="Password"/>
                 </div>
-                <c:if test="${requestScope.err_msg != null}">
-                    ${requestScope.err_msg} <br>
+                <c:if test="${sessionScope.err_msg != null}">
+                    ${sessionScope.err_msg} <br>
                 </c:if>
                 <button type="submit" class="btn btn-black">Sign in</button>
-                <button type="button" onclick="location.href='${pageContext.request.contextPath}/jsp/signUp.jsp';" class="btn btn-secondary">Or sign up</button>
+                <button type="button" onclick="location.href='${root}/jsp/signUp.jsp';" class="btn btn-secondary">Or sign up</button>
             </form>
         </div>
     </div>

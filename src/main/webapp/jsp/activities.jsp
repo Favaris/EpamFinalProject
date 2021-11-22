@@ -5,6 +5,8 @@
 <html>
 <my:header title="${sessionScope.user.login} - activities"/>
 <body>
+<%@ include file="/WEB-INF/jspf/navbar.jspf" %>
+
 <table class="table">
     <thead>
     <tr>
@@ -14,7 +16,7 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach var="activity" items="${requestScope.activities}">
+    <c:forEach var="activity" items="${sessionScope.activities}">
         <tr>
         <td>${activity.name}</td>
         <td>
@@ -34,8 +36,16 @@
                     </form>
                 </c:when>
                 <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/controller?command=showActivityEditForm&id=${activity.id}">edit</a>
-                    <a href="${pageContext.request.contextPath}/confirmDeleteActivity&id=${activity.id}">delete</a>
+                    <form action="${root}/controller" method="post">
+                        <input type="hidden" name="command" value="showActivityEditPage"/>
+                        <input type="hidden" name="id" value="${activity.id}"/>
+                        <a href="#" onclick="this.parentNode.submit()">edit</a>
+                    </form>
+                    <form action="${root}/controller" method="post">
+                        <input type="hidden" name="command" value="deleteActivity"/>
+                        <input type="hidden" name="id" value="${activity.id}"/>
+                        <a href="#" onclick="this.parentNode.submit()">delete</a>
+                    </form>
                 </c:otherwise>
             </c:choose>
         </td>

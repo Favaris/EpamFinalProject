@@ -9,6 +9,8 @@ import java.util.List;
 public interface UserService {
     void save(User user) throws ServiceException;
 
+    void update(User user) throws ServiceException;
+
     User getById(int id) throws ServiceException;
 
     User getByLoginAndPass(String login, String pass) throws ServiceException;

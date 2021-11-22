@@ -5,6 +5,8 @@
 <html>
 <my:header title="${sessionScope.user.login} - users' requests"/>
 <body>
+<%@ include file="/WEB-INF/jspf/navbar.jspf" %>
+
 <table class="table">
     <thead>
     <tr>
@@ -15,7 +17,7 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach var="request" items="${requestScope.requests}">
+    <c:forEach var="request" items="${sessionScope.requests}">
         <tr>
         <td>${request.value.login}</td>
         <td>${request.key.name}</td>

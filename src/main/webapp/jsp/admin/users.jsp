@@ -5,6 +5,8 @@
 <html>
 <my:header title="${sessionScope.user.login} - users list"/>
 <body>
+<%@ include file="/WEB-INF/jspf/navbar.jspf" %>
+
 <table class="table">
     <thead>
     <tr>
@@ -22,7 +24,7 @@
             <td>${user.surname}</td>
             <td>
                 <a href="${root}/controller?command=showEditUserPage&id=${user.id}">edit</a>
-                <a href="${root}/controller?command=showDeleteUserConfirmationPage&id=${user.id}">delete</a>
+<%--                <a href="${root}/controller?command=showDeleteUserConfirmationPage&id=${user.id}">delete</a>--%>
             </td>
         </tr>
     </c:forEach>

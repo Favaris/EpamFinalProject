@@ -7,8 +7,10 @@ import com.prusan.finalproject.db.dao.implementor.ActivityDAOImpl;
 import com.prusan.finalproject.db.dao.implementor.CategoryDAOImpl;
 import com.prusan.finalproject.db.dao.implementor.UserDAOImpl;
 import com.prusan.finalproject.db.service.ActivityService;
+import com.prusan.finalproject.db.service.CategoryService;
 import com.prusan.finalproject.db.service.UserService;
 import com.prusan.finalproject.db.service.implementor.ActivityServiceImpl;
+import com.prusan.finalproject.db.service.implementor.CategoryServiceImpl;
 import com.prusan.finalproject.db.service.implementor.UserServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,6 +39,14 @@ public class ServiceFactoryImpl implements ServiceFactory {
         as.setUserDAO(getUserDAO());
         log.debug("returned an ActivityService instance: {}", as);
         return as;
+    }
+
+    @Override
+    public CategoryService getCategoryService() {
+        CategoryServiceImpl cs = new CategoryServiceImpl();
+        cs.setCategoryDAO(getCategoryDAO());
+        log.debug("returned a CategoryService instance: {}", cs);
+        return cs;
     }
 
     @Override

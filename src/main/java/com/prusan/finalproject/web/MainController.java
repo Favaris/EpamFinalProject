@@ -19,17 +19,23 @@ public class MainController extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        String com = req.getParameter("command");
-        log.debug("got a command '{}'", com);
-        Command command = CommandContainer.getCommand(com);
-        command.execute(req, resp).moveForth(req, resp);
+        processRequest(req, resp);
     }
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        processRequest(req, resp);
+    }
+
+    private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String com = req.getParameter("command");
         log.debug("got a command '{}'", com);
         Command command = CommandContainer.getCommand(com);
-        command.execute(req, resp).moveForth(req, resp);
+        log.debug("got a command instance {}", command);
+        if (command == null) {
+            req.getSession().setAttribute("err_msg", "Can not find this command");
+        } else {
+            command.execute(req, resp).moveForth(req, resp);
+        }
     }
 }

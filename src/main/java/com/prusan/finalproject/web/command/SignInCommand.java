@@ -36,7 +36,7 @@ public class SignInCommand implements Command {
                     log.debug("retrieved a user by login '{}' and pass", login);
                     HttpSession ses = req.getSession();
                     ses.setAttribute("user", u);
-
+                    ses.removeAttribute("err_msg");
                     return new Chain(Pages.USER_PAGE_JSP, false);
                 }
             } catch (IncorrectCredentialsException e) {
@@ -47,7 +47,7 @@ public class SignInCommand implements Command {
             }
         }
 
-        return new Chain(Pages.SIGN_IN_JSP, true);
+        return new Chain(Pages.SIGN_IN_JSP, false);
     }
 
 }

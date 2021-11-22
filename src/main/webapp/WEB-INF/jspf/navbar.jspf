@@ -1,0 +1,44 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <c:choose>
+
+            <c:when test="${sessionScope.user.role eq 'user'}">
+                <form action="${root}/jsp/user/userPage.jsp">
+                    <button type="submit">Home</button>
+                </form>
+                <form action="${root}/controller">
+                    <input type="hidden" name="command" value="downloadUsersActivities"/>
+                    <button type="submit">Your activities</button>
+                </form>
+                <form action="${root}/controller">
+                    <input type="hidden" name="command" value="downloadActivities"/>
+                    <button type="submit">Add activities</button>
+                </form>
+            </c:when>
+
+            <c:otherwise>
+                <form action="${root}/jsp/admin/adminPage.jsp">
+                    <button type="submit">Home</button>
+                </form>
+                <form action="${root}/controller">
+                    <input type="hidden" name="command" value="downloadActivities"/>
+                    <button type="submit">Activities</button>
+                </form>
+                <form action="${root}/controller">
+                    <input type="hidden" name="command" value="showUsersRequests">
+                    <button type="submit">Users' requests</button>
+                </form>
+                <form action="${root}/controller">
+                    <input type="hidden" name="command" value="showAllUsers"/>
+                    <button type="submit">Show users</button>
+                </form>
+            </c:otherwise>
+
+        </c:choose>
+
+        <form action="${root}/controller">
+            <input type="hidden" name="command" value="signOut"/>
+            <button type="submit">Sign out</button>
+        </form>
+    </div>
+</nav>

@@ -26,6 +26,24 @@ public class UserActivity extends Activity {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        UserActivity that = (UserActivity) o;
+
+        return userId.equals(that.userId) && getActivityId().equals(that.getActivityId());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + userId.hashCode() + getActivityId().hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "UserActivity{" +
                 "userId=" + userId +

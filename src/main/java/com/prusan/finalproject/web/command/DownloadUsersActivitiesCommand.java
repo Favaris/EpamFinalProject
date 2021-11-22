@@ -3,7 +3,6 @@ package com.prusan.finalproject.web.command;
 import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.ActivityService;
-import com.prusan.finalproject.db.service.UserService;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
@@ -16,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public class DownloadUsersActivitiesCommand implements Command {
-    private final static Logger log = LogManager.getLogger(DownloadActivitiesCommand.class);
+    private final static Logger log = LogManager.getLogger(DownloadAllActivitiesCommand.class);
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {

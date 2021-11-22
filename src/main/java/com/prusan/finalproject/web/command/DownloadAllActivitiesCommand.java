@@ -12,26 +12,27 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
- * Intermediate command for setting a list of all categories as the request attribute 'activities'.
- *
- * <pre> /////////THIS FEATURE IS TEMPORARY NOT IN USE
- *     WARN: for this command to work properly, you should firstly set to the request scope an attribute 'nextChain' with a Chain object that this command should call next
- * </pre>
+ * Intermediate command for setting a list of all categories as the request attribute 'activities'. If user role is 'admin', just loads all activities; if the role is 'user', loads only activities that are not already taken by this user.
  */
-public class DownloadActivitiesCommand implements Command {
-    private static final Logger log = LogManager.getLogger(DownloadActivitiesCommand.class);
+public class DownloadAllActivitiesCommand implements Command {
+    private static final Logger log = LogManager.getLogger(DownloadAllActivitiesCommand.class);
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
         ActivityService as = ServiceFactory.getInstance().getActivityService();
+        User u = (User) req.getSession().getAttribute("user");
 
         try {
-            List<Activity> activities = as.getAll();
-            req.setAttribute("activities", activities);
+            List<Activity> activities;
+            if ("admin".equals(u.getRole())) {
+                activities = as.getAll();
+            } else {
+                activities = as.getAllActivitiesNotTakenByUser(u.getId());
+            }
+            req.getSession().setAttribute("activities", activities);
             log.debug("set activities list as the request attribute");
         } catch (ServiceException e) {
             log.error("can not get all activities", e);
@@ -40,6 +41,6 @@ public class DownloadActivitiesCommand implements Command {
         }
 
         //return (Chain) req.getAttribute("nextChain");
-        return new Chain(Pages.ACTIVITIES_JSP, true);
+        return new Chain(Pages.ACTIVITIES_JSP, false);
     }
 }

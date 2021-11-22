@@ -1,8 +1,6 @@
 package com.prusan.finalproject.db.service;
 
 import com.prusan.finalproject.db.entity.Activity;
-import com.prusan.finalproject.db.entity.Category;
-import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 
@@ -14,6 +12,8 @@ import java.util.Map;
  */
 public interface ActivityService {
     void save(Activity activity) throws ServiceException;
+
+    void update(Activity activity) throws ServiceException;
 
     void addUserActivity(UserActivity ua) throws ServiceException;
 
@@ -32,4 +32,6 @@ public interface ActivityService {
     void deleteUserActivity(int userId, int activityId) throws ServiceException;
 
     void delete(int id) throws ServiceException;
+
+    List<Activity> getAllActivitiesNotTakenByUser(int userId) throws ServiceException;
 }

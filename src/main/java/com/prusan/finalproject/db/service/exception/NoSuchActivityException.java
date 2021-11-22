@@ -9,4 +9,8 @@ public class NoSuchActivityException extends ServiceException {
     public NoSuchActivityException(String s, DAOException e) {
         super(s, e);
     }
+
+    public NoSuchActivityException(String s) {
+        super(s);
+    }
 }

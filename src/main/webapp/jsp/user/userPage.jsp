@@ -5,6 +5,8 @@
 <html>
 <my:header title="${sessionScope.user.login} - user page"/>
 <body>
+<%@ include file="/WEB-INF/jspf/navbar.jspf" %>
+
 login: ${sessionScope.user.login}
 <br/>
 pass: ${sessionScope.user.password}
@@ -15,20 +17,7 @@ surname: ${sessionScope.user.surname}
 <br/>
 role: ${sessionScope.user.role}
 <br/>
-<form action="${root}/controller">
-    <input type="hidden" name="command" value="signOut"/>
-    <button type="submit">Sign out.</button>
-</form>
 
-<form action="${root}/controller">
-    <input type="hidden" name="command" value="downloadActivities"/>
-    <input type="submit" value="Add activities"/>
-</form>
-
-<form action="${root}/controller">
-    <input type="hidden" name="command" value="downloadUsersActivities"/>
-    <input type="submit" value="Your activities"/>
-</form>
 
 </body>
 </html>

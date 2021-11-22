@@ -29,6 +29,8 @@ public class ActivityDAOImpl extends ActivityDAO {
     public static final String UPDATE_USER_ACTIVITY = "UPDATE users_m2m_activities ua SET accepted = ?, minutes_spent = ?, requested_abandon = ? WHERE activity_id = ? AND user_id = ?";
     public static final String DELETE_USER_ACTIVITY = "DELETE FROM users_m2m_activities WHERE user_id = ? AND activity_id = ?";
     public static final String GET_USER_ACTIVITY = "SELECT * FROM users_m2m_activities ua, activities a WHERE ua.user_id = ? AND ua.activity_id = ? AND ua.activity_id = a.id";
+    public static final String GET_ACTIVITIES_BY_USER_ID = "SELECT a.id, a.description, a.name FROM activities a, users_m2m_activities ua WHERE ua.activity_id = a.id AND ua.user_id = ?";
+    public static final String DELETE_ALL_ACTIVITY_CATEGORIES = "DELETE FROM categories_m2m_activities WHERE activity_id = ?";
 
 
     @Override
@@ -83,7 +85,7 @@ public class ActivityDAOImpl extends ActivityDAO {
      * @throws DAOException thrown if there is no activity with the given id.
      */
     @Override
-    public List<Integer> getAllCategoriesIds(Connection con, int id) throws DAOException {
+    public List<Integer> getCategoriesIds(Connection con, int id) throws DAOException {
         List<Integer> categories = new ArrayList<>();
         ResultSet rs = null;
         try (PreparedStatement ps = con.prepareStatement(GET_ALL_CATEGORIES_IDS)) {
@@ -103,6 +105,26 @@ public class ActivityDAOImpl extends ActivityDAO {
             } catch (DAOException ex) {
                 log.warn("unable to close resource {}", rs, ex);
             }
+        }
+    }
+
+    /**
+     * Deletes all dependencies in categories_m2m_activities table that have the id of activity.
+     * @param activityId id of activity to delete all categories from
+     * @throws DAOException is thrown only if there are some connection issues
+     */
+    @Override
+    public void deleteAllCategories(Connection con, int activityId) throws DAOException {
+        try (PreparedStatement ps = con.prepareStatement(DELETE_ALL_ACTIVITY_CATEGORIES)) {
+            ps.setInt(1, activityId);
+            if (ps.executeUpdate() > 0) {
+                log.debug("successfully deleted all categories of an activity with id={}", activityId);
+            } else {
+                log.debug("activity with id={} had no categories to delete", activityId);
+            }
+        } catch (SQLException throwables) {
+            log.error("error in deleteAllCategories(actId={})", activityId, throwables);
+            throw new DAOException(throwables);
         }
     }
 
@@ -203,6 +225,36 @@ public class ActivityDAOImpl extends ActivityDAO {
         }
 
         return uas;
+    }
+
+    /**
+     * Gets a list of Activities that are already taken by the given user. Activity is 'taken' even if it is not yet accepted by an admin.
+     * @throws DAOException if connection error occurs.
+     */
+    @Override
+    public List<Activity> getActivitiesByUserId(Connection con, int userId) throws DAOException {
+        ResultSet rs = null;
+        try (PreparedStatement ps = con.prepareStatement(GET_ACTIVITIES_BY_USER_ID)) {
+            ps.setInt(1, userId);
+            rs = ps.executeQuery();
+            List<Activity> result = new ArrayList<>();
+            while (rs.next()) {
+                Activity a = getActivity(rs);
+                log.debug("retrieved activity by user id={}, activity={}", userId, a);
+                result.add(a);
+            }
+            log.debug("retrieved a list of all activities, specific to a user with id={}, list size: {}", userId, result.size());
+            return result;
+        } catch (SQLException throwables) {
+            log.error("unable to download all activities specific to a user with id={}", userId, throwables);
+            throw new DAOException(throwables);
+        } finally {
+            try {
+                close(rs);
+            } catch (DAOException e) {
+                log.warn("unable to close a resource {}", rs, e);
+            }
+        }
     }
 
     /**

@@ -9,6 +9,10 @@ public class Category implements Serializable {
     public Category() {
     }
 
+    public Category(Integer id) {
+        this.id = id;
+    }
+
     public Category(String name) {
         this.name = name;
     }
@@ -16,6 +20,22 @@ public class Category implements Serializable {
     public Category(Integer id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Category category = (Category) o;
+
+        return id.equals(category.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 
     @Override

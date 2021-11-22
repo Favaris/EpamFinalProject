@@ -21,7 +21,7 @@ import java.util.Map;
  * A command for downloading a map of users' requests. Places a Map of (User, UserActivity) as request parameter 'requests'.
  */
 public class DownloadUsersRequestsCommand implements Command {
-    private static final Logger log = LogManager.getLogger(DownloadActivitiesCommand.class);
+    private static final Logger log = LogManager.getLogger(DownloadAllActivitiesCommand.class);
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -39,7 +39,7 @@ public class DownloadUsersRequestsCommand implements Command {
                 log.debug("retrieved a new request: ({}, {})", ua, u);
             }
 
-            req.setAttribute("requests", map);
+            req.getSession().setAttribute("requests", map);
             log.debug("set attribute 'requests', map size={}", map.size());
         } catch (ServiceException e) {
             log.error("can not download requests", e);
@@ -47,6 +47,6 @@ public class DownloadUsersRequestsCommand implements Command {
             return new Chain(Pages.ERROR_JSP, true);
         }
 
-        return new Chain(Pages.REQUESTS_JSP, true);
+        return new Chain(Pages.REQUESTS_JSP, false);
     }
 }

@@ -45,38 +45,39 @@ public class SignUpCommand implements Command {
             return new Chain(Pages.USER_PAGE_JSP, false);
         } catch (LoginIsTakenException ex) {
             log.debug("unable to create new user: login {} ", ex.getLogin());
-            req.setAttribute("err_msg", "This login is already taken. Try another one.");
+            req.getSession().setAttribute("err_msg", "This login is already taken. Try another one.");
         } catch (ServiceException e) {
             log.debug("unable to add a user {}", u, e);
         }
-        return new Chain(Pages.SIGN_UP_JSP, true);
+        return new Chain(Pages.SIGN_UP_JSP, false);
     }
 
     private boolean doValidation(HttpServletRequest req, String login, String password, String name, String surname) {
         boolean isValid = true;
+        HttpSession session = req.getSession();
         if (!validator.validate(Validator.USER_LOGIN, login)) {
-            req.setAttribute(LOGIN_ERROR_MESSAGE, "true");
+            session.setAttribute(LOGIN_ERROR_MESSAGE, "true");
             isValid = false;
         } else {
-            req.removeAttribute(LOGIN_ERROR_MESSAGE);
+            session.removeAttribute(LOGIN_ERROR_MESSAGE);
         }
         if (!validator.validate(Validator.USER_PASSWORD, password)) {
-            req.setAttribute(PASSWORD_ERROR_MESSAGE, "true");
+            session.setAttribute(PASSWORD_ERROR_MESSAGE, "true");
             isValid = false;
         } else {
-            req.removeAttribute(PASSWORD_ERROR_MESSAGE);
+            session.removeAttribute(PASSWORD_ERROR_MESSAGE);
         }
         if (!name.isEmpty() && !validator.validate(Validator.USER_NAME, name)) {
-            req.setAttribute(NAME_ERROR_MESSAGE, "true");
+            session.setAttribute(NAME_ERROR_MESSAGE, "true");
             isValid = false;
         } else {
-            req.removeAttribute(NAME_ERROR_MESSAGE);
+            session.removeAttribute(NAME_ERROR_MESSAGE);
         }
         if (!surname.isEmpty() && !validator.validate(Validator.USER_SURNAME, surname)) {
-            req.setAttribute(SURNAME_ERROR_MESSAGE, "true");
+            session.setAttribute(SURNAME_ERROR_MESSAGE, "true");
             isValid = false;
         } else {
-            req.removeAttribute(SURNAME_ERROR_MESSAGE);
+            session.removeAttribute(SURNAME_ERROR_MESSAGE);
         }
         return isValid;
     }
