@@ -27,10 +27,13 @@ public class CategoryDAOImpl extends CategoryDAO {
         ResultSet rs = null;
         try (PreparedStatement ps = con.prepareStatement(INSERT_CATEGORY, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, category.getName());
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                log.debug("inserted a new category {}", category);
-                category.setId(rs.getInt(1));
+
+            if (ps.executeUpdate() > 0) {
+                rs = ps.getGeneratedKeys();
+                if (rs.next()){
+                    log.debug("inserted a new category {}", category);
+                    category.setId(rs.getInt(1));
+                }
             }
         } catch (SQLException throwables) {
             log.debug("unable to insert a category {}", category, throwables);

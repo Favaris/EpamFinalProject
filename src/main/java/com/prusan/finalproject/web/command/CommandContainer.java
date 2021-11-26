@@ -1,5 +1,10 @@
 package com.prusan.finalproject.web.command;
 
+import com.prusan.finalproject.web.command.activity.*;
+import com.prusan.finalproject.web.command.category.AddCategoryCommand;
+import com.prusan.finalproject.web.command.category.UpdateCategoryCommand;
+import com.prusan.finalproject.web.command.user.*;
+import com.prusan.finalproject.web.command.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,8 +23,8 @@ public class CommandContainer {
         commands.put("signIn", new SignInCommand());
         commands.put("signUp", new SignUpCommand());
         commands.put("signOut", new SignOutCommand());
-        commands.put("downloadActivities", new DownloadAllActivitiesCommand());
-        commands.put("addUserActivityRequest", new AddUserActivityRequestCommand());
+        commands.put("showActivitiesPage", new DownloadAllActivitiesCommand());
+        commands.put("requestActivityAddition", new RequestActivityAdditionCommand());
         commands.put("showUsersRequests", new DownloadUsersRequestsCommand());
         commands.put("acceptRequest", new AcceptRequestCommand());
         commands.put("downloadUsersActivities", new DownloadUsersActivitiesCommand());
@@ -30,6 +35,14 @@ public class CommandContainer {
         commands.put("showActivityEditPage", new PrepareForActivityEditingCommand());
         commands.put("updateActivity", new UpdateActivityCommand());
         commands.put("deleteActivity", new DeleteActivityCommand());
+        commands.put("showActivityAddPage", new PrepareForActivityAdditionCommand());
+        commands.put("addActivity", new AddActivityCommand());
+        commands.put("addCategory", new AddCategoryCommand());
+        commands.put("showCategoriesPage", new DownloadAllCategoriesCommand());
+        commands.put("updateCategory", new UpdateCategoryCommand());
+        commands.put("requestActivityAbandonment", new RequestActivityAbandonmentCommand());
+        commands.put("cancelRequest", new CancelRequestCommand());
+        commands.put("updateSpentTime", new UpdateTimeSpentCommand());
     }
 
     public static Command getCommand(String command) {

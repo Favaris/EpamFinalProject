@@ -1,12 +1,13 @@
-package com.prusan.finalproject.web.command;
+package com.prusan.finalproject.web.command.activity;
 
 import com.prusan.finalproject.db.entity.Activity;
 import com.prusan.finalproject.db.entity.Category;
 import com.prusan.finalproject.db.service.ActivityService;
-import com.prusan.finalproject.db.service.CategoryService;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.command.Command;
+import com.prusan.finalproject.web.command.util.DownloadAllActivitiesCommand;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,0 +1,30 @@
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+        version="2.1">
+
+    <tlib-version>1.1</tlib-version>
+    <short-name>ut</short-name>
+    <uri>http://com.prusan.finalproject.util</uri>
+
+    <tag>
+        <name>convert</name>
+        <tag-class>com.prusan.finalproject.web.tag.TimeSpentTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>minutes</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>minutesLabel</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>hoursLabel</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+</taglib>

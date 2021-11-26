@@ -1,7 +1,7 @@
-package com.prusan.finalproject.web.command;
+package com.prusan.finalproject.web.command.user;
 
 import com.prusan.finalproject.web.Chain;
-import com.prusan.finalproject.web.constant.Pages;
+import com.prusan.finalproject.web.command.Command;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

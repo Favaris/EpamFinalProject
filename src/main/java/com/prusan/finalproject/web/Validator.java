@@ -21,6 +21,8 @@ public class Validator {
     public static final Integer USER_PASSWORD = 2;
     public static final Integer USER_NAME = 3;
     public static final Integer USER_SURNAME = 3; // for convenience, same as USER_NAME
+    public static final Integer ACTIVITY_NAME = 4;
+    public static final Integer ACTIVITY_DESCRIPTION = 5;
 
     public static synchronized Validator getInstance() {
         if (instance == null) {
@@ -37,6 +39,10 @@ public class Validator {
         fields.put(USER_PASSWORD, Pattern.compile(".{4,32}?"));
         // validating pattern for user's name AND surname
         fields.put(USER_NAME, Pattern.compile("([A-Z][a-z]{1,30}|[А-ЯІЇЄЁ][а-яіїєґё]{1,30})"));
+        // validating pattern for activity's name
+        fields.put(ACTIVITY_NAME, Pattern.compile("[A-ZА-ЯІЇЄЁa-zа-яіїєґё]{1,30}"));
+        // validating pattern for activity's description
+        fields.put(ACTIVITY_DESCRIPTION, Pattern.compile(".{1,1000}"));
     }
 
     public boolean validate(Integer field, String value) {

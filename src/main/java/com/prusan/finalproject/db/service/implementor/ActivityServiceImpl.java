@@ -47,6 +47,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     /**
      * Saves given activity to the db. Also saves all its categories in the corresponding table.
+     * @throws NameIsTakenException if this activity already exists.
      * @throws ServiceException if transaction was unsuccessful.
      */
     @Override
@@ -278,6 +279,11 @@ public class ActivityServiceImpl implements ActivityService {
                     .filter(activity -> !userActivities.contains(activity))
                     .collect(Collectors.toList());
             log.debug("created a list of all activities that are not taken by this user, list size={}", result.size());
+
+            for (Activity activity : result) {
+                setCategories(con, activity);
+            }
+            log.debug("set all categories for activities");
 
             return result;
         } catch (SQLException throwables) {

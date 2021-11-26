@@ -1,4 +1,4 @@
-package com.prusan.finalproject.web.command;
+package com.prusan.finalproject.web.command.util;
 
 import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.entity.UserActivity;
@@ -8,6 +8,7 @@ import com.prusan.finalproject.db.service.exception.NoSuchUserException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

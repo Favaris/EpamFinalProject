@@ -1,12 +1,13 @@
-package com.prusan.finalproject.web.command;
+package com.prusan.finalproject.web.command.activity;
 
-import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.ActivityService;
 import com.prusan.finalproject.db.service.exception.NoSuchActivityException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.command.Command;
+import com.prusan.finalproject.web.command.util.DownloadUsersRequestsCommand;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,8 +52,6 @@ public class AcceptRequestCommand implements Command {
             return new Chain(Pages.ERROR_JSP, true);
         }
 
-        DenyRequestCommand.removeProcessedRequest(req, userId, activityId, log);
-
-        return new Chain(Pages.REQUESTS_JSP, false);
+        return new DownloadUsersRequestsCommand().execute(req, resp);
     }
 }

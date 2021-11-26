@@ -22,23 +22,13 @@ body {
     padding: 0px 10px;
 }
 
-@media screen and (max-height: 450px) {
-    .sidenav {padding-top: 15px;}
-}
-
-@media screen and (max-width: 450px) {
-    .login-form{
-        margin-top: 10%;
-    }
-
-    .register-form{
-        margin-top: 10%;
-    }
-}
-
 @media screen and (min-width: 768px){
     .main{
         margin-left: 40%;
+    }
+
+    .tables {
+        margin-left: 20% !important;
     }
 
     .sidenav{
@@ -47,6 +37,10 @@ body {
         z-index: 1;
         top: 0;
         left: 0;
+    }
+
+    .managing {
+        width: 20%;
     }
 
     .login-form{
@@ -79,6 +73,7 @@ body {
     padding: 30px 10px 20px 0px;
     background-color: #000 !important;
     transition: all ease 0.4s;
+    z-index: 999;
 }
 .navbar-brand{
     font-size: 22px;

@@ -3,7 +3,6 @@ package com.prusan.finalproject.db.dao.implementor;
 import com.prusan.finalproject.db.dao.ActivityDAO;
 import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.entity.Activity;
-import com.prusan.finalproject.db.entity.Category;
 import com.prusan.finalproject.db.entity.UserActivity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -209,6 +208,9 @@ public class ActivityDAOImpl extends ActivityDAO {
         }
     }
 
+    /**
+     * Returns a list of all UserActvities that are not accepted yet or requested for abandonment
+     */
     @Override
     public List<UserActivity> getRequestedUserActivities(Connection con) throws DAOException {
         List<UserActivity> uas = new ArrayList<>();

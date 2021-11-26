@@ -4,7 +4,7 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<!-- <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n" />-->
 			<PatternLayout pattern=
-				"%sn %d{yyyy/MM/dd HH:mm:ss,SSS} %r [%-6p] [%t] %c{3} %C{3}.%M(%F:%L) – %m%n"/>
+				"%sn %d{yyyy/MM/dd HH:mm:ss,SSS} %r [%-6p] [%t] %c{3} %C{3}.%M(%F:%L) – %m%n" charset="UTF-8"/>
 		</Console>
  		<File name="File" fileName="${sys:logFile}" append="true">
 			<PatternLayout>
