@@ -4,7 +4,9 @@ package com.prusan.finalproject.web.constant;
  * This class contains names of attributes that are used as "flags" as session attributes. If there is an attribute with name as one of fields of this class, then the corresponding error message should be presented on the view layer.
  * Only used for validation errors.
  */
-public class ValidationErrorsFlags {
+public abstract class ValidationErrorsFlags {
+    private ValidationErrorsFlags() {}
+
     public static final String LOGIN_ERROR_MESSAGE = "loginErrorMessage";
     public static final String PASSWORD_ERROR_MESSAGE = "passwordErrorMessage";
     public static final String USER_NAME_ERROR_MESSAGE = "nameErrorMessage";

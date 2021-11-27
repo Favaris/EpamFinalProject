@@ -4,6 +4,9 @@
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
 <%@taglib uri="http://com.prusan.finalproject.util" prefix="ut" %>
 <s:check role="${sessionScope.user.role}"  permission="user"/>
+<c:if test="${runningActivities == null}">
+    <c:redirect url="${root}/controller?command=showActivitiesPage"/>
+</c:if>
 <my:html-carcass title="${sessionScope.user.login} - your activities">
     <table class="table">
         <thead>
@@ -28,10 +31,10 @@
                     <ut:convert minutes="${activity.minutesSpent}" minutesLabel="mins" hoursLabel="hrs"/>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-black" data-toggle="modal" data-target="#${'updateTime'.concat(activity.name)}">
+                    <button type="button" class="btn btn-black" data-toggle="modal" data-target="#${'updateTime'.concat(activity.id)}">
                         Add time
                     </button>
-                    <div class="modal fade" id="${'updateTime'.concat(activity.name)}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
+                    <div class="modal fade" id="${'updateTime'.concat(activity.id)}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <form action="${root}/controller" method="post">
                                 <input type="hidden" name="command" value="updateSpentTime"/>
@@ -59,15 +62,41 @@
                             </form>
                         </div>
                     </div>
-                    <form action="${root}/controller" method="post">
-                        <input type="hidden" name="command" value="requestActivityAbandonment">
-                        <input type="hidden" name="aId" value="${activity.id}">
-                        <input type="hidden" name="uId" value="${sessionScope.user.id}">
-                        <button type="submit" class="btn btn-black">Request abandonment</button>
-                    </form>
+                    <button type="button" class="btn btn-black" data-toggle="modal" data-target="#${'requestActivityAbandonment'.concat(activity.id)}">
+                        Request abandonment
+                    </button>
+                    <div class="modal fade" id="${'requestActivityAbandonment'.concat(activity.id)}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Confirm abandoning ${activity.name}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure that you want to abandon this activity?<br>
+                                        <strong>
+                                            Warn: this action will only send a request for abandoning this activity. Only admin can decide whether accept or deny your request.
+                                            Remember that you always can cancel this request in window 'Your requests'.
+                                        </strong>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <form action="${root}/controller" method="post">
+                                            <input type="hidden" name="command" value="requestActivityAbandonment">
+                                            <input type="hidden" name="aId" value="${activity.id}">
+                                            <input type="hidden" name="uId" value="${sessionScope.user.id}">
+                                            <button type="submit" class="btn btn-black">Confirm</button>
+                                        </form>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
         </c:forEach>
         </tbody>
     </table>
 </my:html-carcass>
+<c:remove var="runningActivities"/>

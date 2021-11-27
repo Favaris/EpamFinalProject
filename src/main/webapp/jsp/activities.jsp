@@ -5,9 +5,6 @@
 
 <s:check role="${sessionScope.user.role}" permission="logged"/>
 <my:html-carcass title="${sessionScope.user.login} - activities">
-    <c:if test="${empty sessionScope.activities}">
-        <jsp:forward page="${root}/controller?command=downloadActivities"/>
-    </c:if>
     <div class="managing sidenav">
         <div class="login-main-text">
             <c:if test="${sessionScope.user.role eq 'admin'}">
@@ -20,6 +17,22 @@
                     <button type="submit" class="btn btn-black">Manage categories</button>
                 </form>
             </c:if>
+            <div class="sorting-panel container">
+                <form action="${root}/controller">
+                    <label>Sort by:</label><br>
+                    <input type="radio" name="sortBy" value="name" id="sortByName">
+                    <label for="sortByName">name</label><br>
+                    <input type="radio" name="sortBy" value="category" id="sortByCategory">
+                    <label for="sortByCategory">category</label><br>
+                    <input type="radio" name="sortBy" value="user amount" id="sortByUserAmount">
+                    <label for="sortByUserAmount">user amount</label><br>
+                    <label>Filter by:</label><br>
+                    <c:forEach var="category" items="${requestScope.categories}">
+                        <input type="checkbox" name="filterBy" value="${category.id}" id="${category.id}">
+                        <label for="${category.id}">${category.name}</label><br>
+                    </c:forEach>
+                </form>
+            </div>
         </div>
     </div>
     <div class="tables">
@@ -32,7 +45,7 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="activity" items="${sessionScope.activities}">
+        <c:forEach var="activity" items="${activities}">
             <tr>
                 <td>${activity.name}</td>
                 <td>

@@ -5,6 +5,10 @@
 
 <s:check role="${sessionScope.user.role}"  permission="admin"/>
 <my:html-carcass title="${sessionScope.user.login} - users list">
+    <form action="${root}/controller" method="get">
+        <input type="hidden" name="command" value="showUsersReport">
+        <button type="submit" class="btn btn-black">Get users report</button>
+    </form>
     <table class="table">
         <thead>
         <tr>
@@ -21,8 +25,7 @@
                 <td>${user.name}</td>
                 <td>${user.surname}</td>
                 <td>
-                    <a href="${root}/controller?command=showEditUserPage&id=${user.id}">edit</a>
-                        <%--                <a href="${root}/controller?command=showDeleteUserConfirmationPage&id=${user.id}">delete</a>--%>
+                    <a href="${root}/controller?command=showEditUserPage&uId=${user.id}">edit</a>
                 </td>
             </tr>
         </c:forEach>

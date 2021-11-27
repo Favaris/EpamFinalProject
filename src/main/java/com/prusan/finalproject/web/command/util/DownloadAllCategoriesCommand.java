@@ -30,6 +30,7 @@ public class DownloadAllCategoriesCommand implements Command {
 
             if (req.getAttribute("nextChain") != null) {
                 Chain nextChain = (Chain) req.getAttribute("nextChain");
+                req.removeAttribute("nextChain");
                 if (nextChain.isDoForward()) {
                     req.setAttribute("categories", cats);
                 } else {

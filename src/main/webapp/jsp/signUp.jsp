@@ -26,7 +26,7 @@
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" name="password" class="form-control" required="required" minlength="4" maxlength="32"/>
+                        <input type="password" id="pass1" name="password" class="form-control" required="required" minlength="4" maxlength="32"/>
                         <c:if test="${sessionScope.passwordErrorMessage != null}">
                             <br/>
                             <h3>Password must be in length from 4 to 32 symbols</h3>
@@ -35,7 +35,7 @@
                     </div>
                     <div class="form-group">
                         <label>Confirm password</label>
-                        <input type="password" class="form-control" required="required" minlength="4" maxlength="32"/>
+                        <input type="password" id="pass2" class="form-control" required="required" minlength="4" maxlength="32"/>
                     </div>
                     <div class="form-group">
                         <label>Name</label>

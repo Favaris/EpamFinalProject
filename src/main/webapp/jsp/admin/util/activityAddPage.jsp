@@ -23,7 +23,7 @@
                 </c:if>
             </div>
             <div class="form-group">
-                <c:forEach var="category" items="${sessionScope.categories}">
+                <c:forEach var="category" items="${categories}">
                     <c:choose>
                         <c:when test="${sessionScope.invalidActivity.categories.contains(category)}">
                             <input type="checkbox" name="categoriesIds" value="${category.id}" id="${category.id}" checked/>

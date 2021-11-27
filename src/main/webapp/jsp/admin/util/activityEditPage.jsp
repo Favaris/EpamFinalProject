@@ -18,7 +18,7 @@
                 <input type="text" name="description" class="form-control" required="required" value="${sessionScope.activityToEdit.description}"/>
             </div>
             <div class="form-group">
-                <c:forEach var="category" items="${sessionScope.categories}">
+                <c:forEach var="category" items="${categories}">
                     <c:choose>
                         <c:when test="${sessionScope.activityToEdit.categories.contains(category)}">
                             <input type="checkbox" name="categoriesIds" value="${category.id}" checked id="${category.id}">

@@ -26,7 +26,7 @@ public class PrepareForUserEditingCommand implements Command {
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
-        int userId = Integer.parseInt(req.getParameter("id"));
+        int userId = Integer.parseInt(req.getParameter("uId"));
         log.debug("retrieved user id from request: {}", userId);
 
         ServiceFactory sf = ServiceFactory.getInstance();

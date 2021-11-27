@@ -7,6 +7,8 @@ public abstract class Pages {
     private Pages() {}
 
 
+
+
     public static final String ACTIVITIES_JSP = "jsp/activities.jsp";
     public static final String REQUESTS_JSP = "jsp/requests.jsp";
     public static final String SIGN_IN_JSP = "jsp/signIn.jsp";
@@ -22,4 +24,6 @@ public abstract class Pages {
     public static final String ACTIVITY_EDIT_PAGE_JSP = "jsp/admin/util/activityEditPage.jsp";
     public static final String ACTIVITY_ADD_PAGE_JSP = "jsp/admin/util/activityAddPage.jsp";
     public static final String CATEGORIES_JSP = "jsp/admin/categories.jsp";
+    public static final String ADD_ACTIVITIES_FOR_USER_PAGE_JSP = "jsp/admin/util/addActivitiesForUserPage.jsp";
+    public static final String USERS_REPORT_PAGE_JSP = "jsp/admin/usersReportPage.jsp";
 }

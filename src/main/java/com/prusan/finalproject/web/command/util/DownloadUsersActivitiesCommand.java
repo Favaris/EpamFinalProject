@@ -19,7 +19,7 @@ import java.util.List;
  * Intermediate command. Downloads all activities that belong to a certain user by his id.
  */
 public class DownloadUsersActivitiesCommand implements Command {
-    private final static Logger log = LogManager.getLogger(DownloadAllActivitiesCommand.class);
+    private final static Logger log = LogManager.getLogger(DownloadUsersActivitiesCommand.class);
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
