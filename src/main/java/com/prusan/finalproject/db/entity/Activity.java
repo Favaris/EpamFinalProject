@@ -46,6 +46,7 @@ public class Activity implements Serializable {
         return "Activity{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", usersCount=" + usersCount +
                 '}';
     }
 

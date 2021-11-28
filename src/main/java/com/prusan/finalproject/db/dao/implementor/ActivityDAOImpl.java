@@ -22,14 +22,16 @@ public class ActivityDAOImpl extends ActivityDAO {
     public static final String GET_ACTIVITY_BY_ID = "SELECT * FROM activities WHERE id = ?";
     public static final String UPDATE_ACTIVITY_BY_ID = "UPDATE activities a SET name = ?, description = ? WHERE a.id = ?";
     public static final String DELETE_ACTIVITY_BY_ID = "DELETE FROM activities WHERE id = ?";
+    public static final String GET_ACTIVITIES_BY_USER_ID = "SELECT a.id, a.description, a.name, a.users_count FROM activities a, users_m2m_activities ua WHERE ua.activity_id = a.id AND ua.user_id = ?";
+
     public static final String INSERT_CATEGORY_BY_IDS = "INSERT INTO categories_m2m_activities VALUES (?, ?)";
     public static final String GET_ALL_CATEGORIES_IDS = "SELECT category_id FROM categories_m2m_activities WHERE activity_id = ?";
+
     public static final String INSERT_USER_ACTIVITY = "INSERT INTO users_m2m_activities VALUES (?, ?, ?, ?, ?)";
     public static final String GET_REQUESTED_USERS_ACTIVITIES = "SELECT * FROM users_m2m_activities ua, activities a WHERE (ua.accepted = 0 OR ua.requested_abandon = 1) AND a.id = ua.activity_id";
     public static final String UPDATE_USER_ACTIVITY = "UPDATE users_m2m_activities ua SET accepted = ?, minutes_spent = ?, requested_abandon = ? WHERE activity_id = ? AND user_id = ?";
     public static final String DELETE_USER_ACTIVITY = "DELETE FROM users_m2m_activities WHERE user_id = ? AND activity_id = ?";
     public static final String GET_USER_ACTIVITY = "SELECT * FROM users_m2m_activities ua, activities a WHERE ua.user_id = ? AND ua.activity_id = ? AND ua.activity_id = a.id";
-    public static final String GET_ACTIVITIES_BY_USER_ID = "SELECT a.id, a.description, a.name FROM activities a, users_m2m_activities ua WHERE ua.activity_id = a.id AND ua.user_id = ?";
     public static final String DELETE_ALL_ACTIVITY_CATEGORIES = "DELETE FROM categories_m2m_activities WHERE activity_id = ?";
 
 
@@ -40,13 +42,7 @@ public class ActivityDAOImpl extends ActivityDAO {
             ps.setString(1, name);
             rs = ps.executeQuery();
             if (rs.next()) {
-                Activity ac = new Activity();
-                ac.setId(rs.getInt("id"));
-                ac.setName(rs.getString("name"));
-                ac.setDescription(rs.getString("description"));
-                ac.setUsersCount(rs.getInt("users_count"));
-                log.debug("retrieved an activity by name: {}", ac);
-                return ac;
+                return getActivity(rs);
             }
         } catch (SQLException throwables) {
             log.warn("exception in #getByName(name={})", name, throwables);
@@ -392,7 +388,8 @@ public class ActivityDAOImpl extends ActivityDAO {
         ac.setId(rs.getInt("id"));
         ac.setName(rs.getString("name"));
         ac.setDescription(rs.getString("description"));
-        log.debug("retrieved an activity: {}", ac);
+        ac.setUsersCount(rs.getInt("users_count"));
+        log.debug("retrieved an activity by name: {}", ac);
         return ac;
     }
 

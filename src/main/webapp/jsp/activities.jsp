@@ -42,10 +42,11 @@
             <th scope="col">name</th>
             <th scope="col">categories</th>
             <th scope="col">description</th>
+            <th scope="col">amount of users</th>
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="activity" items="${activities}">
+        <c:forEach var="activity" items="${requestScope.activities}">
             <tr>
                 <td>${activity.name}</td>
                 <td>
@@ -54,6 +55,7 @@
                     </c:forEach>
                 </td>
                 <td>${activity.description}</td>
+                <td>${activity.usersCount}</td>
                 <td>
                     <c:choose>
                         <c:when test="${sessionScope.user.role eq 'user'}">
