@@ -16,6 +16,9 @@
                 </form>
                 <form action="${root}/controller">
                     <input type="hidden" name="command" value="showActivitiesPage"/>
+                    <input type="hidden" name="page" value="1">
+                    <input type="hidden" name="pageSize" value="5">
+                    <input type="hidden" name="orderBy" value="name">
                     <button type="submit" class="btn btn-black">Add activities</button>
                 </form>
             </c:when>
@@ -26,6 +29,9 @@
                 </form>
                 <form action="${root}/controller">
                     <input type="hidden" name="command" value="showActivitiesPage"/>
+                    <input type="hidden" name="page" value="1">
+                    <input type="hidden" name="pageSize" value="5">
+                    <input type="hidden" name="orderBy" value="name">
                     <button type="submit" class="btn btn-black">Manage activities</button>
                 </form>
                 <form action="${root}/controller">

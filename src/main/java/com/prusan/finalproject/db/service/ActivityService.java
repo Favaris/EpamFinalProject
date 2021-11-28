@@ -21,6 +21,10 @@ public interface ActivityService {
 
     List<Activity> getAll() throws ServiceException;
 
+    List<Activity> getActivities(int start, int end, String orderBy) throws ServiceException;
+
+    int getActivitiesCount() throws ServiceException;
+
     List<UserActivity> getUsersRequests() throws ServiceException;
 
     List<UserActivity> getAllRunningUsersActivities(int userId) throws ServiceException;

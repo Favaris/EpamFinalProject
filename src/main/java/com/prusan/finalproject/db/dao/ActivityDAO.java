@@ -1,7 +1,6 @@
 package com.prusan.finalproject.db.dao;
 
 import com.prusan.finalproject.db.entity.Activity;
-import com.prusan.finalproject.db.entity.Category;
 import com.prusan.finalproject.db.entity.UserActivity;
 
 import java.sql.Connection;
@@ -14,6 +13,10 @@ public abstract class ActivityDAO extends BasicDAO<Activity> {
     public abstract Activity getByName(Connection con, String name) throws DAOException;
 
     public abstract void addCategory(Connection con, int categoryId, int activityId) throws DAOException;
+
+    public abstract List<Activity> getActivities(Connection con, int limit, int offset, String orderBy) throws DAOException;
+
+    public abstract int getCount(Connection con) throws DAOException;
 
     public abstract List<Integer> getCategoriesIds(Connection con, int id) throws DAOException;
 

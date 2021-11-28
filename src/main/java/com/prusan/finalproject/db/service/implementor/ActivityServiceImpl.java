@@ -159,6 +159,42 @@ public class ActivityServiceImpl implements ActivityService {
         }
     }
 
+    @Override
+    public List<Activity> getActivities(int start, int end, String orderBy) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            List<Activity> list = activityDAO.getActivities(con, end, start, orderBy);
+            log.debug("retrieved a list of activities sorted by '{}', with start={}, end={}, list size={}", orderBy, start, end, list.size());
+
+            for (Activity ac : list) {
+                setCategories(con, ac);
+            }
+            log.debug("set categories for activities");
+
+            return list;
+        } catch (SQLException throwables) {
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("unable to get connection", throwables);
+        } catch (DAOException e) {
+            log.error("unable to get a list of activities sorted by {}, start={}, end={}", orderBy, start, end, e);
+            throw new ServiceException("Failed to get a list of sorted activities", e);
+        }
+    }
+
+    @Override
+    public int getActivitiesCount() throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            int count = activityDAO.getCount(con);
+            log.debug("received a number of all activities: {}", count);
+            return count;
+        } catch (SQLException throwables) {
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("unable to get connection", throwables);
+        } catch (DAOException e) {
+            log.error("unable to get activities count", e);
+            throw new ServiceException("Failed to get activities count", e);
+        }
+    }
+
     /**
      * Gets a List of all users' activities that are not accepted or requested for abandon.
      */

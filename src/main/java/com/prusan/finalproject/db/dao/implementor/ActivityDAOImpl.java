@@ -4,6 +4,7 @@ import com.prusan.finalproject.db.dao.ActivityDAO;
 import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.entity.Activity;
 import com.prusan.finalproject.db.entity.UserActivity;
+import com.prusan.finalproject.db.util.PaginationQueries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,6 +34,7 @@ public class ActivityDAOImpl extends ActivityDAO {
     public static final String DELETE_USER_ACTIVITY = "DELETE FROM users_m2m_activities WHERE user_id = ? AND activity_id = ?";
     public static final String GET_USER_ACTIVITY = "SELECT * FROM users_m2m_activities ua, activities a WHERE ua.user_id = ? AND ua.activity_id = ? AND ua.activity_id = a.id";
     public static final String DELETE_ALL_ACTIVITY_CATEGORIES = "DELETE FROM categories_m2m_activities WHERE activity_id = ?";
+    public static final String GET_SORTED_ACTIVITIES_WITH_LIMIT_OFFSET = "SELECT * FROM activities ORDER BY %s LIMIT ? OFFSET ?";
 
 
     @Override
@@ -73,6 +75,60 @@ public class ActivityDAOImpl extends ActivityDAO {
         } catch (SQLException throwables) {
             log.debug("unable to insert category_activity dependence: catId={}, actId={}", categoryId, activityId, throwables);
             throw new DAOException("dependence already exists", throwables);
+        }
+    }
+
+    /**
+     * Returns a list of activities sorted by a given entity name in ASC order.
+     * @param limit start position
+     * @param offset end position
+     * @param orderBy name of a certain attr in the 'activities' table to be sorted by
+     */
+    @Override
+    public List<Activity> getActivities(Connection con, int limit, int offset, String orderBy) throws DAOException {
+        ResultSet rs = null;
+        try (PreparedStatement ps = con.prepareStatement(PaginationQueries.getQuery(orderBy))) {
+            ps.setInt(1, limit);
+            ps.setInt(2, offset);
+
+            rs = ps.executeQuery();
+            List<Activity> activities = new ArrayList<>();
+            while (rs.next()) {
+                Activity ac = getActivity(rs);
+                activities.add(ac);
+                log.debug("placed an activity {} into the list", ac);
+            }
+            log.debug("returned a result list with size={}", activities.size());
+
+            return activities;
+        } catch (SQLException throwables) {
+            log.error("failed to get a sorted part of activities, limit={}, offset={}, orderBy={}", limit, offset, orderBy, throwables);
+            throw new DAOException("Can not get a list of sorted activities", throwables);
+        } finally {
+            try {
+                close(rs);
+            } catch (DAOException e) {
+                log.error("unable to close a result set {}", rs, e);
+            }
+        }
+    }
+
+    /**
+     * Returns a number of all activities.
+     */
+    @Override
+    public int getCount(Connection con) throws DAOException {
+        try (Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM activities")) {
+            int count = 0;
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            log.debug("retrieved activity count={}", count);
+            return count;
+        } catch (SQLException throwables) {
+            log.error("failed to get count of all activities", throwables);
+            throw  new DAOException("unable to get activities count", throwables);
         }
     }
 

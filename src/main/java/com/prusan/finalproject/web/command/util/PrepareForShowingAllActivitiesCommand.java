@@ -13,6 +13,19 @@ public class PrepareForShowingAllActivitiesCommand implements Command {
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
+//        String page = req.getParameter("page");
+//        log.debug("retrieved a page number: {}", page);
+//        String pageSize = req.getParameter("pageSize");
+//        log.debug("retrieved a page size: {}", pageSize);
+//        String orderBy = req.getParameter("orderBy");
+//        log.debug("retrieved an orderBy param: {}", orderBy);
+//
+//        if (orderBy == null) {
+//            orderBy = "name";
+//            log.debug("set default ordering by {}", orderBy);
+//        }
+//
+//        Chain nextChain = new Chain(String.format("controller?command=downloadAllActivities&page=%s&pageSize=%s&orderBy=%s", page, pageSize, orderBy), true);
         Chain nextChain = new Chain("controller?command=downloadAllActivities", true);
         req.setAttribute("nextChain", nextChain);
         log.debug("set attribute 'nextChain' as {}", nextChain);

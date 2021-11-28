@@ -19,23 +19,69 @@
             </c:if>
             <div class="sorting-panel container">
                 <form action="${root}/controller">
+                    <input type="hidden" name="command" value="showActivitiesPage"/>
+                    <input type="hidden" name="page" value="1">
+                    <input type="hidden" name="pageSize" value="5">
                     <label>Sort by:</label><br>
-                    <input type="radio" name="sortBy" value="name" id="sortByName">
+                    <input type="radio" name="orderBy" value="name" id="sortByName">
                     <label for="sortByName">name</label><br>
-                    <input type="radio" name="sortBy" value="category" id="sortByCategory">
+                    <input type="radio" name="orderBy" value="category" id="sortByCategory">
                     <label for="sortByCategory">category</label><br>
-                    <input type="radio" name="sortBy" value="user amount" id="sortByUserAmount">
+                    <input type="radio" name="orderBy" value="userAmount" id="sortByUserAmount">
                     <label for="sortByUserAmount">user amount</label><br>
                     <label>Filter by:</label><br>
                     <c:forEach var="category" items="${requestScope.categories}">
                         <input type="checkbox" name="filterBy" value="${category.id}" id="${category.id}">
                         <label for="${category.id}">${category.name}</label><br>
                     </c:forEach>
+                    <button type="submit" class="btn btn-black">OK</button>
                 </form>
             </div>
         </div>
     </div>
     <div class="tables">
+        <form action="${root}/controller">
+            <input type="hidden" name="command" value="showActivitiesPage">
+            <input type="hidden" name="page" value="${requestScope.page - 1}">
+            <input type="hidden" name="pageSize" value="5">
+            <c:choose>
+                <c:when test="${empty requestScope.orderBy}">
+                    <input type="hidden" name="orderBy" value="name">
+                </c:when>
+                <c:otherwise>
+                    <input type="hidden" name="orderBy" value="${requestScope.orderBy}">
+                </c:otherwise>
+            </c:choose>
+            <c:choose>
+                <c:when test="${requestScope.page - 1 > 0}">
+                    <button type="submit" class="btn btn-black">Prev</button>
+                </c:when>
+                <c:otherwise>
+                    <button type="submit" class="btn btn-black" disabled>Prev</button>
+                </c:otherwise>
+            </c:choose>
+        </form>
+        <form action="${root}/controller">
+            <input type="hidden" name="command" value="showActivitiesPage">
+            <input type="hidden" name="page" value="${requestScope.page + 1}">
+            <input type="hidden" name="pageSize" value="5">
+            <c:choose>
+                <c:when test="${empty requestScope.orderBy}">
+                    <input type="hidden" name="orderBy" value="name">
+                </c:when>
+                <c:otherwise>
+                    <input type="hidden" name="orderBy" value="${requestScope.orderBy}">
+                </c:otherwise>
+            </c:choose>
+            <c:choose>
+                <c:when test="${requestScope.page < requestScope.pageCount}">
+                    <button type="submit" class="btn btn-black">Next</button>
+                </c:when>
+                <c:otherwise>
+                    <button type="submit" class="btn btn-black" disabled>Next</button>
+                </c:otherwise>
+            </c:choose>
+        </form>
     <table class="table">
         <thead>
         <tr>
