@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class ActivityDAOImpl extends ActivityDAO {
     private static final Logger log = LogManager.getLogger(ActivityDAOImpl.class);
+
     public static final String GET_ACTIVITY_BY_NAME = "SELECT * FROM activities a WHERE a.name = ?";
     public static final String INSERT_ACTIVITY = "INSERT INTO activities(name, description) VALUES (?,?)";
     public static final String GET_ACTIVITY_BY_ID = "SELECT * FROM activities WHERE id = ?";
@@ -43,6 +44,7 @@ public class ActivityDAOImpl extends ActivityDAO {
                 ac.setId(rs.getInt("id"));
                 ac.setName(rs.getString("name"));
                 ac.setDescription(rs.getString("description"));
+                ac.setUsersCount(rs.getInt("users_count"));
                 log.debug("retrieved an activity by name: {}", ac);
                 return ac;
             }

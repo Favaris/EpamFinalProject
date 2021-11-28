@@ -40,10 +40,12 @@ public class PrepareForUserEditingCommand implements Command {
             List<UserActivity> userActivities = as.getAllRunningUsersActivities(userId);
             log.debug("retrieved user's activities list, list size: {}", userActivities.size());
             s.setAttribute("userToEdit", u);
-            s.setAttribute("userToEditActivities", userActivities);
-            log.debug("set retrieved entities as session attributes");
+//            s.setAttribute("userToEditActivities", userActivities);
+//            req.setAttribute("userToEdit", u);
+            req.setAttribute("userToEditActivities", userActivities);
+            log.debug("set retrieved entities as request attributes");
 
-            return new Chain(Pages.USER_EDIT_PAGE_JSP, false);
+            return new Chain(Pages.USER_EDIT_PAGE_JSP, true);
         } catch (NoSuchUserException ex) {
             log.debug("no such user with id={}", userId);
             s.setAttribute("err_msg", "User not exists");

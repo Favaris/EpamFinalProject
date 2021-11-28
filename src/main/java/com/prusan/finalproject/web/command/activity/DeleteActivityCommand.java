@@ -25,7 +25,7 @@ public class DeleteActivityCommand implements Command {
         try {
             as.delete(activityId);
             log.debug("deleted an activity with id={}", activityId);
-            return new DownloadAllActivitiesCommand().execute(req, resp);
+            return new Chain("controller?command=showActivitiesPage", false);
         } catch (ServiceException e) {
             log.error("unable to delete an activity by id={}", activityId, e);
             req.getSession().setAttribute("err_msg", "Can not delete this activity");

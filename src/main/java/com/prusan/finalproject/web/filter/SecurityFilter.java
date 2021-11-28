@@ -23,7 +23,6 @@ public class SecurityFilter implements Filter {
         permissions = new HashMap<>();
 
         List<String> adminPages = Arrays.asList(
-                Pages.ADMIN_PAGE_JSP,
                 Pages.USERS_JSP,
                 Pages.USER_EDIT_PAGE_JSP,
                 Pages.ACTIVITY_EDIT_PAGE_JSP,
@@ -32,7 +31,6 @@ public class SecurityFilter implements Filter {
         permissions.put("admin", adminPages);
 
         List<String> userPages = Arrays.asList(
-                Pages.USER_PAGE_JSP,
                 Pages.RUNNING_ACTIVITIES_JSP
         );
         permissions.put("user", adminPages);

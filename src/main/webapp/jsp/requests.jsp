@@ -18,7 +18,7 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="request" items="${sessionScope.requests}">
+        <c:forEach var="request" items="${requestScope.requests}">
             <tr>
                 <c:if test="${sessionScope.user.role eq 'admin'}">
                     <td>${request.value.login}</td>

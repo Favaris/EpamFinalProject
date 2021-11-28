@@ -39,33 +39,24 @@ public class DownloadAllActivitiesCommand implements Command {
             List<Activity> activities;
             if ("admin".equals(u.getRole())) {
                 log.debug("user {} is admin", u);
+
                 if (req.getParameter("uId") != null) {
                     int userId = Integer.parseInt(req.getParameter("uId"));
                     log.debug("retrieved a parameter uId={}", userId);
                     activities = as.getAllActivitiesNotTakenByUser(userId);
                     log.debug("downloaded all activities not taken by a user with id {}, list size={}", userId, activities.size());
-                } else {
-                    log.debug("did not find a param 'uId'");
-                    activities = as.getAll();
-                    log.debug("downloaded a list of all activities, list size={}", activities.size());
+                    req.setAttribute("activities", activities);
+                    log.debug("sending admin to {}", Pages.ADD_ACTIVITIES_FOR_USER_PAGE_JSP);
+                    return new Chain(Pages.ADD_ACTIVITIES_FOR_USER_PAGE_JSP, true);
                 }
+
+                log.debug("did not find a param 'uId'");
+                activities = as.getAll();
+                log.debug("downloaded a list of all activities, list size={}", activities.size());
             } else {
                 log.debug("user {} is default user", u);
                 activities = as.getAllActivitiesNotTakenByUser(u.getId());
                 log.debug("downloaded a list of all activities not taken by a user {}, list size={}", u, activities.size());
-            }
-
-            if (req.getAttribute("nextChain") != null) {
-                Chain nextChain = (Chain) req.getAttribute("nextChain");
-                log.debug("retrieved a 'nextChain' attribute ");
-                if (nextChain.isDoForward()) {
-                    req.setAttribute("activities", activities);
-                    log.debug("set activities list as a request attribute");
-                } else {
-                    req.getSession().setAttribute("activities", activities);
-                    log.debug("set activities list as a session attribute");
-                }
-                return nextChain;
             }
 
             req.setAttribute("activities", activities);

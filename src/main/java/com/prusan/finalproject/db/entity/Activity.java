@@ -7,6 +7,8 @@ public class Activity implements Serializable {
     private Integer id;
     private String name;
     private String description;
+    private int usersCount;
+
     private List<Category> categories;
 
     public Activity() {
@@ -77,5 +79,13 @@ public class Activity implements Serializable {
 
     public void setCategories(List<Category> categories) {
         this.categories = categories;
+    }
+
+    public int getUsersCount() {
+        return usersCount;
+    }
+
+    public void setUsersCount(int usersCount) {
+        this.usersCount = usersCount;
     }
 }

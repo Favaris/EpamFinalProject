@@ -26,6 +26,7 @@ public class UserDAOImpl extends UserDAO {
     public static final String GET_ALL_ACCEPTED_ACTIVITIES_BY_ID = "SELECT * FROM users_m2m_activities ua, activities a WHERE ua.user_id = ? AND accepted = 1 AND requested_abandon = 0 AND a.id = ua.activity_id";
     public static final String GET_ALL_ADMINS = "SELECT * FROM users WHERE role='admin'";
     public static final String GET_ALL_WITH_ROLE_USER = "SELECT * FROM users WHERE role='user'";
+    public static final String GET_USERS_COUNT_BY_ACTIVITY_ID = "SELECT COUNT(*) FROM users_m2m_activities WHERE activity_id = ?";
 
     /**
      * Inserts a user with the given fields. For passed user object, updates the id field if the insertion was successful.
@@ -254,6 +255,25 @@ public class UserDAOImpl extends UserDAO {
             throw new DAOException(throwables);
         }
         return users;
+    }
+
+    @Override
+    public int getUsersCountForActivity(Connection con, int activityId) throws DAOException {
+        ResultSet rs = null;
+        try (PreparedStatement ps = con.prepareStatement(GET_USERS_COUNT_BY_ACTIVITY_ID)) {
+            ps.setInt(1, activityId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                int res = rs.getInt(1);
+                log.debug("retrieved an amount of user for the activity with id={}, amount={}", activityId, res);
+                return res;
+            }
+        } catch (SQLException throwables) {
+            log.error("error in #getUsersCountForActivity(id={})", activityId, throwables);
+            throw new DAOException("unable to get users amount for activity with id=" + activityId, throwables);
+        }
+
+        return 0;
     }
 
     private User getUser(ResultSet rs) throws SQLException {

@@ -52,6 +52,6 @@ public class AcceptRequestCommand implements Command {
             return new Chain(Pages.ERROR_JSP, true);
         }
 
-        return new DownloadUsersRequestsCommand().execute(req, resp);
+        return new Chain("controller?command=showUsersRequests", false);
     }
 }

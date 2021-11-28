@@ -33,7 +33,8 @@ public class PrepareForActivityEditingCommand implements Command {
             Activity activity = as.getById(activityId);
             log.debug("retrieved an activity {}", activity);
             HttpSession s = req.getSession();
-            s.setAttribute("activityToEdit", activity);
+//            s.setAttribute("activityToEdit", activity);
+            req.setAttribute("activityToEdit", activity);
             req.setAttribute("nextChain", new Chain(Pages.ACTIVITY_EDIT_PAGE_JSP, true));
             return new DownloadAllCategoriesCommand().execute(req, resp);
         } catch (NoSuchActivityException e) {

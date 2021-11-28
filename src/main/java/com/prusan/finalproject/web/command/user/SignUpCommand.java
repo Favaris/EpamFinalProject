@@ -42,7 +42,7 @@ public class SignUpCommand implements Command {
             us.save(u);
             HttpSession s = req.getSession();
             s.setAttribute("user", u);
-            return new Chain(Pages.USER_PAGE_JSP, false);
+            return new Chain(Pages.HOME_JSP, false);
         } catch (LoginIsTakenException ex) {
             log.debug("unable to create new user: login {} ", ex.getLogin());
             HttpSession session = req.getSession();

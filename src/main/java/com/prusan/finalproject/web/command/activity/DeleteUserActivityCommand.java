@@ -36,7 +36,7 @@ public class DeleteUserActivityCommand implements Command {
         try {
             as.deleteUserActivity(userId, activityId);
             log.debug("successfully removed a user activity by userId={}, activityId={}", userId, activityId);
-            return new PrepareForUserEditingCommand().execute(req, resp);
+            return new Chain("controller?command=showEditUserPage&uId=" + userId, false);
         } catch (ServiceException e) {
             log.error("failed to remove a user activity by userId={}, activityId={}", userId, activityId, e);
             req.getSession().setAttribute("err_msg", e.getMessage());

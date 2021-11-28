@@ -4,6 +4,7 @@ import com.prusan.finalproject.db.dao.CategoryDAO;
 import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.entity.Category;
 import com.prusan.finalproject.db.service.CategoryService;
+import com.prusan.finalproject.db.service.exception.FailedCategoryDeletionException;
 import com.prusan.finalproject.db.service.exception.NameIsTakenException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.DBUtils;
@@ -66,6 +67,20 @@ public class CategoryServiceImpl implements CategoryService {
         } catch (DAOException e) {
             log.error("unable to update a category {}", category, e);
             throw new NameIsTakenException("Can not update this category: category with name '" + category.getName() + "' already exists", e);
+        }
+    }
+
+    @Override
+    public void delete(int id) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            categoryDAO.remove(con, id);
+            log.debug("removed a category by id={}", id);
+        } catch (SQLException throwables) {
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("can not get connection with the db", throwables);
+        } catch (DAOException e) {
+            log.error("failed to delete a category");
+            throw new FailedCategoryDeletionException("Can not delete this category. Please, make sure that there are no activities associated with this category.", e);
         }
     }
 }

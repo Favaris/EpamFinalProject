@@ -40,7 +40,6 @@ public class UpdateCategoryCommand implements Command {
             return new Chain(Pages.ERROR_JSP, false);
         }
 
-        req.setAttribute("nextChain", new Chain(Pages.CATEGORIES_JSP, false));
-        return new DownloadAllCategoriesCommand().execute(req, resp);
+        return new Chain("controller?command=showCategoriesPage", false);
     }
 }

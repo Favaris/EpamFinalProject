@@ -39,10 +39,12 @@ public class AddActivityCommand implements Command {
         String[] catIds = req.getParameterValues("categoriesIds");
         log.debug("retrieved an array of categories' ids: {}", Arrays.toString(catIds));
 
+        HttpSession session = req.getSession();
         if (!doValidation(req, name, desc, catIds)) {
-            HttpSession session = req.getSession();
-            session.setAttribute("invalidActivity", createActivity(name, desc, catIds));
-            return new DownloadAllCategoriesCommand().execute(req, resp);
+            Activity activity = createActivity(name, desc, catIds);
+            session.setAttribute("invalidActivity", activity);
+            log.debug("set a session attribute 'invalidActivity' ==> '{}'", activity);
+            return new Chain("controller?command=showActivityAddPage", false);
         }
 
         Activity ac = createActivity(name, desc, catIds);
@@ -52,22 +54,22 @@ public class AddActivityCommand implements Command {
         try {
             s.save(ac);
             log.debug("successfully saved an activity {}", ac);
-            req.getSession().removeAttribute("categories");
-            return new DownloadAllActivitiesCommand().execute(req, resp);
+            session.removeAttribute("categories");
+            session.removeAttribute("invalidActivity");
+            return new Chain("controller?command=showActivitiesPage", false);
         } catch (NameIsTakenException ex) {
             log.debug("unable to add new activity {}, such activity already exists", ac);
-            HttpSession session = req.getSession();
             session.setAttribute("invalidActivity", ac);
             session.setAttribute("err_msg", ex.getMessage());
-            return new DownloadAllCategoriesCommand().execute(req, resp);
+            return new Chain("controller?command=showActivityAddPage", false);
         } catch (ServiceException e) {
             log.error("error while trying to add new activity {}", ac, e);
-            req.getSession().setAttribute("err_msg", e.getMessage());
+            session.setAttribute("err_msg", e.getMessage());
             return new Chain(Pages.ERROR_JSP, false);
         }
     }
 
-    private Activity createActivity(String name, String desc, String[] catIds) {
+    public static Activity createActivity(String name, String desc, String[] catIds) {
         Activity ac = new Activity(name, desc);
         List<Category> cats = new ArrayList<>();
         if (catIds != null) {
@@ -79,7 +81,7 @@ public class AddActivityCommand implements Command {
         return ac;
     }
 
-    private boolean doValidation(HttpServletRequest req, String name, String desc, String[] catIds) {
+    public static boolean doValidation(HttpServletRequest req, String name, String desc, String[] catIds) {
         boolean isValid = true;
         HttpSession session = req.getSession();
 

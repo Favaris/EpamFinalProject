@@ -8,6 +8,8 @@ import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.command.util.DownloadAllActivitiesCommand;
+import com.prusan.finalproject.web.command.util.DownloadAllCategoriesCommand;
+import com.prusan.finalproject.web.command.util.PrepareForShowingAllActivitiesCommand;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static com.prusan.finalproject.web.command.activity.AddActivityCommand.createActivity;
+import static com.prusan.finalproject.web.command.activity.AddActivityCommand.doValidation;
 
 /**
  * Fully updates info about the given activity.
@@ -33,7 +39,12 @@ public class UpdateActivityCommand implements Command {
         String desc = req.getParameter("description");
         log.debug("got an activity description, desc length={}", desc.length());
         String[] catIds = req.getParameterValues("categoriesIds");
-        log.debug("got an array of categories' ids, array size: {}", catIds.length);
+        log.debug("retrieved an array of categories' ids: {}", Arrays.toString(catIds));
+
+        if (!doValidation(req, name, desc, catIds)) {
+            log.debug("input is invalid, sending back to activity editing page");
+            return new Chain("controller?command=showActivityEditPage&id=" + activityId, false);
+        }
 
         ServiceFactory sf = ServiceFactory.getInstance();
         ActivityService as = sf.getActivityService();
@@ -53,7 +64,7 @@ public class UpdateActivityCommand implements Command {
             s.removeAttribute("activityToEdit");
             s.removeAttribute("categories");
             log.debug("removed activity specific attributes from a session");
-            return new DownloadAllActivitiesCommand().execute(req, resp);
+            return new Chain("controller?command=showActivitiesPage", false);
         } catch (ServiceException e) {
             log.error("unable to update an activity {}", activity);
             req.getSession().setAttribute("err_msg", e.getMessage());

@@ -35,7 +35,7 @@ public class SignInCommand implements Command {
                     log.debug("retrieved a user by login '{}' and pass", login);
                     HttpSession ses = req.getSession();
                     ses.setAttribute("user", u);
-                    return new Chain(Pages.USER_PAGE_JSP, false);
+                    return new Chain(Pages.HOME_JSP, false);
                 }
             } catch (IncorrectCredentialsException e) {
                 log.debug("incorrect credentials with login: {}", e.getLogin());

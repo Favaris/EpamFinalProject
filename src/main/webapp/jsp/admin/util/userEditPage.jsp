@@ -44,7 +44,7 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="activity" items="${sessionScope.userToEditActivities}">
+        <c:forEach var="activity" items="${requestScope.userToEditActivities}">
             <tr>
                 <td>${activity.name}</td>
                 <td>
@@ -92,5 +92,4 @@
         </c:forEach>
         </tbody>
     </table>
-
 </my:html-carcass>

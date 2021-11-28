@@ -14,4 +14,6 @@ public interface CategoryService {
     void save(Category category) throws ServiceException;
 
     void update(Category category) throws ServiceException;
+
+    void delete(int id) throws ServiceException;
 }

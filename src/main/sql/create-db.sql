@@ -25,7 +25,8 @@ DROP TABLE IF EXISTS activities;
 CREATE TABLE IF NOT EXISTS activities (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(30) UNIQUE NOT NULL,
-    description VARCHAR(1000)
+    description VARCHAR(1000),
+    users_count INT UNSIGNED DEFAULT 0
 );
 
 DROP TABLE IF EXISTS categories_m2m_activities;
@@ -37,7 +38,7 @@ CREATE TABLE IF NOT EXISTS categories_m2m_activities (
     CONSTRAINT fk_category_id 
 		FOREIGN KEY (category_id) 
         REFERENCES categories(id)
-        ON DELETE CASCADE
+        ON DELETE RESTRICT
         ON UPDATE CASCADE,
 	CONSTRAINT fk_category_activity_id 
 		FOREIGN KEY (activity_id)
@@ -69,3 +70,13 @@ CREATE TABLE IF NOT EXISTS users_m2m_activities (
 
 INSERT INTO users VALUES (DEFAULT, "admin", "admin", "admin", "admin", "admin");
 SELECT * from users;
+
+DROP TRIGGER IF EXISTS increment_users_count;
+
+CREATE TRIGGER increment_users_count AFTER INSERT ON users_m2m_activities
+FOR EACH ROW UPDATE activities SET users_count = users_count + 1 WHERE id = NEW.activity_id;
+
+DROP TRIGGER IF EXISTS decrement_users_count;
+
+CREATE TRIGGER decrement_users_count AFTER DELETE ON users_m2m_activities
+    FOR EACH ROW UPDATE activities SET users_count = users_count - 1 WHERE id = OLD.activity_id;

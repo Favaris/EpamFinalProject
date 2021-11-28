@@ -43,7 +43,7 @@ public class CancelRequestCommand implements Command {
                 log.debug("removed user activity {} from requested for acceptance", ua);
             }
 
-            return new DownloadUsersRequestsCommand().execute(req, resp);
+            return new Chain("controller?command=showUsersRequests", false);
         } catch (NoSuchActivityException ex) {
             log.debug("unable to find a user activity by userId={} and activityId={}", userId, activityId);
             req.getSession().setAttribute("err_msg", ex.getMessage());

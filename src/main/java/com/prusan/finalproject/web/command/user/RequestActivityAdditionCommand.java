@@ -47,6 +47,6 @@ public class RequestActivityAdditionCommand implements Command {
             return new Chain(Pages.ERROR_JSP, false);
         }
 
-        return new DownloadAllActivitiesCommand().execute(req, resp);
+        return new Chain("controller?command=showActivitiesPage", false);
     }
 }

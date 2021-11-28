@@ -38,8 +38,7 @@ public class UpdateUserCommand implements Command {
             log.debug("updated a user {}", user);
             HttpSession s = req.getSession();
             s.removeAttribute("userToEdit");
-            s.removeAttribute("userToEditActivities");
-            log.debug("removed edited user specific attributes from the session");
+            log.debug("removed 'userToEdit' attribute from the session");
             return new DownloadAllUsersCommand().execute(req, resp);
         } catch (ServiceException e) {
             log.error("error while trying to update a user by id={}", userId, e);

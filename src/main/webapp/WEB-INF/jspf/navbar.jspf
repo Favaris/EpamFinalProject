@@ -3,7 +3,7 @@
         <c:choose>
 
             <c:when test="${sessionScope.user.role eq 'user'}">
-                <form action="${root}/jsp/user/userPage.jsp">
+                <form action="${root}/jsp/home.jsp">
                     <button type="submit" class="btn btn-black">Home</button>
                 </form>
                 <form action="${root}/controller">
@@ -21,7 +21,7 @@
             </c:when>
 
             <c:otherwise>
-                <form action="${root}/jsp/admin/adminPage.jsp">
+                <form action="${root}/jsp/home.jsp">
                     <button type="submit" class="btn btn-black">Home</button>
                 </form>
                 <form action="${root}/controller">

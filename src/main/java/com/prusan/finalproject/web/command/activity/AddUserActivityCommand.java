@@ -42,7 +42,7 @@ public class AddUserActivityCommand implements Command {
         try {
             as.addUserActivity(ua);
             log.debug("successfully added a new user activity {}", ua);
-            return new PrepareForAdditionActivitiesForUserCommand().execute(req, resp);
+            return new Chain("controller?command=showAddActivityForUserPage&uId=" + userId, false);
         }  catch (DependencyAlreadyExistsException e) {
             log.debug("such user activity already exists {}", ua, e);
             req.getSession().setAttribute("err_msg", e.getMessage());

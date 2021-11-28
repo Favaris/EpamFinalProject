@@ -8,19 +8,25 @@
     <div>
         <form action="${root}/controller" method="post">
             <input type="hidden" name="command" value="updateActivity">
-            <input type="hidden" name="id" value="${sessionScope.activityToEdit.id}">
+            <input type="hidden" name="id" value="${requestScope.activityToEdit.id}">
             <div class="form-group">
                 <label>Name</label>
-                <input type="text" name="name" class="form-control" required="required" value="${sessionScope.activityToEdit.name}"/>
+                <input type="text" name="name" class="form-control" required="required" value="${requestScope.activityToEdit.name}"/>
+                <c:if test="${sessionScope.activityNameErrorMessage != null}">
+                    Name can contain only cyrillic and/or latin letters and separators
+                </c:if>
             </div>
             <div class="form-group">
                 <label>Description</label>
-                <input type="text" name="description" class="form-control" required="required" value="${sessionScope.activityToEdit.description}"/>
+                <input type="text" name="description" class="form-control" required="required" value="${requestScope.activityToEdit.description}"/>
+                <c:if test="${sessionScope.activityDescErrorMessage != null}">
+                    Description length must be at least 1 and not more then 1000 symbols long
+                </c:if>
             </div>
             <div class="form-group">
                 <c:forEach var="category" items="${categories}">
                     <c:choose>
-                        <c:when test="${sessionScope.activityToEdit.categories.contains(category)}">
+                        <c:when test="${requestScope.activityToEdit.categories.contains(category)}">
                             <input type="checkbox" name="categoriesIds" value="${category.id}" checked id="${category.id}">
                         </c:when>
                         <c:otherwise>
@@ -29,6 +35,9 @@
                     </c:choose>
                     <label for="${category.id}">${category.name}</label> <br>
                 </c:forEach>
+                <c:if test="${sessionScope.activityCatsErrorMessage != null}">
+                    You must choose at least one category
+                </c:if>
             </div>
             <c:if test="${requestScope.err_msg != null}">
                 ${requestScope.err_msg} <br>
@@ -37,3 +46,7 @@
         </form>
     </div>
 </my:html-carcass>
+<c:remove var="err_msg" scope="session"/>
+<c:remove var="activityNameErrorMessage" scope="session"/>
+<c:remove var="activityDescErrorMessage" scope="session"/>
+<c:remove var="activityCatsErrorMessage" scope="session"/>

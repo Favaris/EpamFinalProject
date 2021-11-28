@@ -60,7 +60,7 @@ public class DownloadUsersRequestsCommand implements Command {
             }
             log.debug("got a map of requests ");
 
-            req.getSession().setAttribute("requests", map);
+            req.setAttribute("requests", map);
             log.debug("set attribute 'requests', map size={}", map.size());
         } catch (ServiceException e) {
             log.error("can not download requests", e);
@@ -68,6 +68,6 @@ public class DownloadUsersRequestsCommand implements Command {
             return new Chain(Pages.ERROR_JSP, true);
         }
 
-        return new Chain(Pages.REQUESTS_JSP, false);
+        return new Chain(Pages.REQUESTS_JSP, true);
     }
 }

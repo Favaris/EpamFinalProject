@@ -2,6 +2,7 @@ package com.prusan.finalproject.web.command;
 
 import com.prusan.finalproject.web.command.activity.*;
 import com.prusan.finalproject.web.command.category.AddCategoryCommand;
+import com.prusan.finalproject.web.command.category.DeleteCategoryCommand;
 import com.prusan.finalproject.web.command.category.UpdateCategoryCommand;
 import com.prusan.finalproject.web.command.user.*;
 import com.prusan.finalproject.web.command.util.*;
@@ -48,6 +49,7 @@ public class CommandContainer {
         commands.put("showAddActivityForUserPage", new PrepareForAdditionActivitiesForUserCommand());
         commands.put("addUserActivity", new AddUserActivityCommand());
         commands.put("showUsersReport", new GetUserReportCommand());
+        commands.put("deleteCategory", new DeleteCategoryCommand());
     }
 
     public static Command getCommand(String command) {

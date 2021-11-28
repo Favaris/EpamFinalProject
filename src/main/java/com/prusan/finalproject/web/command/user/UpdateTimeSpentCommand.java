@@ -50,8 +50,7 @@ public class UpdateTimeSpentCommand implements Command {
             as.updateUserActivity(ua);
             log.debug("added {} minutes to time count on user activity {}", additionalMinutes, ua);
 
-            req.setAttribute("nextChain", new Chain(Pages.RUNNING_ACTIVITIES_JSP, false));
-            return new DownloadUsersActivitiesCommand().execute(req, resp);
+            return new Chain("controller?command=showActivitiesPage", false);
         } catch (NoSuchActivityException ex) {
             log.error("no such activity with userId={} and activityId={}", userId, activityId, ex);
             req.getSession().setAttribute("err_msg", ex.getMessage());

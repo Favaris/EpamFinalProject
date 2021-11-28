@@ -3,16 +3,8 @@
 <%@taglib tagdir="/WEB-INF/tags/html" prefix="my"%>
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
 
-<s:check role="${sessionScope.user.role}"  permission="user"/>
+<s:check role="${sessionScope.user.role}"  permission="logged"/>
 <my:html-carcass title="${sessionScope.user.login} - home">
-    login: ${sessionScope.user.login}
-    <br/>
-    pass: ${sessionScope.user.password}
-    <br/>
-    name: ${sessionScope.user.name}
-    <br/>
-    surname: ${sessionScope.user.surname}
-    <br/>
-    role: ${sessionScope.user.role}
-    <br/>
+    you are logged as ${sessionScope.user.login}.
+
 </my:html-carcass>

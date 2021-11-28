@@ -43,7 +43,7 @@ public class DenyRequestCommand implements Command {
                 log.debug("denied abandonment for a user activity {}", ua);
             }
 
-            return new DownloadUsersRequestsCommand().execute(req, resp);
+            return new Chain("controller?command=showUsersRequests", false);
         } catch (NoSuchActivityException e) {
             log.debug("no such user activity with userId={}, activityId={}", userId, activityId);
             req.setAttribute("err_msg", e.getMessage());

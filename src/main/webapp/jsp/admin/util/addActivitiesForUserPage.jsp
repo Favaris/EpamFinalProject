@@ -19,7 +19,7 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="activity" items="${activities}">
+        <c:forEach var="activity" items="${requestScope.activities}">
             <tr>
                 <td>${activity.name}</td>
                 <td>
