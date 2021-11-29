@@ -50,6 +50,7 @@ public class CommandContainer {
         commands.put("addUserActivity", new AddUserActivityCommand());
         commands.put("showUsersReport", new GetUserReportCommand());
         commands.put("deleteCategory", new DeleteCategoryCommand());
+        commands.put("downloadActivitiesForUser", new DownloadActivitiesForUserCommand());
     }
 
     public static Command getCommand(String command) {

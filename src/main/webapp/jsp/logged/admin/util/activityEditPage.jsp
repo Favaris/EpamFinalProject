@@ -26,11 +26,11 @@
             <div class="form-group">
                 <c:forEach var="category" items="${categories}">
                     <c:choose>
-                        <c:when test="${requestScope.activityToEdit.categories.contains(category)}">
-                            <input type="checkbox" name="categoriesIds" value="${category.id}" checked id="${category.id}">
+                        <c:when test="${requestScope.activityToEdit.category.equals(category)}">
+                            <input type="radio" name="cId" value="${category.id}" checked id="${category.id}">
                         </c:when>
                         <c:otherwise>
-                            <input type="checkbox" name="categoriesIds" value="${category.id}" id="${category.id}">
+                            <input type="radio" name="cId" value="${category.id}" id="${category.id}">
                         </c:otherwise>
                     </c:choose>
                     <label for="${category.id}">${category.name}</label> <br>

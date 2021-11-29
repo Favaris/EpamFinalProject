@@ -25,6 +25,10 @@ public class UserActivity extends Activity {
         this.requestedAbandon = requestedAbandon;
     }
 
+    public UserActivity(Activity ac) {
+        super(ac.getId(), ac.getName(), ac.getDescription(), ac.getUsersCount(), ac.getCategory());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

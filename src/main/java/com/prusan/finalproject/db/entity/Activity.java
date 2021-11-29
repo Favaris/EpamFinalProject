@@ -8,8 +8,7 @@ public class Activity implements Serializable {
     private String name;
     private String description;
     private int usersCount;
-
-    private List<Category> categories;
+    private Category category;
 
     public Activity() {
     }
@@ -25,6 +24,13 @@ public class Activity implements Serializable {
         this.description = description;
     }
 
+    public Activity(Integer id, String name, String description, int usersCount, Category category) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.usersCount = usersCount;
+        this.category = category;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -74,12 +80,12 @@ public class Activity implements Serializable {
         this.description = description;
     }
 
-    public List<Category> getCategories() {
-        return categories;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public int getUsersCount() {

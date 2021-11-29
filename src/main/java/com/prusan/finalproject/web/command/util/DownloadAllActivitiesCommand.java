@@ -6,6 +6,7 @@ import com.prusan.finalproject.db.service.ActivityService;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
@@ -13,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,20 +28,14 @@ import java.util.List;
  */
 public class DownloadAllActivitiesCommand implements Command {
     private static final Logger log = LogManager.getLogger(DownloadAllActivitiesCommand.class);
+    private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
-        int page = Integer.parseInt(req.getParameter("page"));
-        log.debug("retrieved a page number: {}", page);
-        int pageSize = Integer.parseInt(req.getParameter("pageSize"));
-        log.debug("retrieved a page size: {}", pageSize);
-        String orderBy = req.getParameter("orderBy");
-        log.debug("retrieved an orderBy param: {}", orderBy);
-
-        if (orderBy == null) {
-            orderBy = "name";
-            log.debug("set default ordering by {}", orderBy);
-        }
+        int page = handler.getPageFromParameters(req);
+        int pageSize = handler.getPageSizeFromParameters(req);
+        String orderBy = handler.getOrderByFromParameters(req);
+        String[] filterBy = handler.getFilterByFromParameters(req);
 
         ActivityService as = ServiceFactory.getInstance().getActivityService();
         User u = (User) req.getSession().getAttribute("user");
@@ -53,49 +49,52 @@ public class DownloadAllActivitiesCommand implements Command {
 
             if ("admin".equals(u.getRole())) {
                 log.debug("user {} is admin", u);
-
-                // case when an admin wants to add some activities for a user
-                if (req.getParameter("uId") != null) {
-                    return processAddingNewActivitiesForUserByAdminCase(req, as);
-                }
-                log.debug("did not find a param 'uId'");
-
-                activities = as.getActivities(pageSize * (page - 1), pageSize, orderBy);
-                log.debug("received a list of activities ordered by '{}' for page={} with pageSize={}", orderBy, page, pageSize);
-                entitiesCount = as.getActivitiesCount();
+                activities = getActivitiesForAdmin(page, pageSize, orderBy, filterBy, as);
             } else {
                 log.debug("user {} is default user", u);
-                activities = as.getAllActivitiesNotTakenByUser(u.getId());
-                log.debug("downloaded a list of all activities not taken by a user {}, list size={}", u, activities.size());
+                activities = getActivitiesForUser(page, pageSize, orderBy, filterBy, as, u);
             }
 
-            int pageCount = entitiesCount / pageSize == 0 ? 1 : entitiesCount / pageSize;
+            entitiesCount = as.getActivitiesCount(u.getId(), filterBy);
+            log.debug("received a number of all entities filtered by {}", Arrays.toString(filterBy));
+
             req.setAttribute("activities", activities);
             log.debug("set activities list as a request attribute");
-            req.setAttribute("pageCount" , pageCount);
-            log.debug("set a pageCount attribute: '{}'", pageCount);
-            req.setAttribute("page", page);
-            log.debug("set a page attribute: '{}'", page);
-            req.setAttribute("orderBy", orderBy);
-            log.debug("set an orderBy attribute: '{}'", orderBy);
+
+            handler.setPaginationParametersAsRequestAttributes(req, entitiesCount, pageSize, page, orderBy, filterBy);
 
             return new Chain(Pages.ACTIVITIES_JSP, true);
         } catch (ServiceException e) {
             log.error("can not get all activities", e);
             req.getSession().setAttribute("err_msg", "can not get all activities");
-            return new Chain(Pages.ERROR_JSP, true);
+            return new Chain(Pages.ERROR_JSP, false);
         }
 
     }
 
-    private Chain processAddingNewActivitiesForUserByAdminCase(HttpServletRequest req, ActivityService as) throws ServiceException {
+    private List<Activity> getActivitiesForUser(int page, int pageSize, String orderBy, String[] filterBy, ActivityService as, User u) throws ServiceException {
         List<Activity> activities;
-        int userId = Integer.parseInt(req.getParameter("uId"));
-        log.debug("retrieved a parameter uId={}", userId);
-        activities = as.getAllActivitiesNotTakenByUser(userId);
-        log.debug("downloaded all activities not taken by a user with id {}, list size={}", userId, activities.size());
-        req.setAttribute("activities", activities);
-        log.debug("sending admin to {}", Pages.ADD_ACTIVITIES_FOR_USER_PAGE_JSP);
-        return new Chain(Pages.ADD_ACTIVITIES_FOR_USER_PAGE_JSP, true);
+        activities = as.getActivitiesNotTakenByUser(u.getId(), pageSize * (page - 1), pageSize, orderBy, filterBy);
+        log.debug("downloaded a list of all activities not taken by a user {}, list size={}", u, activities.size());
+        if (activities.size() == 0 && page > 1) {
+            log.debug("activities list is empty while page={}, reducing the page value and reloading the sublist", page);
+            --page;
+            activities = getActivitiesForUser(page, pageSize, orderBy, filterBy, as, u);
+        }
+        return activities;
     }
+
+    private List<Activity> getActivitiesForAdmin(int page, int pageSize, String orderBy, String[] filterBy, ActivityService as) throws ServiceException {
+        List<Activity> activities;
+        activities = as.getActivities(pageSize * (page - 1), pageSize, orderBy, filterBy);
+        log.debug("received a list of activities ordered by '{}' for page={} with pageSize={}", orderBy, page, pageSize);
+        if (activities.size() == 0 && page > 1) {
+            log.debug("activities list is empty while page={}, reducing the page value and reloading the sublist", page);
+            --page;
+            activities = getActivitiesForAdmin(page, pageSize, orderBy, filterBy, as);
+        }
+        return activities;
+    }
+
+
 }

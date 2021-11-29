@@ -30,7 +30,7 @@
 
     <label>User's activities</label>
     <form action="${root}/controller" method="get">
-        <input type="hidden" name="command" value="downloadAllActivities">
+        <input type="hidden" name="command" value="showActivitiesPage">
         <input type="hidden" name="uId" value="${sessionScope.userToEdit.id}">
         <button type="submit" class="btn btn-black">Add activities</button>
     </form>

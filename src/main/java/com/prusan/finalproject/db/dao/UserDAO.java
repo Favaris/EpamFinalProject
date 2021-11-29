@@ -20,6 +20,4 @@ public abstract class UserDAO extends BasicDAO<User> {
     public abstract List<User> getAllAdmins(Connection con) throws DAOException;
 
     public abstract List<User> getAllWithRoleUser(Connection con) throws DAOException;
-
-    public abstract int getUsersCountForActivity(Connection con, int activityId) throws DAOException;
 }

@@ -3,7 +3,7 @@
         <c:choose>
 
             <c:when test="${sessionScope.user.role eq 'user'}">
-                <form action="${root}/jsp/home.jsp">
+                <form action="${root}/jsp/logged/home.jsp">
                     <button type="submit" class="btn btn-black">Home</button>
                 </form>
                 <form action="${root}/controller">
@@ -18,20 +18,20 @@
                     <input type="hidden" name="command" value="showActivitiesPage"/>
                     <input type="hidden" name="page" value="1">
                     <input type="hidden" name="pageSize" value="5">
-                    <input type="hidden" name="orderBy" value="name">
+                    <input type="hidden" name="orderBy" value="activityName">
                     <button type="submit" class="btn btn-black">Add activities</button>
                 </form>
             </c:when>
 
             <c:otherwise>
-                <form action="${root}/jsp/home.jsp">
+                <form action="${root}/jsp/logged/home.jsp">
                     <button type="submit" class="btn btn-black">Home</button>
                 </form>
                 <form action="${root}/controller">
                     <input type="hidden" name="command" value="showActivitiesPage"/>
                     <input type="hidden" name="page" value="1">
                     <input type="hidden" name="pageSize" value="5">
-                    <input type="hidden" name="orderBy" value="name">
+                    <input type="hidden" name="orderBy" value="activityName">
                     <button type="submit" class="btn btn-black">Manage activities</button>
                 </form>
                 <form action="${root}/controller">

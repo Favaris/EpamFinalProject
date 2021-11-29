@@ -6,10 +6,8 @@ import com.prusan.finalproject.db.service.ActivityService;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.command.util.DownloadAllActivitiesCommand;
-import com.prusan.finalproject.web.command.util.DownloadAllCategoriesCommand;
-import com.prusan.finalproject.web.command.util.PrepareForShowingAllActivitiesCommand;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,11 +15,7 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-import static com.prusan.finalproject.web.command.activity.AddActivityCommand.createActivity;
 import static com.prusan.finalproject.web.command.activity.AddActivityCommand.doValidation;
 
 /**
@@ -29,19 +23,20 @@ import static com.prusan.finalproject.web.command.activity.AddActivityCommand.do
  */
 public class UpdateActivityCommand implements Command {
     private static final Logger log = LogManager.getLogger(UpdateActivityCommand.class);
+    private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
         int activityId = Integer.parseInt(req.getParameter("id"));
         log.debug("got an activityId={}", activityId);
         String name = req.getParameter("name");
-        log.debug("got an activity name={}", name);
+        log.debug("received an activity name '{}'", name);
         String desc = req.getParameter("description");
-        log.debug("got an activity description, desc length={}", desc.length());
-        String[] catIds = req.getParameterValues("categoriesIds");
-        log.debug("retrieved an array of categories' ids: {}", Arrays.toString(catIds));
+        log.debug("received an activity description with length {}", desc.length());
+        int catId = Integer.parseInt(req.getParameter("cId"));
+        log.debug("received a category id: {}", catId);
 
-        if (!doValidation(req, name, desc, catIds)) {
+        if (!doValidation(req, name, desc)) {
             log.debug("input is invalid, sending back to activity editing page");
             return new Chain("controller?command=showActivityEditPage&id=" + activityId, false);
         }
@@ -50,13 +45,9 @@ public class UpdateActivityCommand implements Command {
         ActivityService as = sf.getActivityService();
 
         Activity activity = new Activity(activityId, name, desc);
+        activity.setCategory(new Category(catId));
         log.debug("created an activity instance {}", activity);
-        List<Category> categories = new ArrayList<>();
-        for (String id : catIds) {
-            categories.add(new Category(Integer.parseInt(id)));
-        }
-        activity.setCategories(categories);
-        log.debug("set a list of categories for activity {}, list size: {}", activity, categories.size());
+
         try {
             as.update(activity);
             log.debug("successfully updated an activity {}", activity);
@@ -64,7 +55,11 @@ public class UpdateActivityCommand implements Command {
             s.removeAttribute("activityToEdit");
             s.removeAttribute("categories");
             log.debug("removed activity specific attributes from a session");
-            return new Chain("controller?command=showActivitiesPage", false);
+
+            String urlParams = handler.getURLParametersStringWithSortingParams(req);
+            log.debug("received a url params string: '{}'", urlParams);
+
+            return new Chain("controller?command=showActivitiesPage&" + urlParams, false);
         } catch (ServiceException e) {
             log.error("unable to update an activity {}", activity);
             req.getSession().setAttribute("err_msg", e.getMessage());

@@ -5,6 +5,7 @@ import com.prusan.finalproject.db.service.exception.FailedCategoryDeletionExcept
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class DeleteCategoryCommand implements Command {
     private static final Logger log = LogManager.getLogger(DeleteCategoryCommand.class);
+    private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -26,18 +28,19 @@ public class DeleteCategoryCommand implements Command {
         try {
             cs.delete(catId);
             log.debug("successfully deleted a category by id={}", catId);
-
-            return new Chain("controller?command=showCategoriesPage", false);
         } catch (FailedCategoryDeletionException e) {
             log.debug("unable to delete a category by id={}", catId, e);
             req.getSession().setAttribute("err_msg", e.getMessage());
-
-            return new Chain("controller?command=showCategoriesPage", false);
         }
         catch (ServiceException e) {
             log.error("failed to delete a category by id={}", catId, e);
             req.getSession().setAttribute("err_msg", e.getMessage());
             return new Chain(Pages.ERROR_JSP, false);
         }
+
+        String urlParams = handler.getURLParametersStringWithSortingParams(req);
+        log.debug("received a url params string: '{}'", urlParams);
+
+        return new Chain("controller?command=showCategoriesPage&" + urlParams, false);
     }
 }

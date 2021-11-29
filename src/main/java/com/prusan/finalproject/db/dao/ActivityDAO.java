@@ -12,15 +12,9 @@ import java.util.List;
 public abstract class ActivityDAO extends BasicDAO<Activity> {
     public abstract Activity getByName(Connection con, String name) throws DAOException;
 
-    public abstract void addCategory(Connection con, int categoryId, int activityId) throws DAOException;
+    public abstract List<Activity> getActivities(Connection con, int limit, int offset, String orderBy, String... filterBy) throws DAOException;
 
-    public abstract List<Activity> getActivities(Connection con, int limit, int offset, String orderBy) throws DAOException;
-
-    public abstract int getCount(Connection con) throws DAOException;
-
-    public abstract List<Integer> getCategoriesIds(Connection con, int id) throws DAOException;
-
-    public abstract void deleteAllCategories(Connection con, int activityId) throws DAOException;
+    public abstract int getCount(Connection con, int userId) throws DAOException;
 
     public abstract void addUserActivity(Connection con, UserActivity ua) throws DAOException;
 
@@ -32,5 +26,8 @@ public abstract class ActivityDAO extends BasicDAO<Activity> {
 
     public abstract List<UserActivity> getRequestedUserActivities(Connection con) throws DAOException;
 
-    public abstract List<Activity> getActivitiesByUserId(Connection con, int userId) throws DAOException;
+    public abstract List<Activity> getAvailableActivitiesForUserId(Connection con, int userId, int limit, int offset, String orderBy, String... filterBy) throws DAOException;
+
+    public abstract int getFilteredCount(Connection con, int userId, String... filterBy) throws DAOException;
+    
 }

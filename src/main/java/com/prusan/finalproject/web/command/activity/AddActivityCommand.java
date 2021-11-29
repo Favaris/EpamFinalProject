@@ -7,10 +7,9 @@ import com.prusan.finalproject.db.service.exception.NameIsTakenException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.Validator;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.command.util.DownloadAllActivitiesCommand;
-import com.prusan.finalproject.web.command.util.DownloadAllCategoriesCommand;
 import com.prusan.finalproject.web.constant.ValidationErrorsFlags;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
@@ -19,9 +18,6 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Add a new activity. Has validation for all fields.
@@ -29,6 +25,7 @@ import java.util.List;
 public class AddActivityCommand implements Command {
     private static final Logger log = LogManager.getLogger(AddActivityCommand.class);
     private static final Validator validator = Validator.getInstance();
+    private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -36,18 +33,19 @@ public class AddActivityCommand implements Command {
         log.debug("retrieved an activity name '{}'", name);
         String desc = req.getParameter("description");
         log.debug("retrieved an activity description with length {}", desc.length());
-        String[] catIds = req.getParameterValues("categoriesIds");
-        log.debug("retrieved an array of categories' ids: {}", Arrays.toString(catIds));
+        int catId = Integer.parseInt(req.getParameter("cId"));
+        log.debug("retrieved a category id: {}", catId);
 
         HttpSession session = req.getSession();
-        if (!doValidation(req, name, desc, catIds)) {
-            Activity activity = createActivity(name, desc, catIds);
+        if (!doValidation(req, name, desc)) {
+            Activity activity = createActivity(name, desc, catId);
             session.setAttribute("invalidActivity", activity);
             log.debug("set a session attribute 'invalidActivity' ==> '{}'", activity);
             return new Chain("controller?command=showActivityAddPage", false);
         }
 
-        Activity ac = createActivity(name, desc, catIds);
+        log.debug("all fields are valid");
+        Activity ac = createActivity(name, desc, catId);
         log.debug("created an activity instance {}", ac);
 
         ActivityService s = ServiceFactory.getInstance().getActivityService();
@@ -56,7 +54,11 @@ public class AddActivityCommand implements Command {
             log.debug("successfully saved an activity {}", ac);
             session.removeAttribute("categories");
             session.removeAttribute("invalidActivity");
-            return new Chain("controller?command=showActivitiesPage", false);
+
+            String urlParams = handler.getURLParametersStringWithSortingParams(req);
+            log.debug("received a url params string: '{}'", urlParams);
+
+            return new Chain("controller?command=showActivitiesPage&" + urlParams, false);
         } catch (NameIsTakenException ex) {
             log.debug("unable to add new activity {}, such activity already exists", ac);
             session.setAttribute("invalidActivity", ac);
@@ -69,19 +71,13 @@ public class AddActivityCommand implements Command {
         }
     }
 
-    public static Activity createActivity(String name, String desc, String[] catIds) {
+    public static Activity createActivity(String name, String desc, int catId) {
         Activity ac = new Activity(name, desc);
-        List<Category> cats = new ArrayList<>();
-        if (catIds != null) {
-            for (String id : catIds) {
-                cats.add(new Category(Integer.parseInt(id)));
-            }
-        }
-        ac.setCategories(cats);
+        ac.setCategory(new Category(catId));
         return ac;
     }
 
-    public static boolean doValidation(HttpServletRequest req, String name, String desc, String[] catIds) {
+    public static boolean doValidation(HttpServletRequest req, String name, String desc) {
         boolean isValid = true;
         HttpSession session = req.getSession();
 
@@ -94,12 +90,6 @@ public class AddActivityCommand implements Command {
         if (!validator.validate(Validator.ACTIVITY_DESCRIPTION, desc)) {
             session.setAttribute(ValidationErrorsFlags.ACTIVITY_DESC_ERROR_MESSAGE, "");
             log.debug("activity description is invalid, set a flag for corresponding error message as a session attribute '{}'", ValidationErrorsFlags.ACTIVITY_DESC_ERROR_MESSAGE);
-            isValid = false;
-        }
-
-        if (catIds == null) {
-            session.setAttribute(ValidationErrorsFlags.ACTIVITY_CATEGORIES_ERROR_MESSAGE, "");
-            log.debug("categories are empty, set a flag for corresponding error message as a session attribute '{}'", ValidationErrorsFlags.ACTIVITY_CATEGORIES_ERROR_MESSAGE);
             isValid = false;
         }
 

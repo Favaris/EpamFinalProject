@@ -4,6 +4,7 @@ import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.dao.UserDAO;
 import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.entity.UserActivity;
+import com.prusan.finalproject.db.util.Fields;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,15 +19,14 @@ public class UserDAOImpl extends UserDAO {
     private static final Logger log = LogManager.getLogger(UserDAOImpl.class);
 
     private static final String INSERT_USER = "INSERT INTO users VALUES (DEFAULT, ?, ?, ?, ?, ?)";
-    private static final String GET_USER_BY_ID = "SELECT * FROM users u WHERE u.id = ?";
-    private static final String UPDATE_USER_BY_ID = "UPDATE users u SET login = ?, password = ?, name = ?, surname = ? WHERE u.id = ?";
-    private static final String DELETE_USER_BY_ID = "DELETE FROM users WHERE id = ?";
+    private static final String GET_USER_BY_ID = "SELECT * FROM users WHERE u_id = ?";
+    private static final String UPDATE_USER_BY_ID = "UPDATE users SET u_login = ?, u_password = ?, u_name = ?, u_surname = ? WHERE u_id = ?";
+    private static final String DELETE_USER_BY_ID = "DELETE FROM users WHERE u_id = ?";
     private static final String SELECT_ALL_USERS = "SELECT * FROM users";
-    public static final String SELECT_USER_BY_LOGIN = "SELECT * FROM users u WHERE u.login = ?";
-    public static final String GET_ALL_ADMINS = "SELECT * FROM users WHERE role='admin'";
-    public static final String GET_ALL_WITH_ROLE_USER = "SELECT * FROM users WHERE role='user'";
-    public static final String GET_ALL_ACCEPTED_ACTIVITIES_BY_ID = "SELECT * FROM users_m2m_activities ua, activities a WHERE ua.user_id = ? AND accepted = 1 AND requested_abandon = 0 AND a.id = ua.activity_id";
-    public static final String GET_USERS_COUNT_BY_ACTIVITY_ID = "SELECT COUNT(*) FROM users_m2m_activities WHERE activity_id = ?";
+    public static final String SELECT_USER_BY_LOGIN = "SELECT * FROM users WHERE u_login = ?";
+    public static final String GET_ALL_ADMINS = "SELECT * FROM users WHERE u_role='admin'";
+    public static final String GET_ALL_WITH_ROLE_USER = "SELECT * FROM users WHERE u_role='user'";
+    public static final String GET_ALL_ACCEPTED_ACTIVITIES_BY_ID = "SELECT * FROM users_m2m_activities, activities, categories WHERE ua_user_id = ? AND ua_accepted = 1 AND ua_requested_abandon = 0 AND a_id = ua_activity_id AND c_id = a_category_id";
 
     /**
      * Inserts a user with the given fields. For passed user object, updates the id field if the insertion was successful.
@@ -209,7 +209,7 @@ public class UserDAOImpl extends UserDAO {
             return uas;
         } catch (SQLException throwables) {
             log.error("error in getRunningActivities(id={})", id, throwables);
-            throw new DAOException(throwables);
+            throw new DAOException("failed to upload activities", throwables);
         }
     }
 
@@ -257,33 +257,14 @@ public class UserDAOImpl extends UserDAO {
         return users;
     }
 
-    @Override
-    public int getUsersCountForActivity(Connection con, int activityId) throws DAOException {
-        ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_USERS_COUNT_BY_ACTIVITY_ID)) {
-            ps.setInt(1, activityId);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                int res = rs.getInt(1);
-                log.debug("retrieved an amount of user for the activity with id={}, amount={}", activityId, res);
-                return res;
-            }
-        } catch (SQLException throwables) {
-            log.error("error in #getUsersCountForActivity(id={})", activityId, throwables);
-            throw new DAOException("unable to get users amount for activity with id=" + activityId, throwables);
-        }
-
-        return 0;
-    }
-
     private User getUser(ResultSet rs) throws SQLException {
         User u = new User();
-        u.setId(rs.getInt("id"));
-        u.setLogin(rs.getString("login"));
-        u.setPassword(rs.getString("password"));
-        u.setName(rs.getString("name"));
-        u.setSurname(rs.getString("surname"));
-        u.setRole(rs.getString("role"));
+        u.setId(rs.getInt(Fields.USER_ID));
+        u.setLogin(rs.getString(Fields.USER_LOGIN));
+        u.setPassword(rs.getString(Fields.USER_PASSWORD));
+        u.setName(rs.getString(Fields.USER_NAME));
+        u.setSurname(rs.getString(Fields.USER_SURNAME));
+        u.setRole(rs.getString(Fields.USER_ROLE));
         return u;
     }
 

@@ -25,11 +25,11 @@
             <div class="form-group">
                 <c:forEach var="category" items="${categories}">
                     <c:choose>
-                        <c:when test="${sessionScope.invalidActivity.categories.contains(category)}">
-                            <input type="checkbox" name="categoriesIds" value="${category.id}" id="${category.id}" checked/>
+                        <c:when test="${sessionScope.invalidActivity.category.equals(category)}">
+                            <input type="radio" name="cId" value="${category.id}" id="${category.id}" checked/>
                         </c:when>
                         <c:otherwise>
-                            <input type="checkbox" name="categoriesIds" value="${category.id}" id="${category.id}"/>
+                            <input type="radio" name="cId" value="${category.id}" id="${category.id}"/>
                         </c:otherwise>
                     </c:choose>
                     <label for="${category.id}">${category.name}</label> <br>

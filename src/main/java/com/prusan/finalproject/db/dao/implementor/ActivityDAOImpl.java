@@ -3,7 +3,9 @@ package com.prusan.finalproject.db.dao.implementor;
 import com.prusan.finalproject.db.dao.ActivityDAO;
 import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.entity.Activity;
+import com.prusan.finalproject.db.entity.Category;
 import com.prusan.finalproject.db.entity.UserActivity;
+import com.prusan.finalproject.db.util.Fields;
 import com.prusan.finalproject.db.util.PaginationQueries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,24 +20,23 @@ import java.util.List;
 public class ActivityDAOImpl extends ActivityDAO {
     private static final Logger log = LogManager.getLogger(ActivityDAOImpl.class);
 
-    public static final String GET_ACTIVITY_BY_NAME = "SELECT * FROM activities a WHERE a.name = ?";
-    public static final String INSERT_ACTIVITY = "INSERT INTO activities(name, description) VALUES (?,?)";
-    public static final String GET_ACTIVITY_BY_ID = "SELECT * FROM activities WHERE id = ?";
-    public static final String UPDATE_ACTIVITY_BY_ID = "UPDATE activities a SET name = ?, description = ? WHERE a.id = ?";
-    public static final String DELETE_ACTIVITY_BY_ID = "DELETE FROM activities WHERE id = ?";
-    public static final String GET_ACTIVITIES_BY_USER_ID = "SELECT a.id, a.description, a.name, a.users_count FROM activities a, users_m2m_activities ua WHERE ua.activity_id = a.id AND ua.user_id = ?";
+    public static final String GET_ACTIVITY_BY_NAME = "SELECT * FROM activities, categories WHERE a_name = ? AND c_id = a_category_id";
+    public static final String INSERT_ACTIVITY = "INSERT INTO activities(a_name, a_description, a_category_id) VALUES (?,?,?)";
+    public static final String GET_ACTIVITY_BY_ID = "SELECT * FROM activities, categories WHERE a_id = ?";
+    public static final String UPDATE_ACTIVITY_BY_ID = "UPDATE activities SET a_name = ?, a_description = ?, a_category_id = ? WHERE a_id = ?";
+    public static final String DELETE_ACTIVITY_BY_ID = "DELETE FROM activities WHERE a_id = ?";
+    public static final String GET_ALL_ACTIVITIES = "SELECT * FROM activities, categories WHERE a_category_id = c_id";
 
-    public static final String INSERT_CATEGORY_BY_IDS = "INSERT INTO categories_m2m_activities VALUES (?, ?)";
-    public static final String GET_ALL_CATEGORIES_IDS = "SELECT category_id FROM categories_m2m_activities WHERE activity_id = ?";
 
     public static final String INSERT_USER_ACTIVITY = "INSERT INTO users_m2m_activities VALUES (?, ?, ?, ?, ?)";
-    public static final String GET_REQUESTED_USERS_ACTIVITIES = "SELECT * FROM users_m2m_activities ua, activities a WHERE (ua.accepted = 0 OR ua.requested_abandon = 1) AND a.id = ua.activity_id";
-    public static final String UPDATE_USER_ACTIVITY = "UPDATE users_m2m_activities ua SET accepted = ?, minutes_spent = ?, requested_abandon = ? WHERE activity_id = ? AND user_id = ?";
-    public static final String DELETE_USER_ACTIVITY = "DELETE FROM users_m2m_activities WHERE user_id = ? AND activity_id = ?";
-    public static final String GET_USER_ACTIVITY = "SELECT * FROM users_m2m_activities ua, activities a WHERE ua.user_id = ? AND ua.activity_id = ? AND ua.activity_id = a.id";
-    public static final String DELETE_ALL_ACTIVITY_CATEGORIES = "DELETE FROM categories_m2m_activities WHERE activity_id = ?";
-    public static final String GET_SORTED_ACTIVITIES_WITH_LIMIT_OFFSET = "SELECT * FROM activities ORDER BY %s LIMIT ? OFFSET ?";
-
+    public static final String GET_REQUESTED_USERS_ACTIVITIES =
+            "SELECT * FROM users_m2m_activities, activities, categories WHERE (ua_accepted = 0 OR ua_requested_abandon = 1) AND a_id = ua_activity_id AND c_id = a_category_id";
+    public static final String UPDATE_USER_ACTIVITY = "UPDATE users_m2m_activities SET ua_accepted = ?, ua_minutes_spent = ?, ua_requested_abandon = ? WHERE ua_activity_id = ? AND ua_user_id = ?";
+    public static final String DELETE_USER_ACTIVITY = "DELETE FROM users_m2m_activities WHERE ua_user_id = ? AND ua_activity_id = ?";
+    public static final String GET_USER_ACTIVITY =
+            "SELECT * FROM users_m2m_activities, activities, categories WHERE ua_user_id = ? AND ua_activity_id = ? AND ua_activity_id = a_id AND a_category_id = c_id";
+    public static final String GET_COUNT_OF_AVAILABLE_ACTIVITIES_FOR_USER = "SELECT COUNT(*) FROM activities WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?)";
+    public static final String GET_AVAILABLE_ACTIVITIES_COUNT_WITH_FILTERS = "SELECT COUNT(*) FROM activities WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?) AND a_category_id IN (%s)";
 
     @Override
     public Activity getByName(Connection con, String name) throws DAOException {
@@ -60,23 +61,6 @@ public class ActivityDAOImpl extends ActivityDAO {
         return null;
     }
 
-    /**
-     * Adds new dependence between category and activity.
-     * @throws DAOException thrown if this dependence already exists.
-     */
-    @Override
-    public void addCategory(Connection con, int categoryId, int activityId) throws DAOException {
-        try (PreparedStatement ps = con.prepareStatement(INSERT_CATEGORY_BY_IDS)) {
-            int k = 0;
-            ps.setInt(++k, categoryId);
-            ps.setInt(++k, activityId);
-
-            ps.executeUpdate();
-        } catch (SQLException throwables) {
-            log.debug("unable to insert category_activity dependence: catId={}, actId={}", categoryId, activityId, throwables);
-            throw new DAOException("dependence already exists", throwables);
-        }
-    }
 
     /**
      * Returns a list of activities sorted by a given entity name in ASC order.
@@ -85,9 +69,9 @@ public class ActivityDAOImpl extends ActivityDAO {
      * @param orderBy name of a certain attr in the 'activities' table to be sorted by
      */
     @Override
-    public List<Activity> getActivities(Connection con, int limit, int offset, String orderBy) throws DAOException {
+    public List<Activity> getActivities(Connection con, int limit, int offset, String orderBy, String... filterBy) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(PaginationQueries.getQuery(orderBy))) {
+        try (PreparedStatement ps = con.prepareStatement(PaginationQueries.getActivityQuery(orderBy, filterBy))) {
             ps.setInt(1, limit);
             ps.setInt(2, offset);
 
@@ -117,9 +101,11 @@ public class ActivityDAOImpl extends ActivityDAO {
      * Returns a number of all activities.
      */
     @Override
-    public int getCount(Connection con) throws DAOException {
-        try (Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM activities")) {
+    public int getCount(Connection con, int userId) throws DAOException {
+        ResultSet rs = null;
+        try (PreparedStatement ps = con.prepareStatement(GET_COUNT_OF_AVAILABLE_ACTIVITIES_FOR_USER)) {
+            ps.setInt(1, userId);
+            rs = ps.executeQuery();
             int count = 0;
             if (rs.next()) {
                 count = rs.getInt(1);
@@ -129,55 +115,12 @@ public class ActivityDAOImpl extends ActivityDAO {
         } catch (SQLException throwables) {
             log.error("failed to get count of all activities", throwables);
             throw  new DAOException("unable to get activities count", throwables);
-        }
-    }
-
-    /**
-     * Returns a list of all categories ids of the given activity.
-     * @param id activity id
-     * @throws DAOException thrown if there is no activity with the given id.
-     */
-    @Override
-    public List<Integer> getCategoriesIds(Connection con, int id) throws DAOException {
-        List<Integer> categories = new ArrayList<>();
-        ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_ALL_CATEGORIES_IDS)) {
-            ps.setInt(1, id);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                categories.add(rs.getInt(1));
-            }
-            return categories;
-        } catch (SQLException throwables) {
-            log.debug("no such activity with id: #{}", id, throwables);
-            log.error("exception caught in #getAllCategories(id={})", id, throwables);
-            throw new DAOException("no such activity with id: " + id, throwables);
         } finally {
             try {
                 close(rs);
-            } catch (DAOException ex) {
-                log.warn("unable to close resource {}", rs, ex);
+            } catch (DAOException e) {
+                log.error("unable to close a result set {}", rs, e);
             }
-        }
-    }
-
-    /**
-     * Deletes all dependencies in categories_m2m_activities table that have the id of activity.
-     * @param activityId id of activity to delete all categories from
-     * @throws DAOException is thrown only if there are some connection issues
-     */
-    @Override
-    public void deleteAllCategories(Connection con, int activityId) throws DAOException {
-        try (PreparedStatement ps = con.prepareStatement(DELETE_ALL_ACTIVITY_CATEGORIES)) {
-            ps.setInt(1, activityId);
-            if (ps.executeUpdate() > 0) {
-                log.debug("successfully deleted all categories of an activity with id={}", activityId);
-            } else {
-                log.debug("activity with id={} had no categories to delete", activityId);
-            }
-        } catch (SQLException throwables) {
-            log.error("error in deleteAllCategories(actId={})", activityId, throwables);
-            throw new DAOException(throwables);
         }
     }
 
@@ -288,10 +231,13 @@ public class ActivityDAOImpl extends ActivityDAO {
      * @throws DAOException if connection error occurs.
      */
     @Override
-    public List<Activity> getActivitiesByUserId(Connection con, int userId) throws DAOException {
+    public List<Activity> getAvailableActivitiesForUserId(Connection con, int userId, int limit, int offset, String orderBy, String... filterBy) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_ACTIVITIES_BY_USER_ID)) {
-            ps.setInt(1, userId);
+        try (PreparedStatement ps = con.prepareStatement(PaginationQueries.getActivityQueryForUser(orderBy, filterBy))) {
+            int k = 0;
+            ps.setInt(++k, userId);
+            ps.setInt(++k, limit);
+            ps.setInt(++k, offset);
             rs = ps.executeQuery();
             List<Activity> result = new ArrayList<>();
             while (rs.next()) {
@@ -299,11 +245,37 @@ public class ActivityDAOImpl extends ActivityDAO {
                 log.debug("retrieved activity by user id={}, activity={}", userId, a);
                 result.add(a);
             }
-            log.debug("retrieved a list of all activities, specific to a user with id={}, list size: {}", userId, result.size());
+            log.debug("retrieved a list of all activities, available to a user with id={}, list size: {}", userId, result.size());
             return result;
         } catch (SQLException throwables) {
-            log.error("unable to download all activities specific to a user with id={}", userId, throwables);
+            log.error("unable to download all activities available to a user with id={}", userId, throwables);
             throw new DAOException(throwables);
+        } finally {
+            try {
+                close(rs);
+            } catch (DAOException e) {
+                log.warn("unable to close a resource {}", rs, e);
+            }
+        }
+    }
+
+    @Override
+    public int getFilteredCount(Connection con, int userId, String... filterBy) throws DAOException {
+        String filters = String.join(",", filterBy);
+        log.debug("got a string of filters '{}'", filters);
+        ResultSet rs = null;
+        try (PreparedStatement ps = con.prepareStatement(String.format(GET_AVAILABLE_ACTIVITIES_COUNT_WITH_FILTERS, filters))) {
+            ps.setInt(1, userId);
+            rs = ps.executeQuery();
+            int count = 0;
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            log.debug("retrieved a number of activities filtered by '{}', count={}", filters, count);
+            return count;
+        } catch (SQLException throwables) {
+            log.error("failed to get a number of activities by filter '{}'", filters, throwables);
+            throw new DAOException("failed to get a number of activities", throwables);
         } finally {
             try {
                 close(rs);
@@ -326,6 +298,7 @@ public class ActivityDAOImpl extends ActivityDAO {
             int k = 0;
             ps.setString(++k, activity.getName());
             ps.setString(++k, activity.getDescription());
+            ps.setInt(++k, activity.getCategory().getId());
 
             if (ps.executeUpdate() > 0) {
                 rs = ps.getGeneratedKeys();
@@ -356,7 +329,7 @@ public class ActivityDAOImpl extends ActivityDAO {
     public List<Activity> getAll(Connection con) throws DAOException {
         List<Activity> actvts = new ArrayList<>();
         try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery("SELECT * FROM activities"))
+             ResultSet rs = st.executeQuery(GET_ALL_ACTIVITIES))
         {
             while (rs.next()) {
                 Activity ac = getActivity(rs);
@@ -389,6 +362,12 @@ public class ActivityDAOImpl extends ActivityDAO {
         } catch (SQLException throwables) {
             log.warn("exception in #get(id={})", id);
             throw new DAOException(throwables);
+        } finally {
+            try {
+                close(rs);
+            } catch (DAOException e) {
+                log.warn("unable to close a result set {}", rs);
+            }
         }
         log.debug("unable to find activity with id={}", id);
         return null;
@@ -406,6 +385,7 @@ public class ActivityDAOImpl extends ActivityDAO {
             int k = 0;
             ps.setString(++k, activity.getName());
             ps.setString(++k, activity.getDescription());
+            ps.setInt(++k, activity.getCategory().getId());
             ps.setInt(++k, activity.getId());
             if (ps.executeUpdate() > 0) {
                 log.debug("updated an activity {}", activity);
@@ -439,26 +419,25 @@ public class ActivityDAOImpl extends ActivityDAO {
         }
     }
 
-    private Activity getActivity(ResultSet rs) throws SQLException {
+    private static Activity getActivity(ResultSet rs) throws SQLException {
         Activity ac = new Activity();
-        ac.setId(rs.getInt("id"));
-        ac.setName(rs.getString("name"));
-        ac.setDescription(rs.getString("description"));
-        ac.setUsersCount(rs.getInt("users_count"));
+        ac.setId(rs.getInt(Fields.ACTIVITY_ID));
+        ac.setName(rs.getString(Fields.ACTIVITY_NAME));
+        ac.setDescription(rs.getString(Fields.ACTIVITY_DESCRIPTION));
+        ac.setUsersCount(rs.getInt(Fields.ACTIVITY_USERS_COUNT));
+        Category c = new Category(rs.getInt(Fields.ACTIVITY_CATEGORY_ID), rs.getString(Fields.CATEGORY_NAME));
+        ac.setCategory(c);
         log.debug("retrieved an activity by name: {}", ac);
         return ac;
     }
 
     protected static UserActivity getUserActivity(ResultSet rs) throws SQLException {
-        UserActivity ua = new UserActivity();
-        ua.setUserId(rs.getInt("user_id"));
-        ua.setActivityId(rs.getInt("activity_id"));
-        ua.setAccepted(rs.getBoolean("accepted"));
-        ua.setMinutesSpent(rs.getInt("minutes_spent"));
-        ua.setId(rs.getInt("id"));
-        ua.setName(rs.getString("name"));
-        ua.setDescription(rs.getString("description"));
-        ua.setRequestedAbandon(rs.getBoolean("requested_abandon"));
+        Activity ac = getActivity(rs);
+        UserActivity ua = new UserActivity(ac);
+        ua.setUserId(rs.getInt(Fields.USER_ACTIVITY_USER_ID));
+        ua.setAccepted(rs.getBoolean(Fields.USER_ACTIVITY_ACCEPTED));
+        ua.setMinutesSpent(rs.getInt(Fields.USER_ACTIVITY_MINUTES_SPENT));
+        ua.setRequestedAbandon(rs.getBoolean(Fields.USER_ACTIVITY_REQUESTED_ABANDON));
         log.debug("retrieved a user activity: {}", ua);
         return ua;
     }

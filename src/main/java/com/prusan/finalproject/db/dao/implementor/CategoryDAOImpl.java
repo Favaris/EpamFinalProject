@@ -3,6 +3,7 @@ package com.prusan.finalproject.db.dao.implementor;
 import com.prusan.finalproject.db.dao.CategoryDAO;
 import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.entity.Category;
+import com.prusan.finalproject.db.util.Fields;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,11 +13,13 @@ import java.util.List;
 
 public class CategoryDAOImpl extends CategoryDAO {
     private static final Logger log = LogManager.getLogger(CategoryDAOImpl.class);
+
     public static final String GET_ALL_CATEGORIES = "SELECT * FROM categories";
-    public static final String INSERT_CATEGORY = "INSERT INTO categories(name) VALUES (?)";
-    public static final String UPDATE_CATEGORY_BY_ID = "UPDATE categories SET name = ? WHERE id = ?";
-    public static final String DELETE_CATEGORY_BY_ID = "DELETE FROM categories WHERE id = ?";
-    public static final String GET_CATEGORY_BY_NAME = "SELECT * FROM categories WHERE name = ?";
+    public static final String INSERT_CATEGORY = "INSERT INTO categories(c_name) VALUES (?)";
+    public static final String UPDATE_CATEGORY_BY_ID = "UPDATE categories SET c_name = ? WHERE c_id = ?";
+    public static final String DELETE_CATEGORY_BY_ID = "DELETE FROM categories WHERE c_id = ?";
+    public static final String GET_CATEGORY_BY_NAME = "SELECT * FROM categories WHERE c_name = ?";
+    public static final String GET_BY_ID = "SELECT * FROM categories WHERE c_id = ?";
 
     /**
      * Add a new category to the db. If operation was successful, updated id field on given Category object.
@@ -78,7 +81,7 @@ public class CategoryDAOImpl extends CategoryDAO {
     @Override
     public Category get(Connection con, int id) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM categories WHERE id = ?")) {
+        try (PreparedStatement ps = con.prepareStatement(GET_BY_ID)) {
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -148,9 +151,7 @@ public class CategoryDAOImpl extends CategoryDAO {
             ps.setString(1, name);
             rs = ps.executeQuery();
             if (rs.next()) {
-                Category ct = new Category();
-                ct.setId(rs.getInt("id"));
-                ct.setName(rs.getString("name"));
+                Category ct = getCategory(rs);
                 log.debug("retrieved a category by name: {}", ct);
                 return ct;
             }
@@ -164,8 +165,8 @@ public class CategoryDAOImpl extends CategoryDAO {
 
     private Category getCategory(ResultSet rs) throws SQLException {
         Category ct = new Category();
-        ct.setId(rs.getInt("id"));
-        ct.setName(rs.getString("name"));
+        ct.setId(rs.getInt(Fields.CATEGORY_ID));
+        ct.setName(rs.getString(Fields.CATEGORY_NAME));
         log.debug("retrieved a category {}", ct);
         return ct;
     }
