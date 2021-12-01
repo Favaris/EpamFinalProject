@@ -26,7 +26,6 @@ public class UserDAOImpl extends UserDAO {
     public static final String SELECT_USER_BY_LOGIN = "SELECT * FROM users WHERE u_login = ?";
     public static final String GET_ALL_ADMINS = "SELECT * FROM users WHERE u_role='admin'";
     public static final String GET_ALL_WITH_ROLE_USER = "SELECT * FROM users WHERE u_role='user'";
-    public static final String GET_ALL_ACCEPTED_ACTIVITIES_BY_ID = "SELECT * FROM users_m2m_activities, activities, categories WHERE ua_user_id = ? AND ua_accepted = 1 AND ua_requested_abandon = 0 AND a_id = ua_activity_id AND c_id = a_category_id";
 
     /**
      * Inserts a user with the given fields. For passed user object, updates the id field if the insertion was successful.
@@ -189,29 +188,6 @@ public class UserDAOImpl extends UserDAO {
         return null;
     }
 
-    /**
-     * Retrieves a list of all user's activities that are accepted and not requested for abandonment.
-     */
-    @Override
-    public List<UserActivity> getRunningActivities(Connection con, int id) throws DAOException {
-        ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_ALL_ACCEPTED_ACTIVITIES_BY_ID)) {
-            ps.setInt(1, id);
-
-            rs = ps.executeQuery();
-            List<UserActivity> uas = new ArrayList<>();
-            while (rs.next()) {
-                UserActivity ua = ActivityDAOImpl.getUserActivity(rs);
-                log.debug("retrieved accepted user activity {}", ua);
-                uas.add(ua);
-            }
-            log.debug("retrieved a list of all accepted user activities, list size: {}", uas.size());
-            return uas;
-        } catch (SQLException throwables) {
-            log.error("error in getRunningActivities(id={})", id, throwables);
-            throw new DAOException("failed to upload activities", throwables);
-        }
-    }
 
     /**
      * Returns a list of users with role='admin'
@@ -267,6 +243,4 @@ public class UserDAOImpl extends UserDAO {
         u.setRole(rs.getString(Fields.USER_ROLE));
         return u;
     }
-
-
 }

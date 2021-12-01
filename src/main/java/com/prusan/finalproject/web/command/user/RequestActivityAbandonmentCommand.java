@@ -1,13 +1,12 @@
 package com.prusan.finalproject.web.command.user;
 
 import com.prusan.finalproject.db.entity.UserActivity;
-import com.prusan.finalproject.db.service.ActivityService;
+import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.exception.NoSuchActivityException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.command.util.DownloadUsersActivitiesCommand;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,13 +24,13 @@ public class RequestActivityAbandonmentCommand implements Command {
         Integer activityId = Integer.valueOf(req.getParameter("aId"));
         log.debug("retrieved an activity id={}", activityId);
 
-        ActivityService as = ServiceFactory.getInstance().getActivityService();
+        UserActivityService uas = ServiceFactory.getInstance().getUserActivityService();
 
         try {
-            UserActivity ua = as.getUserActivity(userId, activityId);
+            UserActivity ua = uas.get(userId, activityId);
             log.debug("successfully retrieved a user activity instance: {}", ua);
             ua.setRequestedAbandon(true);
-            as.updateUserActivity(ua);
+            uas.update(ua);
             log.debug("successfully updated a user activity {}", ua);
         } catch (NoSuchActivityException ex) {
             log.debug("unable to get a user activity instance with userId={}, activityId={}", userId, activityId, ex);

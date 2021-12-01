@@ -1,9 +1,6 @@
 package com.prusan.finalproject.db.service.implementor;
 
-import com.prusan.finalproject.db.dao.ActivityDAO;
-import com.prusan.finalproject.db.dao.BasicDAO;
-import com.prusan.finalproject.db.dao.DAOException;
-import com.prusan.finalproject.db.dao.UserDAO;
+import com.prusan.finalproject.db.dao.*;
 import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.exception.IncorrectCredentialsException;
@@ -27,15 +24,14 @@ public class UserServiceImpl implements UserService {
     private final DBUtils dbUtils = DBUtils.getInstance();
 
     private UserDAO userDAO;
-    private ActivityDAO activityDAO;
+    private UserActivityDAO userActivityDAO;
 
-    public void setActivityDAO(ActivityDAO activityDAO) {
-        this.activityDAO = activityDAO;
+    public void setUserActivityDAO(UserActivityDAO userActivityDAO) {
+        this.userActivityDAO = userActivityDAO;
     }
 
     public void setUserDAO(UserDAO dao) {
         userDAO = dao;
-        log.debug("got set userDAO field: {}", dao);
     }
 
     /**
@@ -145,16 +141,15 @@ public class UserServiceImpl implements UserService {
             userDAO.update(con, u);
             log.debug("successfully updated a user");
 
-            List<UserActivity> userActivities = userDAO.getRunningActivities(con, u.getId());
-
-            for (UserActivity ua : userActivities) {
-                activityDAO.deleteUserActivity(con, ua.getUserId(), ua.getActivityId());
-            }
+            userActivityDAO.removeAllByUserId(con, u.getId());
+            log.debug("successfully deleted all activities for user with id={}", u.getId());
 
             for (UserActivity ua : activities) {
-                activityDAO.addUserActivity(con, ua);
+                userActivityDAO.add(con, ua);
                 log.debug("successfully added a user activity {}", ua);
             }
+            log.debug("successfully added a full list of activities for user with id={}, list size={}", u.getId(), activities.size());
+
             log.debug("successfully saved all new information about user {}", u);
 
             con.commit();

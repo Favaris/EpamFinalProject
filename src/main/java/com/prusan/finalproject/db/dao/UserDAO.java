@@ -15,8 +15,6 @@ public abstract class UserDAO extends BasicDAO<User> {
 
     public abstract User getByLoginAndPassword(Connection con, String login, String password) throws DAOException;
 
-    public abstract List<UserActivity> getRunningActivities(Connection con, int id) throws DAOException;
-
     public abstract List<User> getAllAdmins(Connection con) throws DAOException;
 
     public abstract List<User> getAllWithRoleUser(Connection con) throws DAOException;

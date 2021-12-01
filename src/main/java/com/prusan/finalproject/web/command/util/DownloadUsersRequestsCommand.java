@@ -3,6 +3,7 @@ package com.prusan.finalproject.web.command.util;
 import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.ActivityService;
+import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.UserService;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
@@ -33,11 +34,11 @@ public class DownloadUsersRequestsCommand implements Command {
         User currentUser = (User) req.getSession().getAttribute("user");
 
         ServiceFactory sf = ServiceFactory.getInstance();
-        ActivityService as = sf.getActivityService();
+        UserActivityService uas = sf.getUserActivityService();
         UserService us = sf.getUserService();
 
         try {
-            List<UserActivity> list = as.getUsersRequests();
+            List<UserActivity> list = uas.getUsersRequests();
             log.debug("retrieved a list of all users' requested activities");
 
             Map<UserActivity, User> map = new HashMap<>();

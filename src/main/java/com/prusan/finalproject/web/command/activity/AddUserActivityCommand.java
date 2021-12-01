@@ -67,8 +67,8 @@ public class AddUserActivityCommand implements Command {
                 }
                 removedActivities.remove(ua);
                 log.debug("removed a user activity from the 'removedActivities' set");
-                String url = handler.getURLParametersString(req);
-                return new Chain(String.format("controller?command=showEditUserPage&uId=%d&", userId) + url, false);
+                String queryString = handler.getQueryString(session);
+                return new Chain(String.format("controller?command=showEditUserPage&uId=%d&", userId) + queryString, false);
             }
 
             userActivities.add(ua);

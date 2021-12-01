@@ -2,7 +2,7 @@ package com.prusan.finalproject.web.command.user;
 
 import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.entity.UserActivity;
-import com.prusan.finalproject.db.service.ActivityService;
+import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.UserService;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,13 +25,13 @@ public class GetUserReportCommand implements Command {
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
         ServiceFactory sf = ServiceFactory.getInstance();
         UserService us = sf.getUserService();
-        ActivityService as = sf.getActivityService();
+        UserActivityService uas = sf.getUserActivityService();
 
         try {
             Map<User, List<UserActivity>> report = new HashMap<>();
             for (User user : us.getAllWithRoleUser()) {
                 log.debug("retrieved a user {}", user);
-                List<UserActivity> userActivities = as.getAllRunningUsersActivities(user.getId());
+                List<UserActivity> userActivities = uas.getAllAcceptedForUser(user.getId());
                 log.debug("retrieved a list of all activities for user {}", user);
                 report.put(user, userActivities);
                 log.debug("put a user {} and list of his activities with size={} into the map", user, userActivities.size());

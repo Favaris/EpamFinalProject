@@ -2,7 +2,7 @@ package com.prusan.finalproject.web.command.util;
 
 import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.entity.UserActivity;
-import com.prusan.finalproject.db.service.ActivityService;
+import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
@@ -26,9 +26,9 @@ public class DownloadUsersActivitiesCommand implements Command {
         User u = (User) req.getSession().getAttribute("user");
         log.debug("retrieved a user from the session: {}", u);
 
-        ActivityService as = ServiceFactory.getInstance().getActivityService();
+        UserActivityService uas = ServiceFactory.getInstance().getUserActivityService();
         try {
-            List<UserActivity> list = as.getAllRunningUsersActivities(u.getId());
+            List<UserActivity> list = uas.getAllAcceptedForUser(u.getId());
             log.debug("got a list of running activities, list size: {}", list.size());
 
             if (req.getAttribute("nextChain") != null) {

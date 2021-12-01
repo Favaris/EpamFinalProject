@@ -16,16 +16,6 @@ public abstract class ActivityDAO extends BasicDAO<Activity> {
 
     public abstract int getCount(Connection con, int userId) throws DAOException;
 
-    public abstract void addUserActivity(Connection con, UserActivity ua) throws DAOException;
-
-    public abstract UserActivity getUserActivity(Connection con, int userId, int activityId) throws DAOException;
-
-    public abstract void updateUserActivity(Connection con, UserActivity ua) throws DAOException;
-
-    public abstract void deleteUserActivity(Connection con, int userId, int activityId) throws DAOException;
-
-    public abstract List<UserActivity> getRequestedUserActivities(Connection con) throws DAOException;
-
     public abstract List<Activity> getAvailableActivitiesForUserId(Connection con, int userId, int limit, int offset, String orderBy, String... filterBy) throws DAOException;
 
     public abstract int getFilteredCount(Connection con, int userId, String... filterBy) throws DAOException;

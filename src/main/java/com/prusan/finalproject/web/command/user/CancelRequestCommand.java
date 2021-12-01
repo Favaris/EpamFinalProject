@@ -1,13 +1,12 @@
 package com.prusan.finalproject.web.command.user;
 
 import com.prusan.finalproject.db.entity.UserActivity;
-import com.prusan.finalproject.db.service.ActivityService;
+import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.exception.NoSuchActivityException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.command.util.DownloadUsersRequestsCommand;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,17 +28,17 @@ public class CancelRequestCommand implements Command {
         log.debug("retrieved an activity id={}", activityId);
 
         ServiceFactory sf = ServiceFactory.getInstance();
-        ActivityService as = sf.getActivityService();
+        UserActivityService uas = sf.getUserActivityService();
 
         try {
-            UserActivity ua = as.getUserActivity(userId, activityId);
+            UserActivity ua = uas.get(userId, activityId);
             log.debug("retrieved a user activity {}", ua);
             if (ua.isRequestedAbandon()) {
                 ua.setRequestedAbandon(false);
-                as.updateUserActivity(ua);
+                uas.update(ua);
                 log.debug("removed user activity {} from requested for abandonment", ua);
             } else {
-                as.deleteUserActivity(userId, activityId);
+                uas.delete(userId, activityId);
                 log.debug("removed user activity {} from requested for acceptance", ua);
             }
 

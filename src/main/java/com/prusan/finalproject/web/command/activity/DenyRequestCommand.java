@@ -1,13 +1,12 @@
 package com.prusan.finalproject.web.command.activity;
 
 import com.prusan.finalproject.db.entity.UserActivity;
-import com.prusan.finalproject.db.service.ActivityService;
+import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.exception.NoSuchActivityException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.command.util.DownloadUsersRequestsCommand;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,18 +27,18 @@ public class DenyRequestCommand implements Command {
         int activityId = Integer.parseInt(req.getParameter("aId"));
         log.debug("retrieved an activityId={}", activityId);
 
-        ActivityService as = ServiceFactory.getInstance().getActivityService();
+        UserActivityService uas = ServiceFactory.getInstance().getUserActivityService();
         try {
-            UserActivity ua = as.getUserActivity(userId, activityId);
+            UserActivity ua = uas.get(userId, activityId);
 
             log.debug("retrieved a user activity {}", ua);
 
             if (!ua.isAccepted()) {
-                as.deleteUserActivity(userId, activityId);
+                uas.delete(userId, activityId);
                 log.debug("denied adding a user activity {}, such row is deleted", ua);
             } else {
                 ua.setRequestedAbandon(false);
-                as.updateUserActivity(ua);
+                uas.update(ua);
                 log.debug("denied abandonment for a user activity {}", ua);
             }
 

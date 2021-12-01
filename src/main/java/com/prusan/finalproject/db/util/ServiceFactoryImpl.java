@@ -2,15 +2,19 @@ package com.prusan.finalproject.db.util;
 
 import com.prusan.finalproject.db.dao.ActivityDAO;
 import com.prusan.finalproject.db.dao.CategoryDAO;
+import com.prusan.finalproject.db.dao.UserActivityDAO;
 import com.prusan.finalproject.db.dao.UserDAO;
 import com.prusan.finalproject.db.dao.implementor.ActivityDAOImpl;
 import com.prusan.finalproject.db.dao.implementor.CategoryDAOImpl;
+import com.prusan.finalproject.db.dao.implementor.UserActivityDAOImpl;
 import com.prusan.finalproject.db.dao.implementor.UserDAOImpl;
 import com.prusan.finalproject.db.service.ActivityService;
 import com.prusan.finalproject.db.service.CategoryService;
+import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.UserService;
 import com.prusan.finalproject.db.service.implementor.ActivityServiceImpl;
 import com.prusan.finalproject.db.service.implementor.CategoryServiceImpl;
+import com.prusan.finalproject.db.service.implementor.UserActivityServiceImpl;
 import com.prusan.finalproject.db.service.implementor.UserServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +31,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public UserService getUserService() {
         UserServiceImpl us = new UserServiceImpl();
         us.setUserDAO(getUserDAO());
-        us.setActivityDAO(getActivityDAO());
+        us.setUserActivityDAO(getUserActivityDAO());
         log.debug("returned a UserService instance: {}", us);
         return us;
     }
@@ -36,8 +40,6 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public ActivityService getActivityService() {
         ActivityServiceImpl as = new ActivityServiceImpl();
         as.setActivityDAO(getActivityDAO());
-        as.setCategoryDAO(getCategoryDAO());
-        as.setUserDAO(getUserDAO());
         log.debug("returned an ActivityService instance: {}", as);
         return as;
     }
@@ -48,6 +50,14 @@ public class ServiceFactoryImpl implements ServiceFactory {
         cs.setCategoryDAO(getCategoryDAO());
         log.debug("returned a CategoryService instance: {}", cs);
         return cs;
+    }
+
+    @Override
+    public UserActivityService getUserActivityService() {
+        UserActivityServiceImpl uas = new UserActivityServiceImpl();
+        uas.setUserActivityDAO(getUserActivityDAO());
+        log.debug("returned a UserActivityService instance: {}", uas);
+        return uas;
     }
 
     @Override
@@ -63,5 +73,10 @@ public class ServiceFactoryImpl implements ServiceFactory {
     @Override
     public CategoryDAO getCategoryDAO() {
         return new CategoryDAOImpl();
+    }
+
+    @Override
+    public UserActivityDAO getUserActivityDAO() {
+        return new UserActivityDAOImpl();
     }
 }

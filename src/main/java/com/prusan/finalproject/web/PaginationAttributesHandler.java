@@ -30,48 +30,6 @@ public class PaginationAttributesHandler {
         return instance;
     }
 
-    /**
-     * Retrieves attributes 'page', 'pageSize', 'orderBy', 'filterBy' from the session and generates a proper string with url parameters representing these values.<br>
-     * Sets default values to the attributes if there are no such in session attributes. Removes from the session all attributes mentioned above.
-     * <pre>
-     *     Default values for parameters:
-     *     'page' ==> '1'
-     *     'pageSize' ==> '5'
-     *     'orderBy' ==> 'activityName'
-     *     'filterBy' ==> 'all'
-     * </pre>
-     * @return a string containing url parameters for proper pagination.
-     */
-    public String getURLParametersStringWithSortingParams(HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        String page = getPage(session);
-        String pageSize = getPageSize(session);
-        String orderBy = getOrderBy(session);
-        String filterBy = getFilterBy(session);
-
-        String urlParams = String.format("page=%s&pageSize=%s&orderBy=%s&filterBy=%s", page, pageSize, orderBy, filterBy);
-        log.debug("generated a url parameters string with sorting parameters: '{}'", urlParams);
-
-        removeSessionAttributes(session);
-
-        return urlParams;
-    }
-
-    /**
-     * Basically the same as {@link #getURLParametersStringWithSortingParams(HttpServletRequest)}, but without parameters relative to sorting and filtering.
-     */
-    public String getURLParametersString(HttpServletRequest req) {
-        HttpSession session = req.getSession();
-        String page = getPage(session);
-        String pageSize = getPageSize(session);
-
-        String urlParams = String.format("page=%s&pageSize=%s", page, pageSize);
-        log.debug("generated a url parameters string: '{}'", urlParams);
-
-        removeSessionAttributes(session);
-
-        return urlParams;
-    }
 
     public int getPageFromParameters(HttpServletRequest req) {
         String paramPage = req.getParameter("page");
@@ -184,58 +142,4 @@ public class PaginationAttributesHandler {
         return queryString;
     }
 
-    private void removeSessionAttributes(HttpSession session) {
-        session.removeAttribute("page");
-        session.removeAttribute("pageSize");
-        session.removeAttribute("orderBy");
-        session.removeAttribute("filterBy");
-        log.debug("removed all used session parameters");
-    }
-
-    private String getPage(HttpSession session) {
-        String page = (String) session.getAttribute("page");
-        if (page == null) {
-            page = DEFAULT_PAGE_NUMBER.toString();
-            log.debug("did not find a session attribute 'page', setting the default value '{}'", page);
-        } else {
-            log.debug("retrieved a session attribute 'page': '{}'", page);
-        }
-        return page;
-    }
-
-    private String getPageSize(HttpSession session) {
-        String pageSize = (String) session.getAttribute("pageSize");
-        if (pageSize == null) {
-            pageSize = DEFAULT_PAGE_SIZE.toString();
-            log.debug("did not find a session attribute 'pageSize', setting the default value '{}'", pageSize);
-        } else {
-            log.debug("retrieved a session attribute 'pageSize': '{}'", pageSize);
-        }
-        return pageSize;
-    }
-
-    private String getOrderBy(HttpSession session) {
-        String orderBy = (String) session.getAttribute("orderBy");
-        if (orderBy == null) {
-            orderBy = DEFAULT_ORDERING_RULE;
-            log.debug("did not find a session attribute 'orderBy', setting the default value '{}'", orderBy);
-        } else {
-            log.debug("retrieved a session attribute 'orderBy': {}", orderBy);
-        }
-        return orderBy;
-    }
-
-    private String getFilterBy(HttpSession session) {
-        String[] attrFilterBy = (String[]) session.getAttribute("filterBy");
-        if (attrFilterBy == null) {
-            attrFilterBy = DEFAULT_FILTERING_PARAMETERS;
-            log.debug("did not find a session attribute 'filterBy', setting the default value '{}'", Arrays.toString(attrFilterBy));
-        }
-
-        log.debug("retrieved a session attribute 'filterBy': {}", Arrays.toString(attrFilterBy));
-        String filterBy = String.join("&filterBy=", attrFilterBy);
-        log.debug("got a 'filterBy' after join method: '{}'", filterBy);
-
-        return filterBy;
-    }
 }

@@ -1,7 +1,7 @@
 package com.prusan.finalproject.web.command.user;
 
 import com.prusan.finalproject.db.entity.UserActivity;
-import com.prusan.finalproject.db.service.ActivityService;
+import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.exception.DependencyAlreadyExistsException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
@@ -35,9 +35,9 @@ public class RequestActivityAdditionCommand implements Command {
         ua.setUserId(userId);
         ua.setActivityId(activityId);
 
-        ActivityService as = ServiceFactory.getInstance().getActivityService();
+        UserActivityService uas = ServiceFactory.getInstance().getUserActivityService();
         try {
-            as.addUserActivity(ua);
+            uas.save(ua);
         } catch (DependencyAlreadyExistsException e) {
             log.debug("this user activity already exists");
             req.setAttribute("err_msg", "this user activity already exists");

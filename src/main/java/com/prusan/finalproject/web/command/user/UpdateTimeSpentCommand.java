@@ -1,14 +1,12 @@
 package com.prusan.finalproject.web.command.user;
 
 import com.prusan.finalproject.db.entity.UserActivity;
-import com.prusan.finalproject.db.service.ActivityService;
+import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.exception.NoSuchActivityException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.command.util.DownloadUsersActivitiesCommand;
-import com.prusan.finalproject.web.command.util.DownloadUsersRequestsCommand;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,14 +38,14 @@ public class UpdateTimeSpentCommand implements Command {
         int minutes = Integer.parseInt(req.getParameter("minutes"));
         log.debug("retrieved a minutes count={}", minutes);
 
-        ActivityService as = ServiceFactory.getInstance().getActivityService();
+        UserActivityService uas = ServiceFactory.getInstance().getUserActivityService();
 
         try {
-            UserActivity ua = as.getUserActivity(userId, activityId);
+            UserActivity ua = uas.get(userId, activityId);
             log.debug("successfully retrieved a user activity {}", ua);
             int additionalMinutes = hours * 60 + minutes;
             ua.setMinutesSpent(ua.getMinutesSpent() + additionalMinutes);
-            as.updateUserActivity(ua);
+            uas.update(ua);
             log.debug("added {} minutes to time count on user activity {}", additionalMinutes, ua);
 
             return new Chain("controller?command=downloadUsersActivities", false);

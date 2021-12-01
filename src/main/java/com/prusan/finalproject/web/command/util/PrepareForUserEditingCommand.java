@@ -2,7 +2,7 @@ package com.prusan.finalproject.web.command.util;
 
 import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.entity.UserActivity;
-import com.prusan.finalproject.db.service.ActivityService;
+import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.UserService;
 import com.prusan.finalproject.db.service.exception.NoSuchUserException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
@@ -44,12 +44,12 @@ public class PrepareForUserEditingCommand implements Command {
 
         ServiceFactory sf = ServiceFactory.getInstance();
         UserService us = sf.getUserService();
-        ActivityService as = sf.getActivityService();
+        UserActivityService uas = sf.getUserActivityService();
 
         try {
             User u = us.getById(userId);
             log.debug("retrieved a user {}", u);
-            userActivities = as.getAllRunningUsersActivities(userId);
+            userActivities = uas.getAllAcceptedForUser(userId);
             log.debug("retrieved user's activities list, list size: {}", userActivities.size());
             session.setAttribute("userToEdit", u);
             session.setAttribute("userToEditActivities", userActivities);

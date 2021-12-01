@@ -15,7 +15,9 @@ public interface ActivityService {
 
     void update(Activity activity) throws ServiceException;
 
-    void addUserActivity(UserActivity ua) throws ServiceException;
+    void delete(int id) throws ServiceException;
+
+    List<Activity> getActivitiesNotTakenByUser(int userId, int start, int end, String orderBy, String... filterBy) throws ServiceException;
 
     Activity getById(int id) throws ServiceException;
 
@@ -24,18 +26,4 @@ public interface ActivityService {
     List<Activity> getActivities(int start, int end, String orderBy, String... filterBy) throws ServiceException;
 
     int getActivitiesCount(int userId, String... filterBy) throws ServiceException;
-
-    List<UserActivity> getUsersRequests() throws ServiceException;
-
-    List<UserActivity> getAllRunningUsersActivities(int userId) throws ServiceException;
-
-    UserActivity getUserActivity(int userId, int activityId) throws ServiceException;
-
-    void updateUserActivity(UserActivity ua) throws ServiceException;
-
-    void deleteUserActivity(int userId, int activityId) throws ServiceException;
-
-    void delete(int id) throws ServiceException;
-
-    List<Activity> getActivitiesNotTakenByUser(int userId, int start, int end, String orderBy, String... filterBy) throws ServiceException;
 }
