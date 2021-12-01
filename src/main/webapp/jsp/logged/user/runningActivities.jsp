@@ -12,19 +12,17 @@
         <thead>
         <tr>
             <th scope="col">name</th>
-            <th scope="col">categories</th>
+            <th scope="col">category</th>
             <th scope="col">description</th>
             <th scope="col">time spent</th>
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="activity" items="${runningActivities}">
+        <c:forEach var="activity" items="${requestScope.runningActivities}">
             <tr>
                 <td>${activity.name}</td>
                 <td>
-                    <c:forEach var="cat" items="${activity.categories}">
-                        ${cat.name},
-                    </c:forEach>
+                    ${activity.category.name}
                 </td>
                 <td>${activity.description}</td>
                 <td>

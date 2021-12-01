@@ -18,4 +18,6 @@ public interface UserService {
     List<User> getAllWithRoleUser() throws ServiceException;
 
     void delete(int id) throws ServiceException;
+
+    void updateWithUserActivities(User u, List<UserActivity> activities) throws ServiceException;
 }

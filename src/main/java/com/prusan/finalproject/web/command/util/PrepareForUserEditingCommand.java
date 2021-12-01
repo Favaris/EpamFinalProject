@@ -8,6 +8,7 @@ import com.prusan.finalproject.db.service.exception.NoSuchUserException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
@@ -23,37 +24,56 @@ import java.util.List;
  */
 public class PrepareForUserEditingCommand implements Command {
     private static final Logger log = LogManager.getLogger(PrepareForUserEditingCommand.class);
+    private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
         int userId = Integer.parseInt(req.getParameter("uId"));
         log.debug("retrieved user id from request: {}", userId);
+        HttpSession session = req.getSession();
+
+        User userToEdit = (User) session.getAttribute("userToEdit");
+        List<UserActivity> userActivities = (List<UserActivity>) session.getAttribute("userToEditActivities");
+        if (userToEdit != null && userActivities != null && userToEdit.getId() == userId) {
+            log.debug("retrieved a 'userToEdit' attribute '{}'", userToEdit);
+            log.debug("retrieved a 'userActivities' attribute, list size: {}", userActivities.size());
+            log.debug("'userToEdit' attribute's id matches with 'userId' parameter and userActivities are not null, consider all needed data is up-to-date");
+            processPaginationParameters(req, userActivities);
+            return new Chain(Pages.USER_EDIT_PAGE_JSP, true);
+        }
 
         ServiceFactory sf = ServiceFactory.getInstance();
         UserService us = sf.getUserService();
         ActivityService as = sf.getActivityService();
-        HttpSession s = req.getSession();
 
         try {
             User u = us.getById(userId);
             log.debug("retrieved a user {}", u);
-            List<UserActivity> userActivities = as.getAllRunningUsersActivities(userId);
+            userActivities = as.getAllRunningUsersActivities(userId);
             log.debug("retrieved user's activities list, list size: {}", userActivities.size());
-            s.setAttribute("userToEdit", u);
-//            s.setAttribute("userToEditActivities", userActivities);
-//            req.setAttribute("userToEdit", u);
-            req.setAttribute("userToEditActivities", userActivities);
+            session.setAttribute("userToEdit", u);
+            session.setAttribute("userToEditActivities", userActivities);
             log.debug("set retrieved entities as request attributes");
 
+            processPaginationParameters(req, userActivities);
             return new Chain(Pages.USER_EDIT_PAGE_JSP, true);
         } catch (NoSuchUserException ex) {
             log.debug("no such user with id={}", userId);
-            s.setAttribute("err_msg", "User not exists");
+            session.setAttribute("err_msg", "User not exists");
             return new Chain(Pages.ERROR_JSP, false);
         } catch (ServiceException e) {
             log.error("error while trying to load a user by id={}", userId, e);
-            s.setAttribute("err_msg", e.getMessage());
+            session.setAttribute("err_msg", e.getMessage());
             return new Chain(Pages.ERROR_JSP, false);
         }
+    }
+
+    private void processPaginationParameters(HttpServletRequest req, List<UserActivity> userActivities) {
+        int page = handler.getPageFromParameters(req);
+        int pageSize = handler.getPageSizeFromParameters(req);
+        handler.setPaginationParametersAsRequestAttributes(req, userActivities.size(), pageSize, page, null, null);
+        List<UserActivity> paginatedList = handler.getPaginationSublist(userActivities, page, pageSize);
+        req.setAttribute("paginatedActivities", paginatedList);
+        log.debug("retrieved a paginated list with size={}, set it as the req attribute 'paginatedActivities'", paginatedList.size());
     }
 }

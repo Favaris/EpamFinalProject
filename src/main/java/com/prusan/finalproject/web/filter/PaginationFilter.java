@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 public class PaginationFilter implements Filter {
     private static final Logger log = LogManager.getLogger(PaginationFilter.class);
     private static final Pattern disassembler = Pattern.compile(
-            "^.*controller\\?command=(showActivitiesPage|showCategoriesPage)&page=([0-9]+)&pageSize=([0-9]+)(&orderBy=([^&]+))?(&filterBy=([^&]+))*$");
+            "^.*&page=([0-9]+)&pageSize=([0-9]+)(&orderBy=([^&]+))?(&filterBy=([^&]+))*$");
     private static final Pattern filtersPattern = Pattern.compile("&filterBy=([^&]+)*");
 
     @Override
@@ -40,13 +40,13 @@ public class PaginationFilter implements Filter {
         }
 
         log.debug("page matches");
-        String page = m.group(2);
+        String page = m.group(1);
         log.debug("page ==> '{}', set as a session attribute 'page'", page);
         session.setAttribute("page", page);
-        String pageSize = m.group(3);
+        String pageSize = m.group(2);
         log.debug("pageSize ==> '{}', set as a session attribute 'pageSize'", pageSize);
         session.setAttribute("pageSize", pageSize);
-        String orderBy = m.group(5);
+        String orderBy = m.group(4);
         if (orderBy != null) {
             log.debug("orderBy ==> '{}', set as a session attribute 'orderBy'", orderBy);
             session.setAttribute("orderBy", orderBy);

@@ -42,6 +42,6 @@ public class RequestActivityAbandonmentCommand implements Command {
             return new Chain(Pages.ERROR_JSP, false);
         }
 
-        return new Chain("controller?command=showActivitiesPage", false);
+        return new Chain("controller?command=downloadUsersActivities", false);
     }
 }

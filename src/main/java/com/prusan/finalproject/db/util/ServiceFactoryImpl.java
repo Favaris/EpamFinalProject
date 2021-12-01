@@ -27,6 +27,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public UserService getUserService() {
         UserServiceImpl us = new UserServiceImpl();
         us.setUserDAO(getUserDAO());
+        us.setActivityDAO(getActivityDAO());
         log.debug("returned a UserService instance: {}", us);
         return us;
     }

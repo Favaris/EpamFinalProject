@@ -46,12 +46,7 @@ public class DownloadAllCategoriesCommand implements Command {
             int pageSize = handler.getPageSizeFromParameters(req);
             handler.setPaginationParametersAsRequestAttributes(req, cats.size(), pageSize, page, null, null);
 
-            List<Category> paginatedCats = getPaginationSublist(cats, page, pageSize);
-            if (paginatedCats.size() == 0 && page > 1) {
-                log.debug("sublist is empty while page={}, reducing the page count and making a new sublist", page);
-                --page;
-                paginatedCats = getPaginationSublist(cats, page, pageSize);
-            }
+            List<Category> paginatedCats = handler.getPaginationSublist(cats, page, pageSize);
 
             req.getSession().setAttribute("categories", paginatedCats);
             log.debug("set a request attribute 'categories', list size={}", paginatedCats.size());
@@ -61,11 +56,5 @@ public class DownloadAllCategoriesCommand implements Command {
             req.getSession().setAttribute("err_msg", "can not download all categories");
             return new Chain(Pages.ERROR_JSP, false);
         }
-    }
-
-    private List<Category> getPaginationSublist(List<Category> cats, int page, int pageSize) {
-        List<Category> paginatedCats = cats.subList(pageSize * (page - 1), Math.min(pageSize * page, cats.size()));
-        log.debug("got a sublist for pagination, list size={}", paginatedCats.size());
-        return paginatedCats;
     }
 }

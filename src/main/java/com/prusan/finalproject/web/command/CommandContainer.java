@@ -46,7 +46,6 @@ public class CommandContainer {
         commands.put("cancelRequest", new CancelRequestCommand());
         commands.put("updateSpentTime", new UpdateTimeSpentCommand());
         commands.put("removeUserActivity", new DeleteUserActivityCommand());
-        commands.put("showAddActivityForUserPage", new PrepareForAdditionActivitiesForUserCommand());
         commands.put("addUserActivity", new AddUserActivityCommand());
         commands.put("showUsersReport", new GetUserReportCommand());
         commands.put("deleteCategory", new DeleteCategoryCommand());

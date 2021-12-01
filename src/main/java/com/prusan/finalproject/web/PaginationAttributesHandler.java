@@ -1,11 +1,13 @@
 package com.prusan.finalproject.web;
 
+import com.prusan.finalproject.db.entity.Category;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Class that retrieves pagination relative attributes from the HttpServletRequest and returns corresponding values.
@@ -135,6 +137,23 @@ public class PaginationAttributesHandler {
             req.setAttribute("filterBy", filterBy);
             log.debug("set a 'filterBy' attribute: '{}'", orderBy);
         }
+    }
+
+    /**
+     * Utility method for getting a pagination sublist from a list of all entities.
+     * @param entities list of all entities
+     * @param page page number
+     * @param pageSize page size (number of elements displayed on the page)
+     */
+    public <E> List<E> getPaginationSublist(List<E> entities, int page, int pageSize) {
+        List<E> paginatedList = entities.subList(pageSize * (page - 1), Math.min(pageSize * page, entities.size()));
+        log.debug("got a sublist for pagination, list size={}", paginatedList.size());
+        if (paginatedList.size() == 0 && page > 1) {
+            log.debug("sublist is empty while page={}, reducing the page count and making a new sublist", page);
+            --page;
+            paginatedList = getPaginationSublist(entities, page, pageSize);
+        }
+        return paginatedList;
     }
 
     private void removeSessionAttributes(HttpSession session) {

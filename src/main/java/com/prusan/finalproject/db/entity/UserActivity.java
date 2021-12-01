@@ -12,6 +12,11 @@ public class UserActivity extends Activity {
     public UserActivity() {
     }
 
+    public UserActivity(int userId, int activityId) {
+        setActivityId(activityId);
+        setUserId(userId);
+    }
+
     public UserActivity(int minutesSpent, boolean accepted, boolean requestedAbandon) {
         this.minutesSpent = minutesSpent;
         this.accepted = accepted;
@@ -32,8 +37,9 @@ public class UserActivity extends Activity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (o.getClass() == super.getClass()) {
+            return super.equals(o);
+        }
 
         UserActivity that = (UserActivity) o;
 
@@ -43,7 +49,7 @@ public class UserActivity extends Activity {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + userId.hashCode() + getActivityId().hashCode();
+        result = 31 * result + (userId != null ? userId.hashCode() : 0);
         return result;
     }
 

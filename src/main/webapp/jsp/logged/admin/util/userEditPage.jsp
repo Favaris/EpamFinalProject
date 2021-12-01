@@ -34,6 +34,36 @@
         <input type="hidden" name="uId" value="${sessionScope.userToEdit.id}">
         <button type="submit" class="btn btn-black">Add activities</button>
     </form>
+    <div>
+    <form action="${root}/controller">
+        <input type="hidden" name="command" value="showEditUserPage">
+        <input type="hidden" name="uId" value="${sessionScope.userToEdit.id}">
+        <input type="hidden" name="page" value="${requestScope.page - 1}">
+        <input type="hidden" name="pageSize" value="5">
+        <c:choose>
+            <c:when test="${requestScope.page - 1 > 0}">
+                <button type="submit" class="btn btn-black">Prev</button>
+            </c:when>
+            <c:otherwise>
+                <button type="submit" class="btn btn-black" disabled>Prev</button>
+            </c:otherwise>
+        </c:choose>
+    </form>
+    <form action="${root}/controller">
+        <input type="hidden" name="command" value="showEditUserPage">
+        <input type="hidden" name="uId" value="${sessionScope.userToEdit.id}">
+        <input type="hidden" name="page" value="${requestScope.page + 1}">
+        <input type="hidden" name="pageSize" value="5">
+        <c:choose>
+            <c:when test="${requestScope.page < requestScope.pageCount}">
+                <button type="submit" class="btn btn-black">Next</button>
+            </c:when>
+            <c:otherwise>
+                <button type="submit" class="btn btn-black" disabled>Next</button>
+            </c:otherwise>
+        </c:choose>
+    </form>
+    </div>
     <table class="table">
         <thead>
         <tr>
@@ -44,49 +74,35 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="activity" items="${requestScope.userToEditActivities}">
+        <c:forEach var="activity" items="${requestScope.paginatedActivities}">
             <tr>
                 <td>${activity.name}</td>
                 <td>
-                    <c:forEach var="cat" items="${activity.categories}">
-                        ${cat.name},
-                    </c:forEach>
+                    ${activity.category.name}
                 </td>
                 <td>${activity.description}</td>
                 <td>
                     <ut:convert minutes="${activity.minutesSpent}" minutesLabel="mins" hoursLabel="hrs"/>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-black" data-toggle="modal" data-target="#${'requestActivityAbandonment'.concat(activity.id)}">
-                        Remove
-                    </button>
-                    <div class="modal fade" id="${'requestActivityAbandonment'.concat(activity.id)}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Confirm removing ${activity.name} from ${sessionScope.userToEdit.login}</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    Are you sure that you want to remove this activity from ${sessionScope.userToEdit.login}?<br>
-                                    <strong>
-                                        Warn: this action is irreversible. It will delete this activity from user and all time spent on it.
-                                    </strong>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <form action="${root}/controller" method="post">
-                                        <input type="hidden" name="command" value="removeUserActivity">
-                                        <input type="hidden" name="aId" value="${activity.id}">
-                                        <input type="hidden" name="uId" value="${sessionScope.userToEdit.id}">
-                                        <button type="submit" class="btn btn-black">Confirm</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <c:choose>
+                        <c:when test="${sessionScope.removedActivities.contains(activity)}">
+                            <form action="${root}/controller" method="post">
+                                <input type="hidden" name="command" value="addUserActivity">
+                                <input type="hidden" name="aId" value="${activity.id}">
+                                <input type="hidden" name="uId" value="${sessionScope.userToEdit.id}">
+                                <button type="submit" class="btn btn-black">Add back</button>
+                            </form>
+                        </c:when>
+                        <c:otherwise>
+                            <form action="${root}/controller" method="post">
+                                <input type="hidden" name="command" value="removeUserActivity">
+                                <input type="hidden" name="aId" value="${activity.id}">
+                                <input type="hidden" name="uId" value="${sessionScope.userToEdit.id}">
+                                <button type="submit" class="btn btn-black">Remove</button>
+                            </form>
+                        </c:otherwise>
+                    </c:choose>
                 </td>
             </tr>
         </c:forEach>

@@ -35,7 +35,11 @@ public class Activity implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
+        if (o.getClass() == UserActivity.class) {
+            UserActivity userActivity = (UserActivity) o;
+            return id.equals(userActivity.getActivityId());
+        }
 
         Activity activity = (Activity) o;
 
@@ -44,7 +48,7 @@ public class Activity implements Serializable {
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override

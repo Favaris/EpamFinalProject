@@ -22,12 +22,12 @@ public abstract class PaginationQueries {
     static {
         queries = new HashMap<>();
 
-        queries.put("activityAll", "SELECT * FROM activities, categories WHERE c_id = a_category_id ORDER BY %s ASC LIMIT ? OFFSET ?");
-        queries.put("activity", "SELECT * FROM activities, categories WHERE c_id = a_category_id AND a_category_id IN (%s) ORDER BY %s ASC LIMIT ? OFFSET ?");
+        queries.put("activityAll", "SELECT * FROM activities, categories WHERE c_id = a_category_id ORDER BY %s DESC LIMIT ? OFFSET ?");
+        queries.put("activity", "SELECT * FROM activities, categories WHERE c_id = a_category_id AND a_category_id IN (%s) ORDER BY %s DESC LIMIT ? OFFSET ?");
         queries.put("activityForUser", "SELECT * FROM activities, categories " +
-                "WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?) AND c_id = activities.a_category_id AND a_category_id IN (%s) ORDER BY %s ASC LIMIT ? OFFSET ?");
+                "WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?) AND c_id = activities.a_category_id AND a_category_id IN (%s) ORDER BY %s DESC LIMIT ? OFFSET ?");
         queries.put("activityForUserAll", "SELECT * FROM activities, categories " +
-                "WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?) AND c_id = a_category_id ORDER BY %s ASC LIMIT ? OFFSET ?");
+                "WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?) AND c_id = a_category_id ORDER BY %s DESC LIMIT ? OFFSET ?");
 
         names = new HashMap<>();
 

@@ -44,10 +44,10 @@ public class Chain {
      */
     public void moveForth(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (doForward) {
-            log.debug("moved forward to {}", url);
+            log.debug("moved forward to '{}'", url);
             req.getRequestDispatcher(url).forward(req, resp);
         } else {
-            log.debug("sent redirect to {}", url);
+            log.debug("sent redirect to '{}'", url);
             resp.sendRedirect(url);
         }
     }

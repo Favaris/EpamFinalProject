@@ -1,5 +1,7 @@
 package com.prusan.finalproject.db.service.implementor;
 
+import com.prusan.finalproject.db.dao.ActivityDAO;
+import com.prusan.finalproject.db.dao.BasicDAO;
 import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.dao.UserDAO;
 import com.prusan.finalproject.db.entity.User;
@@ -25,6 +27,11 @@ public class UserServiceImpl implements UserService {
     private final DBUtils dbUtils = DBUtils.getInstance();
 
     private UserDAO userDAO;
+    private ActivityDAO activityDAO;
+
+    public void setActivityDAO(ActivityDAO activityDAO) {
+        this.activityDAO = activityDAO;
+    }
 
     public void setUserDAO(UserDAO dao) {
         userDAO = dao;
@@ -122,9 +129,58 @@ public class UserServiceImpl implements UserService {
             userDAO.remove(con, id);
         } catch (SQLException throwables) {
             log.error("unable to get the connection", throwables);
+            throw new ServiceException("unable to get the connection", throwables);
         } catch (DAOException e) {
             log.debug("unable to delete the user by id={}", id, e);
             throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void updateWithUserActivities(User u, List<UserActivity> activities) throws ServiceException {
+        Connection con = null;
+        try {
+            con = dbUtils.getConnection(false);
+
+            userDAO.update(con, u);
+            log.debug("successfully updated a user");
+
+            for (UserActivity ua : activities) {
+                activityDAO.addUserActivity(con, ua);
+                log.debug("successfully added a user activity {}", ua);
+            }
+            log.debug("successfully saved all new information about user {}", u);
+
+            con.commit();
+        } catch (SQLException throwables) {
+            log.error("unable to get the connection", throwables);
+            throw new ServiceException("unable to get the connection", throwables);
+        } catch (DAOException e) {
+            rollback(con);
+            log.error("failed to make a transaction in #updateWithUserActivities({}, {})", u, activities, e);
+            throw new ServiceException("Failed to save the changes", e);
+        } finally {
+            close(con);
+        }
+    }
+
+    private void rollback(Connection con) {
+        if (con != null) {
+            try {
+                con.rollback();
+            } catch (SQLException ex) {
+                log.error("failed to rollback on a connection {}", con, ex);
+            }
+        }
+    }
+
+    private void close(AutoCloseable con) {
+        if (con != null) {
+            try {
+                con.close();
+            } catch (Exception e) {
+                log.warn("unable to close a resource {}", con, e);
+            }
         }
     }
 }

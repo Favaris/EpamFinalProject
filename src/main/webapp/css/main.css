@@ -111,3 +111,7 @@ body {
     background-color: #FFFFFF;
     color: black;
 }
+
+div form {
+    display: inline-block;
+}
