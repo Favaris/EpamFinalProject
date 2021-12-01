@@ -48,9 +48,9 @@ public class RequestActivityAdditionCommand implements Command {
             return new Chain(Pages.ERROR_JSP, false);
         }
 
-        String urlParams = handler.getURLParametersStringWithSortingParams(req);
-        log.debug("received a url params string: '{}'", urlParams);
+        String queryString = handler.getQueryStringWithSortingParameters(s);
+        log.debug("received a url params string: '{}'", queryString);
 
-        return new Chain("controller?command=showActivitiesPage&" + urlParams, false);
+        return new Chain("controller?command=showActivitiesPage&" + queryString, false);
     }
 }

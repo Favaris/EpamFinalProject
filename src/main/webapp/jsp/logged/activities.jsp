@@ -2,7 +2,8 @@
 <%@ include file="/WEB-INF/jspf/taglibs.jspf" %>
 <%@taglib tagdir="/WEB-INF/tags/html" prefix="my"%>
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
-
+<%@taglib uri="http://com.prusan.finalproject.util" prefix="ut" %>
+<ut:set-pagination-query includeSortingParameters="true"/>
 <s:check role="${sessionScope.user.role}" permission="logged"/>
 <my:html-carcass title="${sessionScope.user.login} - activities">
     <div class="managing sidenav">

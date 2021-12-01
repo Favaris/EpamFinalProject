@@ -55,10 +55,10 @@ public class AddActivityCommand implements Command {
             session.removeAttribute("categories");
             session.removeAttribute("invalidActivity");
 
-            String urlParams = handler.getURLParametersStringWithSortingParams(req);
-            log.debug("received a url params string: '{}'", urlParams);
+            String queryString = handler.getQueryStringWithSortingParameters(session);
+            log.debug("received a query string: '{}'", queryString);
 
-            return new Chain("controller?command=showActivitiesPage&" + urlParams, false);
+            return new Chain("controller?command=showActivitiesPage&" + queryString, false);
         } catch (NameIsTakenException ex) {
             log.debug("unable to add new activity {}, such activity already exists", ac);
             session.setAttribute("invalidActivity", ac);

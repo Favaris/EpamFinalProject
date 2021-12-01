@@ -8,7 +8,6 @@ import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.command.util.DownloadAllCategoriesCommand;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,9 +39,9 @@ public class AddCategoryCommand implements Command {
             req.getSession().setAttribute("err_msg", e.getMessage());
             return new Chain(Pages.ERROR_JSP, false);
         }
-        String urlParams = handler.getURLParametersStringWithSortingParams(req);
-        log.debug("received a url params string: '{}'", urlParams);
+        String queryString = handler.getQueryString(req.getSession());
+        log.debug("received a url params string: '{}'", queryString);
 
-        return new Chain("controller?command=showCategoriesPage&" + urlParams, false);
+        return new Chain("controller?command=showCategoriesPage&" + queryString, false);
     }
 }

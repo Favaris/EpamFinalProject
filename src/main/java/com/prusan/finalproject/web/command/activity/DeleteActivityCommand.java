@@ -27,14 +27,16 @@ public class DeleteActivityCommand implements Command {
             as.delete(activityId);
             log.debug("deleted an activity with id={}", activityId);
 
-            String urlParams = handler.getURLParametersStringWithSortingParams(req);
-            log.debug("received a url params string: '{}'", urlParams);
-
-            return new Chain("controller?command=showActivitiesPage&" + urlParams, false);
+            String queryString = handler.getQueryStringWithSortingParameters(req.getSession());
+            return new Chain("controller?command=showActivitiesPage&" + queryString, false);
         } catch (ServiceException e) {
             log.error("unable to delete an activity by id={}", activityId, e);
             req.getSession().setAttribute("err_msg", "Can not delete this activity");
             return new Chain(Pages.ERROR_JSP, false);
         }
     }
+
+
+
+
 }

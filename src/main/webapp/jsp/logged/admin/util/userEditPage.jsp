@@ -3,6 +3,7 @@
 <%@taglib tagdir="/WEB-INF/tags/html" prefix="my"%>
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
 <%@taglib uri="http://com.prusan.finalproject.util" prefix="ut" %>
+<ut:set-pagination-query/>
 <s:check role="${sessionScope.user.role}"  permission="admin"/>
 <my:html-carcass title="${sessionScope.user.login} - edit user ${sessionScope.userToEdit.login}">
     <form action="${root}/controller" method="post">

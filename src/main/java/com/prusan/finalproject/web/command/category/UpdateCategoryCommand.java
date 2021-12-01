@@ -42,9 +42,9 @@ public class UpdateCategoryCommand implements Command {
             return new Chain(Pages.ERROR_JSP, false);
         }
 
-        String urlParams = handler.getURLParametersStringWithSortingParams(req);
-        log.debug("received a url params string: '{}'", urlParams);
+        String queryString = handler.getQueryString(req.getSession());
+        log.debug("received a url params string: '{}'", queryString);
 
-        return new Chain("controller?command=showCategoriesPage&" + urlParams, false);
+        return new Chain("controller?command=showCategoriesPage&" + queryString, false);
     }
 }

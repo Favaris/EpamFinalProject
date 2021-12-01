@@ -56,10 +56,10 @@ public class UpdateActivityCommand implements Command {
             s.removeAttribute("categories");
             log.debug("removed activity specific attributes from a session");
 
-            String urlParams = handler.getURLParametersStringWithSortingParams(req);
-            log.debug("received a url params string: '{}'", urlParams);
+            String queryString = handler.getQueryStringWithSortingParameters(s);
+            log.debug("received a url params string: '{}'", queryString);
 
-            return new Chain("controller?command=showActivitiesPage&" + urlParams, false);
+            return new Chain("controller?command=showActivitiesPage&" + queryString, false);
         } catch (ServiceException e) {
             log.error("unable to update an activity {}", activity);
             req.getSession().setAttribute("err_msg", e.getMessage());

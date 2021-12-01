@@ -73,8 +73,8 @@ public class AddUserActivityCommand implements Command {
 
             userActivities.add(ua);
             log.debug("added user activity {} to the 'userToEditActivities' list, list size: {}", ua, userActivities.size());
-            String url = handler.getURLParametersStringWithSortingParams(req);
-            return new Chain(String.format("controller?command=showActivitiesPage&uId=%d&", userId) + url, false);
+            String queryString = handler.getQueryStringWithSortingParameters(session);
+            return new Chain(String.format("controller?command=showActivitiesPage&uId=%d&", userId) + queryString, false);
         } catch (NoSuchActivityException e) {
             log.warn("did not find an activity by activityId={}", activityId, e);
             session.setAttribute("err_msg", e.getMessage());

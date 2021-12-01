@@ -145,6 +145,12 @@ public class UserServiceImpl implements UserService {
             userDAO.update(con, u);
             log.debug("successfully updated a user");
 
+            List<UserActivity> userActivities = userDAO.getRunningActivities(con, u.getId());
+
+            for (UserActivity ua : userActivities) {
+                activityDAO.deleteUserActivity(con, ua.getUserId(), ua.getActivityId());
+            }
+
             for (UserActivity ua : activities) {
                 activityDAO.addUserActivity(con, ua);
                 log.debug("successfully added a user activity {}", ua);
