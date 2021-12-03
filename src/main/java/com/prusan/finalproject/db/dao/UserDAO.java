@@ -1,8 +1,6 @@
 package com.prusan.finalproject.db.dao;
 
-import com.prusan.finalproject.db.entity.Activity;
 import com.prusan.finalproject.db.entity.User;
-import com.prusan.finalproject.db.entity.UserActivity;
 
 import java.sql.Connection;
 import java.util.List;
@@ -17,5 +15,7 @@ public abstract class UserDAO extends BasicDAO<User> {
 
     public abstract List<User> getAllAdmins(Connection con) throws DAOException;
 
-    public abstract List<User> getAllWithRoleUser(Connection con) throws DAOException;
+    public abstract List<User> getWithRoleUser(Connection con, int limit, int offset) throws DAOException;
+
+    public abstract int getCountWithRoleUser(Connection con) throws DAOException;
 }

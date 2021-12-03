@@ -3,7 +3,6 @@ package com.prusan.finalproject.db.dao.implementor;
 import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.dao.UserDAO;
 import com.prusan.finalproject.db.entity.User;
-import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.util.Fields;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +24,8 @@ public class UserDAOImpl extends UserDAO {
     private static final String SELECT_ALL_USERS = "SELECT * FROM users";
     public static final String SELECT_USER_BY_LOGIN = "SELECT * FROM users WHERE u_login = ?";
     public static final String GET_ALL_ADMINS = "SELECT * FROM users WHERE u_role='admin'";
-    public static final String GET_ALL_WITH_ROLE_USER = "SELECT * FROM users WHERE u_role='user'";
+    public static final String GET_DEFAULT_USERS = "SELECT * FROM users WHERE u_role='user' LIMIT ? OFFSET ?";
+    public static final String GET_COUNT_WITH_ROLE_USER = "SELECT COUNT(*) FROM users WHERE u_role = 'user'";
 
     /**
      * Inserts a user with the given fields. For passed user object, updates the id field if the insertion was successful.
@@ -216,10 +216,13 @@ public class UserDAOImpl extends UserDAO {
      * @throws DAOException if there are some issues with the connection to the db.
      */
     @Override
-    public List<User> getAllWithRoleUser(Connection con) throws DAOException {
+    public List<User> getWithRoleUser(Connection con, int limit, int offset) throws DAOException {
         List<User> users = new ArrayList<>();
-        try (Statement ps = con.createStatement();
-             ResultSet rs = ps.executeQuery(GET_ALL_WITH_ROLE_USER)) {
+        ResultSet rs = null;
+        try (PreparedStatement ps = con.prepareStatement(GET_DEFAULT_USERS)) {
+            ps.setInt(1, limit);
+            ps.setInt(2, offset);
+            rs = ps.executeQuery();
             while (rs.next()) {
                 User u = getUser(rs);
                 log.debug("retrieved a user with role='user': {}", u);
@@ -229,8 +232,30 @@ public class UserDAOImpl extends UserDAO {
         } catch (SQLException throwables) {
             log.error("error in getAllWithRoleUser()", throwables);
             throw new DAOException(throwables);
+        } finally {
+            try {
+                close(rs);
+            } catch (DAOException e) {
+                log.warn("failed to close a result set: {}", rs, e);
+            }
         }
         return users;
+    }
+
+    @Override
+    public int getCountWithRoleUser(Connection con) throws DAOException {
+        try (Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(GET_COUNT_WITH_ROLE_USER)) {
+            int count = 0;
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            log.debug("retrieved a users with role='user' count: {}", count);
+            return count;
+        } catch (SQLException throwables) {
+            log.error("failed to get count of all users with role='user'", throwables);
+            throw new DAOException("unable to get default users count", throwables);
+        }
     }
 
     private User getUser(ResultSet rs) throws SQLException {

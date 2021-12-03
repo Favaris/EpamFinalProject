@@ -15,7 +15,9 @@ public interface UserService {
 
     User getByLoginAndPass(String login, String pass) throws ServiceException;
 
-    List<User> getAllWithRoleUser() throws ServiceException;
+    List<User> getWithRoleUser(int start, int end) throws ServiceException;
+
+    int getDefaultUsersCount() throws ServiceException;
 
     void delete(int id) throws ServiceException;
 

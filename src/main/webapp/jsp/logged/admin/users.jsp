@@ -5,6 +5,32 @@
 
 <s:check role="${sessionScope.user.role}"  permission="admin"/>
 <my:html-carcass title="${sessionScope.user.login} - users list">
+    <form action="${root}/controller">
+        <input type="hidden" name="command" value="showAllUsers">
+        <input type="hidden" name="page" value="${requestScope.page - 1}">
+        <input type="hidden" name="pageSize" value="5">
+        <c:choose>
+            <c:when test="${requestScope.page - 1 > 0}">
+                <button type="submit" class="btn btn-black">Prev</button>
+            </c:when>
+            <c:otherwise>
+                <button type="submit" class="btn btn-black" disabled>Prev</button>
+            </c:otherwise>
+        </c:choose>
+    </form>
+    <form action="${root}/controller">
+        <input type="hidden" name="command" value="showAllUsers">
+        <input type="hidden" name="page" value="${requestScope.page + 1}">
+        <input type="hidden" name="pageSize" value="5">
+        <c:choose>
+            <c:when test="${requestScope.page < requestScope.pageCount}">
+                <button type="submit" class="btn btn-black">Next</button>
+            </c:when>
+            <c:otherwise>
+                <button type="submit" class="btn btn-black" disabled>Next</button>
+            </c:otherwise>
+        </c:choose>
+    </form>
     <form action="${root}/controller" method="get">
         <input type="hidden" name="command" value="showUsersReport">
         <button type="submit" class="btn btn-black">Get users report</button>

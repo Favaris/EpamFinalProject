@@ -45,6 +45,7 @@ public class SignInCommand implements Command {
             } catch (ServiceException e) {
                 log.warn("could not get user by login {} and pass properly", login, e);
                 req.getSession().setAttribute("err_msg", e.getMessage());
+                return new Chain(Pages.ERROR_JSP, false);
             }
         }
 

@@ -29,7 +29,7 @@ public class GetUserReportCommand implements Command {
 
         try {
             Map<User, List<UserActivity>> report = new HashMap<>();
-            for (User user : us.getAllWithRoleUser()) {
+            for (User user : us.getWithRoleUser(0, Integer.MAX_VALUE)) {
                 log.debug("retrieved a user {}", user);
                 List<UserActivity> userActivities = uas.getAllAcceptedForUser(user.getId());
                 log.debug("retrieved a list of all activities for user {}", user);

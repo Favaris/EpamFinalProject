@@ -60,10 +60,10 @@
             <tr>
                 <td>${category.name}</td>
                 <td>
-                    <button type="button" class="btn btn-black" data-toggle="modal" data-target="#${'editCategoryModal'.concat(category.id)}">
+                    <button type="button" class="btn btn-black" data-toggle="modal" data-target="#editCategoryModal${category.id}">
                         Edit
                     </button>
-                    <div class="modal fade" id="${'editCategoryModal'.concat(category.id)}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
+                    <div class="modal fade" id="editCategoryModal${category.id}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <form action="${root}/controller" method="post">
                                 <input type="hidden" name="command" value="updateCategory">
@@ -88,10 +88,10 @@
                         </div>
                     </div>
 
-                    <button type="button" class="btn btn-black" data-toggle="modal" data-target="#confirmCategoryDeletion">
+                    <button type="button" class="btn btn-black" data-toggle="modal" data-target="#confirmCategoryDeletion${category.id}">
                         Delete
                     </button>
-                    <div class="modal fade" id="confirmCategoryDeletion" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
+                    <div class="modal fade" id="confirmCategoryDeletion${category.id}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">

@@ -103,11 +103,13 @@ public class UserServiceImpl implements UserService {
     /**
      * Return a list of all users with role='user'.
      * @throws ServiceException if there are some connection issues with the db.
+     * @param start
+     * @param end
      */
     @Override
-    public List<User> getAllWithRoleUser() throws ServiceException {
+    public List<User> getWithRoleUser(int start, int end) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
-            List<User> users = userDAO.getAllWithRoleUser(con);
+            List<User> users = userDAO.getWithRoleUser(con, end, start);
             log.debug("retrieved a list of all users with role='user', list size: {}", users.size());
             return users;
         } catch (SQLException throwables) {
@@ -116,6 +118,21 @@ public class UserServiceImpl implements UserService {
         } catch (DAOException e) {
             log.error("unable to get all users with role='user'");
             throw new ServiceException("error while downloading all users", e);
+        }
+    }
+
+    @Override
+    public int getDefaultUsersCount() throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            int count = userDAO.getCountWithRoleUser(con);
+            log.debug("received a default users count: {}", count);
+            return count;
+        } catch (SQLException throwables) {
+            log.error("unable to get the connection", throwables);
+            throw new ServiceException("unable to get the connection", throwables);
+        } catch (DAOException e) {
+            log.error("failed to get default users count", e);
+            throw new ServiceException("Failed to get amount of all default users", e);
         }
     }
 
