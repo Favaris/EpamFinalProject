@@ -11,6 +11,10 @@ import java.util.List;
 public interface CategoryService {
     List<Category> getAll() throws ServiceException;
 
+    List<Category> getCategories(int start, int end) throws ServiceException;
+
+    int getCount() throws ServiceException;
+
     void save(Category category) throws ServiceException;
 
     void update(Category category) throws ServiceException;

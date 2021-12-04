@@ -29,7 +29,7 @@ import java.util.Set;
  * </pre>
  */
 public class AddUserActivityCommand implements Command {
-    private static final Logger log = LogManager.getLogger(AddUserActivityCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override

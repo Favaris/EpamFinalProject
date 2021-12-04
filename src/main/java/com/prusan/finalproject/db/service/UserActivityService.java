@@ -13,6 +13,12 @@ public interface UserActivityService {
 
     List<UserActivity> getAllAcceptedForUser(int userId) throws ServiceException;
 
+    List<UserActivity> getAcceptedForUser(int userId, int start, int end, String orderBy, String[] filterBy) throws ServiceException;
+
+    int getActivitiesCountForUser(int userId) throws ServiceException;
+
+    int getSummarizedSpentTimeForUser(int userId) throws ServiceException;
+
     UserActivity get(int userId, int activityId) throws ServiceException;
 
     void update(UserActivity ua) throws ServiceException;

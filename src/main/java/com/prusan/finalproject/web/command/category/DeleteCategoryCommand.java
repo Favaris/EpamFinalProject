@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class DeleteCategoryCommand implements Command {
-    private static final Logger log = LogManager.getLogger(DeleteCategoryCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override

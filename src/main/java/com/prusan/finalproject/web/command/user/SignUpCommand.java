@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class SignUpCommand implements Command {
-    private static final Logger log = LogManager.getLogger(SignUpCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final Validator validator = Validator.getInstance();
 
 

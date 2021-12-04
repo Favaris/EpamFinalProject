@@ -10,8 +10,6 @@ import java.util.List;
  * DAO class that defines methods applicable only to Activity entity.
  */
 public abstract class ActivityDAO extends BasicDAO<Activity> {
-    public abstract Activity getByName(Connection con, String name) throws DAOException;
-
     public abstract List<Activity> getActivities(Connection con, int limit, int offset, String orderBy, String... filterBy) throws DAOException;
 
     public abstract int getCount(Connection con, int userId) throws DAOException;

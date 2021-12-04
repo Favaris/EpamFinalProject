@@ -25,7 +25,7 @@ import org.apache.logging.log4j.internal.LogManagerStatus;
  * Basic implementor for ServiceFactory interface. Uses classes from db.dao.implementor and db.service.implementor packages.
  */
 public class ServiceFactoryImpl implements ServiceFactory {
-    private static final Logger log = LogManager.getLogger(ServiceFactoryImpl.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     @Override
     public UserService getUserService() {

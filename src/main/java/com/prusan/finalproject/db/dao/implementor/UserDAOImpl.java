@@ -15,7 +15,7 @@ import java.util.List;
  * Implementor class for UserDAO. Has SQL queries as private static fields.
  */
 public class UserDAOImpl extends UserDAO {
-    private static final Logger log = LogManager.getLogger(UserDAOImpl.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     private static final String INSERT_USER = "INSERT INTO users VALUES (DEFAULT, ?, ?, ?, ?, ?)";
     private static final String GET_USER_BY_ID = "SELECT * FROM users WHERE u_id = ?";

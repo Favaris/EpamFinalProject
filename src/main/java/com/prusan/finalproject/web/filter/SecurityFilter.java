@@ -1,12 +1,10 @@
 package com.prusan.finalproject.web.filter;
 
-import com.prusan.finalproject.web.constant.DBConstants;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -16,7 +14,7 @@ import java.util.*;
 
 //@WebFilter("/*")
 public class SecurityFilter implements Filter {
-    private static final Logger log = LogManager.getLogger(SecurityFilter.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final Map<String, List<String>> permissions;
 
     static {

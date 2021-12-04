@@ -18,7 +18,7 @@ import java.io.IOException;
  * </pre>
  */
 public class TimeSpentTag extends SimpleTagSupport {
-    private static final Logger log = LogManager.getLogger(TimeSpentTag.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     private int minutes;
     private String minutesLabel;

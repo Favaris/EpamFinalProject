@@ -13,7 +13,7 @@ import java.util.List;
  * Class that retrieves pagination relative attributes from the HttpServletRequest and returns corresponding values.
  */
 public class PaginationAttributesHandler {
-    private static final Logger log = LogManager.getLogger(PaginationAttributesHandler.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static PaginationAttributesHandler instance;
 
     public static final Integer DEFAULT_PAGE_NUMBER = 1;

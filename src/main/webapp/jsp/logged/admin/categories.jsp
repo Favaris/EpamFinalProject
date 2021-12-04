@@ -21,7 +21,10 @@
         </div>
     </div>
     <div class="tables">
-    ${sessionScope.err_msg}
+    <c:if test="${not empty sessionScope.err_msg}">
+        ${sessionScope.err_msg}<br>
+        <c:remove var="err_msg" scope="session"/>
+    </c:if>
         <form action="${root}/controller">
             <input type="hidden" name="command" value="showCategoriesPage">
             <input type="hidden" name="page" value="${requestScope.page - 1}">
@@ -149,4 +152,3 @@
         </div>
     </div>
 </my:html-carcass>
-<c:remove var="err_msg" scope="session"/>

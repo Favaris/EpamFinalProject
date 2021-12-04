@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryDAOImpl extends CategoryDAO {
-    private static final Logger log = LogManager.getLogger(CategoryDAOImpl.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     public static final String GET_ALL_CATEGORIES = "SELECT * FROM categories";
     public static final String INSERT_CATEGORY = "INSERT INTO categories(c_name) VALUES (?)";
     public static final String UPDATE_CATEGORY_BY_ID = "UPDATE categories SET c_name = ? WHERE c_id = ?";
     public static final String DELETE_CATEGORY_BY_ID = "DELETE FROM categories WHERE c_id = ?";
-    public static final String GET_CATEGORY_BY_NAME = "SELECT * FROM categories WHERE c_name = ?";
     public static final String GET_BY_ID = "SELECT * FROM categories WHERE c_id = ?";
+    public static final String GET_ALL_WITH_LIMIT_OFFSET = "SELECT * FROM categories LIMIT ? OFFSET ?";
 
     /**
      * Add a new category to the db. If operation was successful, updated id field on given Category object.
@@ -139,28 +139,41 @@ public class CategoryDAOImpl extends CategoryDAO {
         }
     }
 
-    /**
-     * Gets a category by its name.
-     * @return Category obj if such category was found, null otherwise.
-     * @throws DAOException only if statement logic was wrong, or no connection with the db.
-     */
     @Override
-    public Category getByName(Connection con, String name) throws DAOException {
+    public List<Category> getCategories(Connection con, int limit, int offset) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_CATEGORY_BY_NAME)) {
-            ps.setString(1, name);
+        try (PreparedStatement ps = con.prepareStatement(GET_ALL_WITH_LIMIT_OFFSET)) {
+            ps.setInt(1, limit);
+            ps.setInt(2, offset);
             rs = ps.executeQuery();
-            if (rs.next()) {
-                Category ct = getCategory(rs);
-                log.debug("retrieved a category by name: {}", ct);
-                return ct;
+            List<Category> categories = new ArrayList<>();
+            while (rs.next()) {
+                Category category = getCategory(rs);
+                categories.add(category);
+                log.debug("added a category {} to the list", category);
             }
+            log.debug("received a list of categories, list size: {}", categories.size());
+            return categories;
         } catch (SQLException throwables) {
-            log.warn("exception in #getByName(name={})", name, throwables);
-            throw new DAOException(throwables);
+            log.error("failed to retrieve all categories with limit={}, offset={}", limit, offset, throwables);
+            throw new DAOException("failed to get categories", throwables);
         }
-        log.debug("unable to find a category by name {}", name);
-        return null;
+    }
+
+    @Override
+    public int getCount(Connection con) throws DAOException {
+        try (Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM categories")) {
+            int count = 0;
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            log.debug("retrieved a categories' count: {}", count);
+            return count;
+        } catch (SQLException throwables) {
+            log.error("failed to get a categories' count", throwables);
+            throw new DAOException("failed to get a categories' count", throwables);
+        }
     }
 
     private Category getCategory(ResultSet rs) throws SQLException {

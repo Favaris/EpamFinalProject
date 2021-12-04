@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
  * A command for signing in.
  */
 public class SignInCommand implements Command {
-    private static final Logger log = LogManager.getLogger(SignInCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {

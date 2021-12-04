@@ -20,7 +20,7 @@ import java.util.List;
  * UserService interface implementor. Uses DBUtils class for retrieving connections.
  */
 public class UserServiceImpl implements UserService {
-    private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private final DBUtils dbUtils = DBUtils.getInstance();
 
     private UserDAO userDAO;

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
  * Command for signing out.
  */
 public class SignOutCommand implements Command {
-    private static final Logger log = LogManager.getLogger(SignOutCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {

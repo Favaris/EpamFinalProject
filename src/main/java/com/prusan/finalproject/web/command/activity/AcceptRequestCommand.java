@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * Command for accepting users' request, i.e. accepting for adding an activity or abandoning it. If the option was to abandon the activity, corresponding row in table is deleted.
  */
 public class AcceptRequestCommand implements Command {
-    private static final Logger log = LogManager.getLogger(AcceptRequestCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {

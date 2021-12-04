@@ -7,7 +7,7 @@
                     <button type="submit" class="btn btn-black">Home</button>
                 </form>
                 <form action="${root}/controller">
-                    <input type="hidden" name="command" value="downloadUsersActivities"/>
+                    <input type="hidden" name="command" value="showRunningActivities"/>
                     <button type="submit" class="btn btn-black">Your activities</button>
                 </form>
                 <form action="${root}/controller">

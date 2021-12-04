@@ -6,6 +6,7 @@ import com.prusan.finalproject.db.service.ActivityService;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.CommandUtils;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.constant.Pages;
@@ -26,9 +27,10 @@ import java.util.List;
  * </pre>
 
  */
-public class DownloadAllActivitiesCommand implements Command {
-    private static final Logger log = LogManager.getLogger(DownloadAllActivitiesCommand.class);
+public class ShowActivitiesCommand implements Command {
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
+    private static final CommandUtils commandUtils = CommandUtils.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -44,8 +46,9 @@ public class DownloadAllActivitiesCommand implements Command {
         }
 
         try {
+            commandUtils.setAllCategoriesInRequestAttribute(req);
+
             List<Activity> activities;
-            int entitiesCount = 0;
 
             if ("admin".equals(u.getRole())) {
                 log.debug("user {} is admin", u);
@@ -55,7 +58,7 @@ public class DownloadAllActivitiesCommand implements Command {
                 activities = getActivitiesForUser(page, pageSize, orderBy, filterBy, as, u);
             }
 
-            entitiesCount = as.getActivitiesCount(u.getId(), filterBy);
+            int entitiesCount = as.getActivitiesCount(u.getId(), filterBy);
             log.debug("received a number of all entities filtered by {}", Arrays.toString(filterBy));
 
             req.setAttribute("activities", activities);

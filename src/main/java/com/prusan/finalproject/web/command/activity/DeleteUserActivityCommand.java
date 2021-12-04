@@ -30,7 +30,7 @@ import java.util.Set;
  * </pre>
  */
 public class DeleteUserActivityCommand implements Command {
-    private static final Logger log = LogManager.getLogger(DeleteUserActivityCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override

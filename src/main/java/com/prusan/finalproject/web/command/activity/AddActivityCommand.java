@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
  * Add a new activity. Has validation for all fields.
  */
 public class AddActivityCommand implements Command {
-    private static final Logger log = LogManager.getLogger(AddActivityCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final Validator validator = Validator.getInstance();
     private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 

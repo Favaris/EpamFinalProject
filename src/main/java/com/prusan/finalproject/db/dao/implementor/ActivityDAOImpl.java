@@ -18,9 +18,7 @@ import java.util.List;
  * a DAO layer for Activity entity.
  */
 public class ActivityDAOImpl extends ActivityDAO {
-    private static final Logger log = LogManager.getLogger(ActivityDAOImpl.class);
-
-    public static final String GET_ACTIVITY_BY_NAME = "SELECT * FROM activities, categories WHERE a_name = ? AND c_id = a_category_id";
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     public static final String INSERT_ACTIVITY = "INSERT INTO activities(a_name, a_description, a_category_id) VALUES (?,?,?)";
     public static final String GET_ACTIVITY_BY_ID = "SELECT * FROM activities, categories WHERE a_id = ?";
     public static final String UPDATE_ACTIVITY_BY_ID = "UPDATE activities SET a_name = ?, a_description = ?, a_category_id = ? WHERE a_id = ?";
@@ -31,29 +29,6 @@ public class ActivityDAOImpl extends ActivityDAO {
 
     public static final String GET_COUNT_OF_AVAILABLE_ACTIVITIES_FOR_USER = "SELECT COUNT(*) FROM activities WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?)";
     public static final String GET_AVAILABLE_ACTIVITIES_COUNT_WITH_FILTERS = "SELECT COUNT(*) FROM activities WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?) AND a_category_id IN (%s)";
-
-    @Override
-    public Activity getByName(Connection con, String name) throws DAOException {
-        ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_ACTIVITY_BY_NAME)) {
-            ps.setString(1, name);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return getActivity(rs);
-            }
-        } catch (SQLException throwables) {
-            log.warn("exception in #getByName(name={})", name, throwables);
-            throw new DAOException(throwables);
-        } finally {
-            try {
-                close(rs);
-            } catch (DAOException ex) {
-                log.warn("unable to close a resource: {}", rs, ex);
-            }
-        }
-        log.debug("unable to find activity by name={}", name);
-        return null;
-    }
 
 
     /**

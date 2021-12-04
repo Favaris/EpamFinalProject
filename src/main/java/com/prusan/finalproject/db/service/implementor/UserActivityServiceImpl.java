@@ -13,10 +13,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 public class UserActivityServiceImpl implements UserActivityService {
-    private static final Logger log = LogManager.getLogger(UserActivityServiceImpl.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private final DBUtils dbUtils = DBUtils.getInstance();
     private UserActivityDAO userActivityDAO;
     public void setUserActivityDAO(UserActivityDAO userActivityDAO) {
@@ -71,6 +72,51 @@ public class UserActivityServiceImpl implements UserActivityService {
         } catch (DAOException e) {
             log.error("unable to get all running activities", e);
             throw new ServiceException("error while trying to load all running activities", e);
+        }
+    }
+
+    @Override
+    public List<UserActivity> getAcceptedForUser(int userId, int start, int end, String orderBy, String[] filterBy) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            List<UserActivity> list = userActivityDAO.getAcceptedByUserId(con, userId, end, start, orderBy, filterBy);
+            log.debug("received a list of user activities for user #{} with start={}, end={}, orderBy={}, filterBy={}", userId, start, end, orderBy, Arrays.toString(filterBy));
+            return list;
+        } catch (SQLException throwables) {
+            log.error("unable to get the connection", throwables);
+            throw new ServiceException("unable to get the connection", throwables);
+        } catch (DAOException e) {
+            log.error("unable to get user activities by userId={}, start={}, end={}", userId, start, end, e);
+            throw new ServiceException("Failed to download user's activities", e);
+        }
+    }
+
+    @Override
+    public int getActivitiesCountForUser(int userId) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            int count = userActivityDAO.getCountByUserId(con, userId);
+            log.debug("received amount of user's activities: {}", count);
+            return count;
+        } catch (SQLException throwables) {
+            log.error("unable to get the connection", throwables);
+            throw new ServiceException("unable to get the connection", throwables);
+        } catch (DAOException e) {
+            log.error("failed to receive a count of user's activities by userId={}", userId, e);
+            throw new ServiceException("Failed to get amount of user's activities", e);
+        }
+    }
+
+    @Override
+    public int getSummarizedSpentTimeForUser(int userId) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            int sum = userActivityDAO.getSummarizedSpentTimeByUserId(con, userId);
+            log.debug("received a sum of time spent by user with id={}, sum={}", userId, sum);
+            return sum;
+        } catch (SQLException throwables) {
+            log.error("unable to get the connection", throwables);
+            throw new ServiceException("unable to get the connection", throwables);
+        } catch (DAOException e) {
+            log.error("failed to get sum of time spent by user id ={}", userId, e);
+            throw new ServiceException("Failed to get a sum of time spent by user on activities", e);
         }
     }
 

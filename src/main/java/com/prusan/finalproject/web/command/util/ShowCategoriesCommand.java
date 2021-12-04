@@ -18,38 +18,32 @@ import java.util.List;
 /**
  * Downloads a list of all categories and places them as the request attribute 'categories'.
  */
-public class DownloadAllCategoriesCommand implements Command {
-    private static final Logger log = LogManager.getLogger(DownloadAllCategoriesCommand.class);
+public class ShowCategoriesCommand implements Command {
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
+        int page = handler.getPageFromParameters(req);
+        int pageSize = handler.getPageSizeFromParameters(req);
 
         CategoryService cs = ServiceFactory.getInstance().getCategoryService();
         try {
-            List<Category> cats = cs.getAll();
-            log.debug("retrieved a list of all categories, list size: {}", cats.size());
+            List<Category> cats = cs.getCategories(pageSize * (page - 1), pageSize * page);
+            log.debug("received a list of categories, list size: {}", cats.size());
 
-            if (req.getAttribute("nextChain") != null) {
-                Chain nextChain = (Chain) req.getAttribute("nextChain");
-                req.removeAttribute("nextChain");
-                if (nextChain.isDoForward()) {
-                    req.setAttribute("categories", cats);
-                } else {
-                    req.getSession().setAttribute("categories", cats);
-                }
-                log.debug("retrieved a next Chain {}", nextChain);
-                return nextChain;
+            if (cats.size() == 0 && page > 1) {
+                --page;
+                cats = cs.getCategories(pageSize * (page - 1), pageSize * page);
+                log.debug("current categories list was empty while the page was bigger then 1, reloaded it with decreased page, page={}, list size = {}", page, cats.size());
             }
 
-            int page = handler.getPageFromParameters(req);
-            int pageSize = handler.getPageSizeFromParameters(req);
-            handler.setPaginationParametersAsRequestAttributes(req, cats.size(), pageSize, page, null, null);
+            int entitiesCount = cs.getCount();
+            log.debug("received an amount of categories: {}", entitiesCount);
+            handler.setPaginationParametersAsRequestAttributes(req, entitiesCount, pageSize, page, null, null);
 
-            List<Category> paginatedCats = handler.getPaginationSublist(cats, page, pageSize);
-
-            req.getSession().setAttribute("categories", paginatedCats);
-            log.debug("set a request attribute 'categories', list size={}", paginatedCats.size());
+            req.getSession().setAttribute("categories", cats);
+            log.debug("set a request attribute 'categories', list size={}", cats.size());
             return new Chain(Pages.CATEGORIES_JSP, true);
         } catch (ServiceException e) {
             log.error("unable to get all activities", e);

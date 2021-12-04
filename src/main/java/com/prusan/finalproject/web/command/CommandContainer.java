@@ -17,30 +17,29 @@ import java.util.Map;
  */
 public class CommandContainer {
     private static final Map<String, Command> commands;
-    private static final Logger log = LogManager.getLogger(CommandContainer.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     static {
         commands = new HashMap<>();
         commands.put("signIn", new SignInCommand());
         commands.put("signUp", new SignUpCommand());
         commands.put("signOut", new SignOutCommand());
-        commands.put("showActivitiesPage", new PrepareForShowingAllActivitiesCommand());
-        commands.put("downloadAllActivities", new DownloadAllActivitiesCommand());
+        commands.put("showActivitiesPage", new ShowActivitiesCommand());
         commands.put("requestActivityAddition", new RequestActivityAdditionCommand());
         commands.put("showUsersRequests", new DownloadUsersRequestsCommand());
         commands.put("acceptRequest", new AcceptRequestCommand());
-        commands.put("downloadUsersActivities", new DownloadUsersActivitiesCommand());
+        commands.put("showRunningActivities", new ShowRunningActivitiesCommand());
         commands.put("denyRequest", new DenyRequestCommand());
         commands.put("showAllUsers", new DownloadAllUsersCommand());
         commands.put("showEditUserPage", new PrepareForUserEditingCommand());
         commands.put("updateUser", new UpdateUserCommand());
-        commands.put("showActivityEditPage", new PrepareForActivityEditingCommand());
+        commands.put("showActivityEditPage", new ShowActivityEditPageCommand());
         commands.put("updateActivity", new UpdateActivityCommand());
         commands.put("deleteActivity", new DeleteActivityCommand());
-        commands.put("showActivityAddPage", new PrepareForActivityAdditionCommand());
+        commands.put("showActivityAddPage", new ShowActivityAddPageCommand());
         commands.put("addActivity", new AddActivityCommand());
         commands.put("addCategory", new AddCategoryCommand());
-        commands.put("showCategoriesPage", new DownloadAllCategoriesCommand());
+        commands.put("showCategoriesPage", new ShowCategoriesCommand());
         commands.put("updateCategory", new UpdateCategoryCommand());
         commands.put("requestActivityAbandonment", new RequestActivityAbandonmentCommand());
         commands.put("cancelRequest", new CancelRequestCommand());
@@ -50,6 +49,8 @@ public class CommandContainer {
         commands.put("showUsersReport", new GetUserReportCommand());
         commands.put("deleteCategory", new DeleteCategoryCommand());
         commands.put("downloadActivitiesForUser", new DownloadActivitiesForUserCommand());
+        commands.put("showDetailedUserInfo", new DownloadDetailedUserInfoCommand());
+        commands.put("manageUsersActivities", new ManageUsersActivitiesCommand());
     }
 
     public static Command getCommand(String command) {

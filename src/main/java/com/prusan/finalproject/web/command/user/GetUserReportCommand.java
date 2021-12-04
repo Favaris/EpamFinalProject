@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GetUserReportCommand implements Command {
-    private static final Logger log = LogManager.getLogger(GetUserReportCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {

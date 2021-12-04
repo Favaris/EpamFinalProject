@@ -16,7 +16,7 @@ import javax.servlet.annotation.*;
  */
 @WebServlet("/controller")
 public class MainController extends HttpServlet {
-    private static final Logger log = LogManager.getLogger(MainController.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {

@@ -51,7 +51,7 @@
                 <td>${user.name}</td>
                 <td>${user.surname}</td>
                 <td>
-                    <a href="${root}/controller?command=showEditUserPage&uId=${user.id}">edit</a>
+                    <a href="${root}/controller?command=showDetailedUserInfo&uId=${user.id}">show details</a>
                 </td>
             </tr>
         </c:forEach>

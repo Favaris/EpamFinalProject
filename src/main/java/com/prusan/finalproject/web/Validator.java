@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * To validate data, use method 'validate', passing to it one of constants representing field names, and a value to check.
  */
 public class Validator {
-    private static final Logger log = LogManager.getLogger(Validator.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static Validator instance;
     private final Map<Integer, Pattern> fields;
 
@@ -34,7 +34,7 @@ public class Validator {
     private Validator() {
         fields = new HashMap<>();
         // validating pattern for user login
-        fields.put(USER_LOGIN, Pattern.compile("[A-Za-z]{4,16}?"));
+        fields.put(USER_LOGIN, Pattern.compile("[A-Za-z0-9]{4,16}?"));
         // validating pattern for user password (could be replaced later)
         fields.put(USER_PASSWORD, Pattern.compile(".{4,32}?"));
         // validating pattern for user's name AND surname

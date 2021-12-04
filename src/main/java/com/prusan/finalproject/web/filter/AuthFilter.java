@@ -17,7 +17,7 @@ import java.util.Set;
  * Filter for cases when already logged user tries to sign in or sign up as another user.
  */
 public class AuthFilter implements Filter {
-    private static final Logger log = LogManager.getLogger(AuthFilter.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final Set<String> commands;
 
     static {

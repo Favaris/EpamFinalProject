@@ -21,6 +21,12 @@ public abstract class UserActivityDAO extends BasicDAO<UserActivity> {
      */
     public abstract void removeAllByUserId(Connection con, int userId) throws DAOException;
 
+    public abstract int getCountByUserId(Connection con, int userId) throws DAOException;
+
+    public abstract int getSummarizedSpentTimeByUserId(Connection con, int userId) throws DAOException;
+
+    public abstract List<UserActivity> getAcceptedByUserId(Connection con, int userId, int limit, int offset, String orderBy, String... filterBy) throws DAOException;
+
     @Override
     public List<UserActivity> getAll(Connection con) throws DAOException {
         throw new UnsupportedOperationException("getAll() is currently unsupported");

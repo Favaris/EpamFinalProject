@@ -19,7 +19,7 @@ import java.util.List;
  * Downloads all users with role 'user' as List in request attribute 'usersList'.
  */
 public class DownloadAllUsersCommand implements Command {
-    private static final Logger log = LogManager.getLogger(DownloadAllUsersCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override

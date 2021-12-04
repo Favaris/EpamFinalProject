@@ -16,7 +16,7 @@ import java.util.*;
  * Tag that checks the role with permissions for this role. If role is not allowed to be present on certain page (where this tag was called), then it will be sent redirect to corresponding page (see destinations field).
  */
 public class SecurityTag extends SimpleTagSupport {
-    private static final Logger log = LogManager.getLogger(SecurityTag.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final Map<String, List<String>> permissions;
     private static final Map<String, String> destinations;
 

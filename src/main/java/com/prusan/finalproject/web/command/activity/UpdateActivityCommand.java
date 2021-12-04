@@ -22,7 +22,7 @@ import static com.prusan.finalproject.web.command.activity.AddActivityCommand.do
  * Fully updates info about the given activity.
  */
 public class UpdateActivityCommand implements Command {
-    private static final Logger log = LogManager.getLogger(UpdateActivityCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override

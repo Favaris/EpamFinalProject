@@ -21,7 +21,7 @@ import java.util.List;
  * Activity Service default implementor. Uses DBUtils.getConnection() connection. For it to work properly, it is needed to set all dao implementor fields on this object.
  */
 public class ActivityServiceImpl implements ActivityService {
-    private static final Logger log = LogManager.getLogger(ActivityServiceImpl.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private final DBUtils dbUtils = DBUtils.getInstance();
 
     private ActivityDAO activityDAO;

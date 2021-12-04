@@ -19,7 +19,7 @@ import java.util.List;
  * Category service implementor. For it to work properly, you must set all its DAO fields first.
  */
 public class CategoryServiceImpl implements CategoryService {
-    private static final Logger log = LogManager.getLogger(CategoryServiceImpl.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private final DBUtils dbUtils = DBUtils.getInstance();
 
     private CategoryDAO categoryDAO;
@@ -40,6 +40,36 @@ public class CategoryServiceImpl implements CategoryService {
         } catch (SQLException throwables) {
             log.error("unable to get connection", throwables);
             throw new ServiceException("can not get connection with the db", throwables);
+        }
+    }
+
+    @Override
+    public List<Category> getCategories(int start, int end) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            List<Category> categories = categoryDAO.getCategories(con, end, start);
+            log.debug("received a list of categories, start={}, end={}, list size: {}", start, end, categories.size());
+            return categories;
+        } catch (SQLException throwables) {
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("can not get connection with the db", throwables);
+        } catch (DAOException e) {
+            log.error("failed to get all categories with start={}, end={}", start, end, e);
+            throw new ServiceException("Failed to get a list of categories", e);
+        }
+    }
+
+    @Override
+    public int getCount() throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            int count = categoryDAO.getCount(con);
+            log.debug("received a categories' count: {}", count);
+            return count;
+        } catch (SQLException throwables) {
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("can not get connection with the db", throwables);
+        } catch (DAOException e) {
+            log.error("failed to get categories' count", e);
+            throw new ServiceException("Failed to get the amount of categories", e);
         }
     }
 

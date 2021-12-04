@@ -23,4 +23,6 @@ public abstract class Pages {
     public static final String CATEGORIES_JSP = "jsp/logged/admin/categories.jsp";
     public static final String ADD_ACTIVITIES_FOR_USER_PAGE_JSP = "jsp/logged/admin/util/addActivitiesForUserPage.jsp";
     public static final String USERS_REPORT_PAGE_JSP = "jsp/logged/admin/usersReportPage.jsp";
+    public static final String USER_DETAILED_JSP = "jsp/logged/admin/util/userDetailed.jsp";
+    public static final String MANAGE_USERS_ACTIVITIES_PAGE_JSP = "jsp/logged/admin/util/manageUsersActivitiesPage.jsp";
 }

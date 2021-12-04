@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * Places a Map of (User, UserActivity) as request parameter 'requests'.
  */
 public class DownloadUsersRequestsCommand implements Command {
-    private static final Logger log = LogManager.getLogger(DownloadAllActivitiesCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {

@@ -6,6 +6,7 @@ import com.prusan.finalproject.db.entity.Activity;
 import com.prusan.finalproject.db.entity.Category;
 import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.util.Fields;
+import com.prusan.finalproject.db.util.PaginationQueries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserActivityDAOImpl extends UserActivityDAO {
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
-    private static final Logger log = LogManager.getLogger(UserActivityDAO.class);
     public static final String GET_ALL_ACCEPTED_ACTIVITIES_BY_ID = "SELECT * FROM users_m2m_activities, activities, categories WHERE ua_user_id = ? AND ua_accepted = 1 AND ua_requested_abandon = 0 AND a_id = ua_activity_id AND c_id = a_category_id";
     public static final String INSERT_USER_ACTIVITY = "INSERT INTO users_m2m_activities VALUES (?, ?, ?, ?, ?)";
     public static final String GET_REQUESTED_USERS_ACTIVITIES =
@@ -25,6 +26,8 @@ public class UserActivityDAOImpl extends UserActivityDAO {
     public static final String GET_USER_ACTIVITY =
             "SELECT * FROM users_m2m_activities, activities, categories WHERE ua_user_id = ? AND ua_activity_id = ? AND ua_activity_id = a_id AND a_category_id = c_id";
     public static final String DELETE_ALL_BY_USER_ID = "DELETE FROM users_m2m_activities WHERE ua_user_id = ?";
+    public static final String GET_COUNT_BY_USER_ID = "SELECT COUNT(*) FROM users_m2m_activities WHERE ua_user_id = ? AND ua_accepted = true";
+    public static final String GET_SUM_OF_MINUTES_BY_USER_ID = "SELECT SUM(ua_minutes_spent) FROM users_m2m_activities WHERE ua_user_id = ?";
 
 
     @Override
@@ -167,6 +170,85 @@ public class UserActivityDAOImpl extends UserActivityDAO {
         } catch (SQLException throwables) {
             log.error("failed to remove all user's activities by userId={}", userId, throwables);
             throw new DAOException("unable to delete user's activities", throwables);
+        }
+    }
+
+    @Override
+    public int getCountByUserId(Connection con, int userId) throws DAOException {
+        ResultSet rs = null;
+        try (PreparedStatement ps = con.prepareStatement(GET_COUNT_BY_USER_ID)) {
+            ps.setInt(1, userId);
+            rs = ps.executeQuery();
+            int count = 0;
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            log.debug("retrieved a count of all user's activities, count={}", count);
+            return count;
+        } catch (SQLException throwables) {
+            log.error("failed to get count of all activities for user with id={}", userId, throwables);
+            throw new DAOException("failed to get count of user's activities with userId=" + userId, throwables);
+        } finally {
+            try {
+                close(rs);
+            } catch (DAOException e) {
+                log.warn("unable to close the result set {}", rs, e);
+            }
+        }
+    }
+
+    @Override
+    public int getSummarizedSpentTimeByUserId(Connection con, int userId) throws DAOException {
+        ResultSet rs = null;
+        try (PreparedStatement ps = con.prepareStatement(GET_SUM_OF_MINUTES_BY_USER_ID)) {
+            ps.setInt(1, userId);
+            rs = ps.executeQuery();
+            int sum = 0;
+            if (rs.next()) {
+                sum = rs.getInt(1);
+            }
+            log.debug("retrieved a summarized time spent on activities by user with id={}", userId);
+            return sum;
+        } catch (SQLException throwables) {
+            log.error("failed to get a sum of all minutes spent on activities by userId={}", userId, throwables);
+            throw new DAOException("failed to get a total sum of time spent by user with id=" + userId, throwables);
+        } finally {
+            try {
+                close(rs);
+            } catch (DAOException e) {
+                log.warn("unable to close the result set {}", rs, e);
+            }
+        }
+    }
+
+    @Override
+    public List<UserActivity> getAcceptedByUserId(Connection con, int userId, int limit, int offset, String orderBy, String... filterBy) throws DAOException {
+        ResultSet rs = null;
+        try (PreparedStatement ps = con.prepareStatement(PaginationQueries.getUserActivityQuery(orderBy, filterBy))) {
+            int k = 0;
+            ps.setInt(++k, userId);
+            ps.setInt(++k, limit);
+            ps.setInt(++k, offset);
+
+            rs = ps.executeQuery();
+            List<UserActivity> userActivities = new ArrayList<>();
+            while (rs.next()) {
+                UserActivity ua = getUserActivity(rs);
+                userActivities.add(ua);
+                log.debug("added a user activity {} to the list", ua);
+            }
+            log.debug("retrieved a list of user activities for user #{}, limit={}, offset={}", limit, limit, offset);
+
+            return userActivities;
+        } catch (SQLException throwables) {
+            log.error("failed to get a list of user activities by userId={}, limit={}, offset={}", limit, limit, offset, throwables);
+            throw new DAOException("failed to get a list of user activities", throwables);
+        } finally {
+            try {
+                close(rs);
+            } catch (DAOException e) {
+                log.warn("unable to close the result set {}", rs, e);
+            }
         }
     }
 

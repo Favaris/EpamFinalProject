@@ -16,7 +16,7 @@ import java.sql.SQLException;
  * Uses DataSource, which is configured in context.xml file. This class is using singleton pattern.
  */
 public class DBUtils {
-    private static final Logger log = LogManager.getLogger(DBUtils.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private final DataSource ds;
     // singleton instance
     private static DBUtils instance;

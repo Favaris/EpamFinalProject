@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * Cancels a user's request for acceptance or abandonment. Retrieves a user id as parameter 'uId' and an activity id as a parameter 'aId'.
  */
 public class CancelRequestCommand implements Command {
-    private static final Logger log = LogManager.getLogger(CancelRequestCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {

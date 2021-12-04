@@ -6,6 +6,8 @@ import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.CommandUtils;
+import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
@@ -18,33 +20,35 @@ import java.util.List;
 /**
  * Intermediate command. Downloads all activities that belong to a certain user by his id.
  */
-public class DownloadUsersActivitiesCommand implements Command {
-    private final static Logger log = LogManager.getLogger(DownloadUsersActivitiesCommand.class);
+public class ShowRunningActivitiesCommand implements Command {
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
+    private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
+    private static final CommandUtils commandUtils = CommandUtils.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
+        int page = handler.getPageFromParameters(req);
+        int pageSize = handler.getPageSizeFromParameters(req);
+        String orderBy = handler.getOrderByFromParameters(req);
+        String[] filterBy = handler.getFilterByFromParameters(req);
+
         User u = (User) req.getSession().getAttribute("user");
         log.debug("retrieved a user from the session: {}", u);
 
         UserActivityService uas = ServiceFactory.getInstance().getUserActivityService();
         try {
-            List<UserActivity> list = uas.getAllAcceptedForUser(u.getId());
+            commandUtils.setAllCategoriesInRequestAttribute(req);
+
+            List<UserActivity> list = uas.getAcceptedForUser(u.getId(), pageSize * (page - 1), pageSize * page, orderBy, filterBy);
             log.debug("got a list of running activities, list size: {}", list.size());
 
-            if (req.getAttribute("nextChain") != null) {
-                Chain nextChain = (Chain) req.getAttribute("nextChain");
-                if (nextChain.isDoForward()) {
-                    req.setAttribute("runningActivities", list);
-                    log.debug("set 'runningActivities' attribute in the request scope");
-                } else {
-                    req.getSession().setAttribute("runningActivities", list);
-                    log.debug("set 'runningActivities' attribute in the session scope");
-                }
-                log.debug("retrieved a next Chain {}", nextChain);
-                return nextChain;
-            }
+            int entitiesCount = uas.getActivitiesCountForUser(u.getId());
+            log.debug("received amount of activities for user {}, amount={}", u, entitiesCount);
 
             req.setAttribute("runningActivities", list);
+            log.debug("set a request attribute 'runningActivities'");
+            handler.setPaginationParametersAsRequestAttributes(req, entitiesCount, pageSize, page, orderBy, filterBy);
+
             return new Chain(Pages.RUNNING_ACTIVITIES_JSP, true);
         } catch (ServiceException e) {
             log.error("error in #execute(), user={}", u, e);

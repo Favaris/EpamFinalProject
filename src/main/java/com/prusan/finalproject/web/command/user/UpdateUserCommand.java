@@ -23,33 +23,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UpdateUserCommand implements Command {
-    private static final Logger log = LogManager.getLogger(UpdateUserCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
-        HttpSession session = req.getSession();
-
-        int userId = Integer.parseInt(req.getParameter("id"));
+        int userId = Integer.parseInt(req.getParameter("uId"));
         log.debug("got a user id: {}", userId);
         String name = req.getParameter("name");
         log.debug("got a user name: {}", name);
         String surname = req.getParameter("surname");
         log.debug("got a user surname: {}", surname);
 
-        List<UserActivity> userActivities = (List<UserActivity>) session.getAttribute("userToEditActivities");
-        log.debug("received a list of user's activities: {}", userActivities);
-        if (userActivities == null) {
-            log.error("did not find a list of user's activities");
-            session.setAttribute("err_msg", "Unable to get a list of user's activities");
-            return new Chain(Pages.ERROR_JSP, false);
-        }
-
-        Set<UserActivity> removedActivities = (Set<UserActivity>) session.getAttribute("removedActivities");
-        log.debug("received a list of removed activities: {}", removedActivities);
-        if (removedActivities == null) {
-            removedActivities = new HashSet<>();
-            log.debug("the list was null, created an empty stub");
-        }
 
         ServiceFactory sf = ServiceFactory.getInstance();
         UserService us = sf.getUserService();
@@ -59,31 +43,15 @@ public class UpdateUserCommand implements Command {
             log.debug("got a user to edit: {}", user);
             user.setName(name);
             user.setSurname(surname);
+            us.update(user);
             log.debug("edited a user: {}", user);
-            userActivities = filterOutRemovedActivities(userActivities, removedActivities);
-            for (UserActivity ua : userActivities) {
-                ua.setAccepted(true);
-            }
-            us.updateWithUserActivities(user, userActivities);
             log.debug("successfully saved all changes");
-            session.removeAttribute("userToEdit");
-            session.removeAttribute("removedActivities");
-            session.removeAttribute("userToEditActivities");
-            log.debug("removed all used attributes from the session");
 
-            return new Chain("controller?command=showAllUsers", false);
+            return new Chain("controller?command=showDetailedUserInfo&uId="+userId, false);
         } catch (ServiceException e) {
             log.error("error while trying to update a user by id={}", userId, e);
             req.getSession().setAttribute("err_msg", e.getMessage());
             return new Chain(Pages.ERROR_JSP, false);
         }
-    }
-
-    private List<UserActivity> filterOutRemovedActivities(List<UserActivity> userActivities, Set<UserActivity> finalRemovedActivities) {
-        List<UserActivity> list =  userActivities.stream()
-                .filter(ua -> !finalRemovedActivities.contains(ua))
-                .collect(Collectors.toList());
-        log.debug("filtered out all removed user activities, result list size: {}", list.size());
-        return list;
     }
 }

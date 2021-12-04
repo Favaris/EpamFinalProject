@@ -23,7 +23,7 @@ import java.util.List;
  * Downloads all info about the user by its id. Retrieves this id from request attribute 'id'. Downloads user and his running activities in session attributes as 'userToEdit' and 'userToEditActivities'.
  */
 public class PrepareForUserEditingCommand implements Command {
-    private static final Logger log = LogManager.getLogger(PrepareForUserEditingCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override

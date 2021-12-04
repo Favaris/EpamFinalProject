@@ -11,8 +11,7 @@ import java.io.IOException;
  * Filter that changes encoding of every client request.
  */
 public class EncodingFilter implements Filter {
-    private static final Logger log = LogManager.getLogger(EncodingFilter.class);
-
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final String ENCODING = "UTF-8";
 
     @Override

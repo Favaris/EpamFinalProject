@@ -5,7 +5,7 @@
 
 <s:check role="${sessionScope.user.role}"  permission="admin"/>
 <my:html-carcass title="${sessionScope.user.login} - edit activity ${sessionScope.activityToEdit.name}">
-    <div>
+    <div class="container">
         <form action="${root}/controller" method="post">
             <input type="hidden" name="command" value="updateActivity">
             <input type="hidden" name="id" value="${requestScope.activityToEdit.id}">
@@ -24,7 +24,7 @@
                 </c:if>
             </div>
             <div class="form-group">
-                <c:forEach var="category" items="${categories}">
+                <c:forEach var="category" items="${requestScope.categories}">
                     <c:choose>
                         <c:when test="${requestScope.activityToEdit.category.equals(category)}">
                             <input type="radio" name="cId" value="${category.id}" checked id="${category.id}">
@@ -35,9 +35,6 @@
                     </c:choose>
                     <label for="${category.id}">${category.name}</label> <br>
                 </c:forEach>
-                <c:if test="${sessionScope.activityCatsErrorMessage != null}">
-                    You must choose at least one category
-                </c:if>
             </div>
             <c:if test="${requestScope.err_msg != null}">
                 ${requestScope.err_msg} <br>

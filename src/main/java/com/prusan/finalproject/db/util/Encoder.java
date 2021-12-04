@@ -12,7 +12,7 @@ import java.security.NoSuchAlgorithmException;
  * Encryption class. Has methods for password encodings. NOT used.
  */
 public abstract class Encoder {
-    private static final Logger log = LogManager.getLogger(Encoder.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final String DEFAULT_ENCODING = "SHA-256";
     private static MessageDigest md;
 

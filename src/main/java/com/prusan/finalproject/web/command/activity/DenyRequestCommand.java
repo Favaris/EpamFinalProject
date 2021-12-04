@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * A command for denying user requests for accepting or abandoning an activity.
  */
 public class DenyRequestCommand implements Command {
-    private static final Logger log = LogManager.getLogger(DenyRequestCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {

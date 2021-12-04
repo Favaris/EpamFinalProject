@@ -24,16 +24,25 @@ public abstract class PaginationQueries {
 
         queries.put("activityAll", "SELECT * FROM activities, categories WHERE c_id = a_category_id ORDER BY %s DESC LIMIT ? OFFSET ?");
         queries.put("activity", "SELECT * FROM activities, categories WHERE c_id = a_category_id AND a_category_id IN (%s) ORDER BY %s DESC LIMIT ? OFFSET ?");
-        queries.put("activityForUser", "SELECT * FROM activities, categories " +
-                "WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?) AND c_id = activities.a_category_id AND a_category_id IN (%s) ORDER BY %s DESC LIMIT ? OFFSET ?");
+
         queries.put("activityForUserAll", "SELECT * FROM activities, categories " +
                 "WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?) AND c_id = a_category_id ORDER BY %s DESC LIMIT ? OFFSET ?");
+        queries.put("activityForUser", "SELECT * FROM activities, categories " +
+                "WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?) AND c_id = activities.a_category_id AND a_category_id IN (%s) ORDER BY %s DESC LIMIT ? OFFSET ?");
+
+        queries.put("userActivityAll", "SELECT * FROM activities " +
+                "JOIN users_m2m_activities ON a_id = ua_activity_id AND ua_accepted = true AND ua_user_id = ? " +
+                "JOIN categories ON c_id = a_category_id ORDER BY %s DESC LIMIT ? OFFSET ?");
+        queries.put("userActivity", "SELECT * FROM activities " +
+                "JOIN users_m2m_activities ON a_id = ua_activity_id AND ua_accepted = true AND ua_user_id = ? " +
+                "JOIN categories ON c_id = a_category_id AND c_id IN (%s) ORDER BY %s DESC LIMIT ? OFFSET ?");
 
         names = new HashMap<>();
 
         names.put("activityName", Fields.ACTIVITY_NAME);
         names.put("categoryName", Fields.CATEGORY_NAME);
         names.put("usersCount", Fields.ACTIVITY_USERS_COUNT);
+        names.put("timeSpent", Fields.USER_ACTIVITY_MINUTES_SPENT);
     }
 
     public static String getActivityQuery(String orderBy, String... filterBy) {
@@ -42,23 +51,33 @@ public abstract class PaginationQueries {
             log.debug("retrieved a query without filters: '{}'", query);
             return query;
         }
-        String filters = String.join(",", filterBy);
-        log.debug("got a filters string: '{}'", filters);
-        String query = String.format(queries.get("activity"), filters, names.get(orderBy));
-        log.debug("retrieved a query with filters: {}", query);
-        return query;
+        return getQueryWithFilters(orderBy, filterBy, "activity");
     }
 
     public static String getActivityQueryForUser(String orderBy, String... filterBy) {
         if ("all".equals(filterBy[0])) {
             String query = String.format(queries.get("activityForUserAll"), names.get(orderBy));
-            log.debug("retrieved a query without filters: {}", query);
+            log.debug("retrieved a query without filters: '{}'", query);
             return query;
         }
+        return getQueryWithFilters(orderBy, filterBy, "activityForUser");
+    }
+
+    public static String getUserActivityQuery(String orderBy, String... filterBy) {
+        if ("all".equals(filterBy[0])) {
+            String query = String.format(queries.get("userActivityAll"), names.get(orderBy));
+            log.debug("retrieved a query without filters: '{}'", query);
+            return query;
+        }
+        return getQueryWithFilters(orderBy, filterBy, "userActivity");
+    }
+
+    private static String getQueryWithFilters(String orderBy, String[] filterBy, String queryName) {
         String filters = String.join(",", filterBy);
         log.debug("got a filters string: '{}'", filters);
-        String query = String.format(queries.get("activityForUser"), filters, names.get(orderBy));
-        log.debug("retrieved a query with filters: {}", query);
+        String query = String.format(queries.get(queryName), filters, names.get(orderBy));
+        log.debug("retrieved a query with filters: '{}'", query);
         return query;
     }
+
 }

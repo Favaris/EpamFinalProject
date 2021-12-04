@@ -20,9 +20,8 @@ import javax.servlet.http.HttpSession;
  * Command for adding an activity for user.
  */
 public class RequestActivityAdditionCommand implements Command {
-    private static final Logger log = LogManager.getLogger(RequestActivityAdditionCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
-
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
         HttpSession s = req.getSession();

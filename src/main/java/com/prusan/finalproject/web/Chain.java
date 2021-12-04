@@ -12,7 +12,7 @@ import java.io.IOException;
  * This class is used by Command objects. It contains meta information such as url on which to go next and on whether to do it by forward or by sendRedirect.
  */
 public class Chain {
-    private static final Logger log = LogManager.getLogger(Chain.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     private final String url;
     private final boolean doForward;

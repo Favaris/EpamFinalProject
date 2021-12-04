@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DownloadActivitiesForUserCommand implements Command {
-    private static final Logger log = LogManager.getLogger(DownloadActivitiesForUserCommand.class);
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override

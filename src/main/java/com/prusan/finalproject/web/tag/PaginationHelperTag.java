@@ -16,8 +16,7 @@ import java.util.Arrays;
  * Tag is useful for some util commands such as 'delete activity command' in a way that it helps them to return to the same page with the same sorting/filtering config as it was before calling them.
  */
 public class PaginationHelperTag extends SimpleTagSupport {
-    private static final Logger log = LogManager.getLogger(PaginationHelperTag.class);
-
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private boolean includeSortingParameters;
 
     public void setIncludeSortingParameters(boolean includeSorting) {
