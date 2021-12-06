@@ -17,13 +17,13 @@ public interface ActivityService {
 
     void delete(int id) throws ServiceException;
 
-    List<Activity> getActivitiesNotTakenByUser(int userId, int start, int end, String orderBy, String... filterBy) throws ServiceException;
+    List<Activity> getActivitiesNotTakenByUser(int userId, int start, int amount, String orderBy, String... filterBy) throws ServiceException;
 
     Activity getById(int id) throws ServiceException;
 
     List<Activity> getAll() throws ServiceException;
 
-    List<Activity> getActivities(int start, int end, String orderBy, String... filterBy) throws ServiceException;
+    List<Activity> getActivities(int start, int amount, String orderBy, String... filterBy) throws ServiceException;
 
     int getActivitiesCount(int userId, String... filterBy) throws ServiceException;
 }

@@ -3,6 +3,7 @@ package com.prusan.finalproject.web.command.activity;
 import com.prusan.finalproject.db.entity.Activity;
 import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.ActivityService;
+import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.exception.NoSuchActivityException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
@@ -40,49 +41,24 @@ public class AddUserActivityCommand implements Command {
         log.debug("received a userId={}", userId);
         int activityId = Integer.parseInt(req.getParameter("aId"));
         log.debug("received an activityId={}", activityId);
-        List<UserActivity> userActivities = (List<UserActivity>) session.getAttribute("userToEditActivities");
-        log.debug("received a list of user's activities: {}", userActivities);
 
-        if (userActivities == null) {
-            log.error("failed to find a list of user's activities in session attribute 'userToEditActivities'");
-            session.setAttribute("err_msg", "Did not find a list of user's activities");
-            return new Chain(Pages.ERROR_JSP, false);
-        }
-
-        ActivityService as = ServiceFactory.getInstance().getActivityService();
+        ServiceFactory sf = ServiceFactory.getInstance();
+        UserActivityService uas = sf.getUserActivityService();
 
         try {
-            Activity a = as.getById(activityId);
-            log.debug("received an activity instance: {}", a);
-            UserActivity ua = new UserActivity(a);
-            ua.setUserId(userId);
-            log.debug("created a user activity instance: {}", a);
+            UserActivity ua = new UserActivity(userId, activityId);
+            ua.setAccepted(true);
+            log.debug("created a stub for user activity: {}", ua);
 
-            if (userActivities.contains(ua)) {
-                Set<UserActivity> removedActivities = (Set<UserActivity>) session.getAttribute("removedActivities");
-                if (removedActivities == null) {
-                    log.error("failed to find a list of user's activities in session attribute 'removedActivities'");
-                    session.setAttribute("err_msg", "Did not find a list of user's activities");
-                    return new Chain(Pages.ERROR_JSP, false);
-                }
-                removedActivities.remove(ua);
-                log.debug("removed a user activity from the 'removedActivities' set");
-                String queryString = handler.getQueryString(session);
-                return new Chain(String.format("controller?command=showEditUserPage&uId=%d&", userId) + queryString, false);
-            }
+            uas.save(ua);
+            log.debug("successfully added a new user activity with userId={}, activityId={}", userId, activityId);
 
-            userActivities.add(ua);
-            log.debug("added user activity {} to the 'userToEditActivities' list, list size: {}", ua, userActivities.size());
             String queryString = handler.getQueryStringWithSortingParameters(session);
-            return new Chain(String.format("controller?command=showActivitiesPage&uId=%d&", userId) + queryString, false);
-        } catch (NoSuchActivityException e) {
-            log.warn("did not find an activity by activityId={}", activityId, e);
-            session.setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.createRedirect(String.format("controller?command=showAddActivitiesForUserPage&uId=%d&", userId) + queryString);
         } catch (ServiceException e) {
             log.error("failed to get a user activity by activityId={}", activityId, e);
             session.setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
     }
 }

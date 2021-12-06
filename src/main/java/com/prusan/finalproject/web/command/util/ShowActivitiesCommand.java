@@ -42,7 +42,7 @@ public class ShowActivitiesCommand implements Command {
         ActivityService as = ServiceFactory.getInstance().getActivityService();
         User u = (User) req.getSession().getAttribute("user");
         if (u == null) {
-            return new Chain(Pages.SIGN_IN_JSP, false);
+            return Chain.createRedirect(Pages.SIGN_IN_JSP);
         }
 
         try {
@@ -66,11 +66,11 @@ public class ShowActivitiesCommand implements Command {
 
             handler.setPaginationParametersAsRequestAttributes(req, entitiesCount, pageSize, page, orderBy, filterBy);
 
-            return new Chain(Pages.ACTIVITIES_JSP, true);
+            return Chain.createForward(Pages.ACTIVITIES_JSP);
         } catch (ServiceException e) {
             log.error("can not get all activities", e);
             req.getSession().setAttribute("err_msg", "can not get all activities");
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
 
     }

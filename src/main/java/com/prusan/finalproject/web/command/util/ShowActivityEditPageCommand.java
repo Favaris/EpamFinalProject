@@ -38,15 +38,15 @@ public class ShowActivityEditPageCommand implements Command {
             log.debug("retrieved an activity {}", activity);
             req.setAttribute("activityToEdit", activity);
             log.debug("set a request attribute 'activityToEdit'");
-            return new Chain(Pages.ACTIVITY_EDIT_PAGE_JSP, true);
+            return Chain.createForward(Pages.ACTIVITY_EDIT_PAGE_JSP);
         } catch (NoSuchActivityException e) {
             log.debug("no such activity with id={}", activityId, e);
             req.setAttribute("err_msg", "Activity you are looking for does not exist");
-            return new Chain(Pages.ERROR_JSP, true);
+            return Chain.getErrorPageChain();
         } catch (ServiceException e) {
             log.error("can not get an activity by id={}", activityId, e);
             req.setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, true);
+            return Chain.getErrorPageChain();
         }
     }
 }

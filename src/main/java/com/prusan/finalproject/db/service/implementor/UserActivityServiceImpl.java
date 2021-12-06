@@ -152,7 +152,7 @@ public class UserActivityServiceImpl implements UserActivityService {
             log.error("unable to get connection", throwables);
             throw new ServiceException("unable to get connection", throwables);
         } catch (DAOException e) {
-            log.error("error in updateUserActivity({})", ua, e);
+            log.error("error in update({})", ua, e);
             throw new ServiceException("unable to delete user activity", e);
         }
     }
@@ -165,7 +165,7 @@ public class UserActivityServiceImpl implements UserActivityService {
             log.error("unable to get connection", throwables);
             throw new ServiceException("unable to get connection", throwables);
         } catch (DAOException e) {
-            log.error("error in updateUserActivity(userId={}, activityId={})", userId, activityId, e);
+            log.error("error in delete(userId={}, activityId={})", userId, activityId, e);
             throw new ServiceException("unable to delete user activity", e);
         }
     }

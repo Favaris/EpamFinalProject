@@ -66,9 +66,9 @@ public class DownloadUsersRequestsCommand implements Command {
         } catch (ServiceException e) {
             log.error("can not download requests", e);
             req.setAttribute("err_msg", "");
-            return new Chain(Pages.ERROR_JSP, true);
+            return Chain.getErrorPageChain();
         }
 
-        return new Chain(Pages.REQUESTS_JSP, true);
+        return Chain.createForward(Pages.REQUESTS_JSP);
     }
 }

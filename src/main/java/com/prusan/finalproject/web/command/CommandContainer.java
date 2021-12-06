@@ -30,8 +30,7 @@ public class CommandContainer {
         commands.put("acceptRequest", new AcceptRequestCommand());
         commands.put("showRunningActivities", new ShowRunningActivitiesCommand());
         commands.put("denyRequest", new DenyRequestCommand());
-        commands.put("showAllUsers", new DownloadAllUsersCommand());
-        commands.put("showEditUserPage", new PrepareForUserEditingCommand());
+        commands.put("showAllUsers", new ShowAllUsersCommand());
         commands.put("updateUser", new UpdateUserCommand());
         commands.put("showActivityEditPage", new ShowActivityEditPageCommand());
         commands.put("updateActivity", new UpdateActivityCommand());
@@ -48,9 +47,10 @@ public class CommandContainer {
         commands.put("addUserActivity", new AddUserActivityCommand());
         commands.put("showUsersReport", new GetUserReportCommand());
         commands.put("deleteCategory", new DeleteCategoryCommand());
-        commands.put("downloadActivitiesForUser", new DownloadActivitiesForUserCommand());
-        commands.put("showDetailedUserInfo", new DownloadDetailedUserInfoCommand());
+        commands.put("showAddActivitiesForUserPage", new ShowAddActivitiesForUserPageCommand());
+        commands.put("showDetailedUserInfo", new ShowDetailedUserInfoCommand());
         commands.put("manageUsersActivities", new ManageUsersActivitiesCommand());
+        commands.put("addUser", new AddUserCommand());
     }
 
     public static Command getCommand(String command) {

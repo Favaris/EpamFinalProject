@@ -22,11 +22,11 @@ public class ShowActivityAddPageCommand implements Command {
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
         try {
             commandUtils.setAllCategoriesInRequestAttribute(req);
-            return new Chain(Pages.ACTIVITY_ADD_PAGE_JSP, true);
+            return Chain.createForward(Pages.ACTIVITY_ADD_PAGE_JSP);
         } catch (ServiceException e) {
             log.error("failed to download all categories", e);
             req.getSession().setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
     }
 }

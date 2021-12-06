@@ -39,11 +39,11 @@ public class GetUserReportCommand implements Command {
             log.debug("successfully downloaded a user report, map size={}", report.size());
 
             req.setAttribute("report", report);
-            return new Chain(Pages.USERS_REPORT_PAGE_JSP, true);
+            return Chain.createForward(Pages.USERS_REPORT_PAGE_JSP);
         } catch (ServiceException e) {
             log.error("failed to download a users report", e);
             req.getSession().setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
     }
 }

@@ -52,15 +52,15 @@ public class UpdateTimeSpentCommand implements Command {
 
             String query = handler.getQueryStringWithSortingParameters(req.getSession());
             log.debug("received a query string: '{}'", query);
-            return new Chain("controller?command=showRunningActivities&" + query, false);
+            return Chain.createRedirect("controller?command=showRunningActivities&" + query);
         } catch (NoSuchActivityException ex) {
             log.error("no such activity with userId={} and activityId={}", userId, activityId, ex);
             req.getSession().setAttribute("err_msg", ex.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         } catch (ServiceException e) {
             log.error("error while trying to update spent time on user activity with userId={} and activityId={}", userId, activityId, e);
             req.getSession().setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
     }
 }

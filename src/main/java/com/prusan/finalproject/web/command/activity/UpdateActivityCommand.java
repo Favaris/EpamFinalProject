@@ -38,7 +38,7 @@ public class UpdateActivityCommand implements Command {
 
         if (!doValidation(req, name, desc)) {
             log.debug("input is invalid, sending back to activity editing page");
-            return new Chain("controller?command=showActivityEditPage&id=" + activityId, false);
+            return Chain.createRedirect("controller?command=showActivityEditPage&id=" + activityId);
         }
 
         ServiceFactory sf = ServiceFactory.getInstance();
@@ -59,11 +59,11 @@ public class UpdateActivityCommand implements Command {
             String queryString = handler.getQueryStringWithSortingParameters(s);
             log.debug("received a url params string: '{}'", queryString);
 
-            return new Chain("controller?command=showActivitiesPage&" + queryString, false);
+            return Chain.createRedirect("controller?command=showActivitiesPage&" + queryString);
         } catch (ServiceException e) {
             log.error("unable to update an activity {}", activity);
             req.getSession().setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
     }
 }

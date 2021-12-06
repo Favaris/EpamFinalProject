@@ -38,12 +38,12 @@ public class UpdateCategoryCommand implements Command {
         } catch (ServiceException e) {
             log.error("unable to update a category {}", cat);
             req.getSession().setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
 
         String queryString = handler.getQueryString(req.getSession());
         log.debug("received a url params string: '{}'", queryString);
 
-        return new Chain("controller?command=showCategoriesPage&" + queryString, false);
+        return Chain.createRedirect("controller?command=showCategoriesPage&" + queryString);
     }
 }

@@ -50,11 +50,11 @@ public class ManageUsersActivitiesCommand implements Command {
             req.setAttribute("uId", userId);
             log.debug("set a 'uId'={} as request attribute", userId);
 
-            return new Chain(Pages.MANAGE_USERS_ACTIVITIES_PAGE_JSP, true);
+            return Chain.createForward(Pages.MANAGE_USERS_ACTIVITIES_PAGE_JSP);
         } catch (ServiceException e) {
             log.error("failed to download all user's activities, userId={}", userId, e);
             req.getSession().setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
     }
 }

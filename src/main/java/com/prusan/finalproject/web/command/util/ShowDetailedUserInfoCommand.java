@@ -7,6 +7,7 @@ import com.prusan.finalproject.db.service.exception.NoSuchUserException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class DownloadDetailedUserInfoCommand implements Command {
+public class ShowDetailedUserInfoCommand implements Command {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     @Override
@@ -42,15 +43,15 @@ public class DownloadDetailedUserInfoCommand implements Command {
             req.setAttribute("totalTime", totalTime);
             log.debug("set up all needed request attributes");
 
-            return new Chain(Pages.USER_DETAILED_JSP, true);
+            return Chain.createForward(Pages.USER_DETAILED_JSP);
         } catch (NoSuchUserException ex) {
             log.error("unable to find user by id={}", userId, ex);
             req.getSession().setAttribute("err_msg", "Failed to find given user");
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         } catch (ServiceException e) {
             log.error("failed to download all needed info about user with id={}", userId, e);
             req.getSession().setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
     }
 }

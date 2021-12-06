@@ -39,7 +39,7 @@ public class ShowRunningActivitiesCommand implements Command {
         try {
             commandUtils.setAllCategoriesInRequestAttribute(req);
 
-            List<UserActivity> list = uas.getAcceptedForUser(u.getId(), pageSize * (page - 1), pageSize * page, orderBy, filterBy);
+            List<UserActivity> list = uas.getAcceptedForUser(u.getId(), pageSize * (page - 1), pageSize, orderBy, filterBy);
             log.debug("got a list of running activities, list size: {}", list.size());
 
             int entitiesCount = uas.getActivitiesCountForUser(u.getId());
@@ -49,11 +49,11 @@ public class ShowRunningActivitiesCommand implements Command {
             log.debug("set a request attribute 'runningActivities'");
             handler.setPaginationParametersAsRequestAttributes(req, entitiesCount, pageSize, page, orderBy, filterBy);
 
-            return new Chain(Pages.RUNNING_ACTIVITIES_JSP, true);
+            return Chain.createForward(Pages.RUNNING_ACTIVITIES_JSP);
         } catch (ServiceException e) {
             log.error("error in #execute(), user={}", u, e);
             req.setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, true);
+            return Chain.getErrorPageChain();
         }
     }
 }

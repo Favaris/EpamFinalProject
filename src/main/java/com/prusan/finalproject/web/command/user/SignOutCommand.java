@@ -24,6 +24,6 @@ public class SignOutCommand implements Command {
             log.debug("session invalidated: {}", session);
         }
 
-        return new Chain(".", false);
+        return Chain.createRedirect(".");
     }
 }

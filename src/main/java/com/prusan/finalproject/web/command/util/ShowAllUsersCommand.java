@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Downloads all users with role 'user' as List in request attribute 'usersList'.
  */
-public class DownloadAllUsersCommand implements Command {
+public class ShowAllUsersCommand implements Command {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
@@ -36,11 +36,11 @@ public class DownloadAllUsersCommand implements Command {
             log.debug("received a users amount: {}", usersCount);
             req.setAttribute("usersList", usersList);
             handler.setPaginationParametersAsRequestAttributes(req, usersCount, pageSize, page, null, null);
-            return new Chain(Pages.USERS_JSP, true);
+            return Chain.createForward(Pages.USERS_JSP);
         } catch (ServiceException e) {
             log.error("error while trying to download all users with role='user'", e);
             req.setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, true);
+            return Chain.getErrorPageChain();
         }
     }
 }

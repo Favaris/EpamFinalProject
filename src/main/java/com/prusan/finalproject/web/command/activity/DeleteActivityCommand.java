@@ -28,11 +28,11 @@ public class DeleteActivityCommand implements Command {
             log.debug("deleted an activity with id={}", activityId);
 
             String queryString = handler.getQueryStringWithSortingParameters(req.getSession());
-            return new Chain("controller?command=showActivitiesPage&" + queryString, false);
+            return Chain.createRedirect("controller?command=showActivitiesPage&" + queryString);
         } catch (ServiceException e) {
             log.error("unable to delete an activity by id={}", activityId, e);
             req.getSession().setAttribute("err_msg", "Can not delete this activity");
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
     }
 

@@ -85,7 +85,13 @@
         <form action="${root}/controller" method="get">
             <input type="hidden" name="command" value="showDetailedUserInfo">
             <input type="hidden" name="uId" value="${requestScope.uId}">
-            <button type="submit" class="btn btn-black">Back to editing user ${requestScope.userToShow.login}</button>
+            <button type="submit" class="btn btn-black">Back to editing user</button>
+        </form>
+
+        <form action="${root}/controller" method="get">
+            <input type="hidden" name="command" value="showAddActivitiesForUserPage">
+            <input type="hidden" name="uId" value="${requestScope.uId}">
+            <button type="submit" class="btn btn-black">Add new activities</button>
         </form>
         <br>
         <form action="${root}/controller">
@@ -157,12 +163,36 @@
                     <td>${activity.description}</td>
                     <td><ut:convert minutes="${activity.minutesSpent}" minutesLabel="mins" hoursLabel="hrs"/></td>
                     <td>
-                        <form action="${root}/controller" method="post">
-                            <input type="hidden" name="command" value="removeUserActivity"/>
-                            <input type="hidden" name="uId" value="${requestScope.uId}">
-                            <input type="hidden" name="aId" value="${activity.id}">
-                            <button type="submit" class="btn btn-black">Remove</button>
-                        </form>
+                        <button type="button" class="btn btn-black" data-toggle="modal" data-target="#confirmActivityDeletion${activity.id}">
+                            Remove
+                        </button>
+                        <div class="modal fade" id="confirmActivityDeletion${activity.id}" tabindex="-1" role="dialog" aria-labelledby="Confirm deletion" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Confirm action</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Do you really want to remove this activity?
+                                        <strong>Warn: this action is irreversible. It will lead to deletion of user's recorded time for this activity.
+                                        </strong>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <form action="${root}/controller" method="post">
+                                            <input type="hidden" name="command" value="removeUserActivity"/>
+                                            <input type="hidden" name="uId" value="${requestScope.uId}">
+                                            <input type="hidden" name="aId" value="${activity.id}">
+                                            <button type="submit" class="btn btn-black">Remove</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </td>
                 </tr>
             </c:forEach>

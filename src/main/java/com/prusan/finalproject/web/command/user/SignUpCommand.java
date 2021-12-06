@@ -31,7 +31,7 @@ public class SignUpCommand implements Command {
 
         if (!doValidation(req, login, password, name, surname)) {
             req.getSession().setAttribute("invalidUser", new User(login, password, name, surname));
-            return new Chain(Pages.SIGN_UP_JSP, true);
+            return Chain.createForward(Pages.SIGN_UP_JSP);
         }
 
         User u = new User(login, password, name, surname);
@@ -42,21 +42,21 @@ public class SignUpCommand implements Command {
             us.save(u);
             HttpSession s = req.getSession();
             s.setAttribute("user", u);
-            return new Chain(Pages.HOME_JSP, false);
+            return Chain.createRedirect(Pages.HOME_JSP);
         } catch (LoginIsTakenException ex) {
             log.debug("unable to create new user: login {} ", ex.getLogin());
             HttpSession session = req.getSession();
             session.setAttribute("invalidUser", u);
             session.setAttribute("err_msg", "This login is already taken. Try another one.");
-            return new Chain(Pages.SIGN_UP_JSP, false);
+            return Chain.createRedirect(Pages.SIGN_UP_JSP);
         } catch (ServiceException e) {
             log.debug("unable to add a user {}", u, e);
             req.getSession().setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
     }
 
-    private boolean doValidation(HttpServletRequest req, String login, String password, String name, String surname) {
+    public static boolean doValidation(HttpServletRequest req, String login, String password, String name, String surname) {
         boolean isValid = true;
         HttpSession session = req.getSession();
         if (!validator.validate(Validator.USER_LOGIN, login)) {

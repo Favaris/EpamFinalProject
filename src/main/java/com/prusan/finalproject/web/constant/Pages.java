@@ -17,7 +17,6 @@ public abstract class Pages {
     public static final String RUNNING_ACTIVITIES_JSP = "jsp/logged/user/runningActivities.jsp";
 
     public static final String USERS_JSP = "jsp/logged/admin/users.jsp";
-    public static final String USER_EDIT_PAGE_JSP = "jsp/logged/admin/util/userEditPage.jsp";
     public static final String ACTIVITY_EDIT_PAGE_JSP = "jsp/logged/admin/util/activityEditPage.jsp";
     public static final String ACTIVITY_ADD_PAGE_JSP = "jsp/logged/admin/util/activityAddPage.jsp";
     public static final String CATEGORIES_JSP = "jsp/logged/admin/categories.jsp";
@@ -25,4 +24,5 @@ public abstract class Pages {
     public static final String USERS_REPORT_PAGE_JSP = "jsp/logged/admin/usersReportPage.jsp";
     public static final String USER_DETAILED_JSP = "jsp/logged/admin/util/userDetailed.jsp";
     public static final String MANAGE_USERS_ACTIVITIES_PAGE_JSP = "jsp/logged/admin/util/manageUsersActivitiesPage.jsp";
+    public static final String USER_ADD_PAGE = "jsp/logged/admin/util/userAddPage.jsp";
 }

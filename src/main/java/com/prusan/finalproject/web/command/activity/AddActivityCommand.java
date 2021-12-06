@@ -41,7 +41,7 @@ public class AddActivityCommand implements Command {
             Activity activity = createActivity(name, desc, catId);
             session.setAttribute("invalidActivity", activity);
             log.debug("set a session attribute 'invalidActivity' ==> '{}'", activity);
-            return new Chain("controller?command=showActivityAddPage", false);
+            return Chain.createRedirect("controller?command=showActivityAddPage");
         }
 
         log.debug("all fields are valid");
@@ -58,16 +58,16 @@ public class AddActivityCommand implements Command {
             String queryString = handler.getQueryStringWithSortingParameters(session);
             log.debug("received a query string: '{}'", queryString);
 
-            return new Chain("controller?command=showActivitiesPage&" + queryString, false);
+            return Chain.createRedirect("controller?command=showActivitiesPage&" + queryString);
         } catch (NameIsTakenException ex) {
             log.debug("unable to add new activity {}, such activity already exists", ac);
             session.setAttribute("invalidActivity", ac);
             session.setAttribute("err_msg", ex.getMessage());
-            return new Chain("controller?command=showActivityAddPage", false);
+            return Chain.createRedirect("controller?command=showActivityAddPage");
         } catch (ServiceException e) {
             log.error("error while trying to add new activity {}", ac, e);
             session.setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
     }
 

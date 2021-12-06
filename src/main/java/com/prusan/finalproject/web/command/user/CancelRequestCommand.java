@@ -42,15 +42,15 @@ public class CancelRequestCommand implements Command {
                 log.debug("removed user activity {} from requested for acceptance", ua);
             }
 
-            return new Chain("controller?command=showUsersRequests", false);
+            return Chain.createRedirect("controller?command=showUsersRequests");
         } catch (NoSuchActivityException ex) {
             log.debug("unable to find a user activity by userId={} and activityId={}", userId, activityId);
             req.getSession().setAttribute("err_msg", ex.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         } catch (ServiceException e) {
             log.debug("an error occurred when trying to download and change user activity by userId={} and activityId={}", userId, activityId);
             req.getSession().setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
     }
 }

@@ -40,11 +40,11 @@ public class RequestActivityAbandonmentCommand implements Command {
         } catch (ServiceException e) {
             log.debug("unable to get a user activity instance with userId={}, activityId={} or to update it", userId, activityId, e);
             req.setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
 
         String query = handler.getQueryStringWithSortingParameters(req.getSession());
         log.debug("received a query string: '{}'", query);
-        return new Chain("controller?command=showRunningActivities&" + query, false);
+        return Chain.createRedirect("controller?command=showRunningActivities&" + query);
     }
 }

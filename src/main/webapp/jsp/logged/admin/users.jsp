@@ -2,9 +2,23 @@
 <%@ include file="/WEB-INF/jspf/taglibs.jspf" %>
 <%@taglib tagdir="/WEB-INF/tags/html" prefix="my"%>
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
-
 <s:check role="${sessionScope.user.role}"  permission="admin"/>
+<%@taglib uri="http://com.prusan.finalproject.util" prefix="ut" %>
+<ut:set-pagination-query/>
 <my:html-carcass title="${sessionScope.user.login} - users list">
+    <div class="managing sidenav">
+        <div class="login-main-text">
+            <form action="${root}/controller" method="get">
+                <input type="hidden" name="command" value="showUsersReport">
+                <button type="submit" class="btn btn-black">Get users report</button>
+            </form>
+
+            <form action="${root}/jsp/logged/admin/util/userAddPage.jsp" method="get">
+                <button type="submit" class="btn btn-black">Create new user</button>
+            </form>
+        </div>
+    </div>
+    <div class="tables">
     <form action="${root}/controller">
         <input type="hidden" name="command" value="showAllUsers">
         <input type="hidden" name="page" value="${requestScope.page - 1}">
@@ -31,10 +45,7 @@
             </c:otherwise>
         </c:choose>
     </form>
-    <form action="${root}/controller" method="get">
-        <input type="hidden" name="command" value="showUsersReport">
-        <button type="submit" class="btn btn-black">Get users report</button>
-    </form>
+
     <table class="table">
         <thead>
         <tr>
@@ -57,4 +68,5 @@
         </c:forEach>
         </tbody>
     </table>
+    </div>
 </my:html-carcass>

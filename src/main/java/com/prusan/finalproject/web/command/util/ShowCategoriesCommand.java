@@ -29,12 +29,12 @@ public class ShowCategoriesCommand implements Command {
 
         CategoryService cs = ServiceFactory.getInstance().getCategoryService();
         try {
-            List<Category> cats = cs.getCategories(pageSize * (page - 1), pageSize * page);
+            List<Category> cats = cs.getCategories(pageSize * (page - 1), pageSize);
             log.debug("received a list of categories, list size: {}", cats.size());
 
             if (cats.size() == 0 && page > 1) {
                 --page;
-                cats = cs.getCategories(pageSize * (page - 1), pageSize * page);
+                cats = cs.getCategories(pageSize * (page - 1), pageSize);
                 log.debug("current categories list was empty while the page was bigger then 1, reloaded it with decreased page, page={}, list size = {}", page, cats.size());
             }
 
@@ -44,11 +44,11 @@ public class ShowCategoriesCommand implements Command {
 
             req.getSession().setAttribute("categories", cats);
             log.debug("set a request attribute 'categories', list size={}", cats.size());
-            return new Chain(Pages.CATEGORIES_JSP, true);
+            return Chain.createForward(Pages.CATEGORIES_JSP);
         } catch (ServiceException e) {
             log.error("unable to get all activities", e);
             req.getSession().setAttribute("err_msg", "can not download all categories");
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
     }
 }

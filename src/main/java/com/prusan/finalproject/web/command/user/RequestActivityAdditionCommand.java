@@ -40,16 +40,16 @@ public class RequestActivityAdditionCommand implements Command {
         } catch (DependencyAlreadyExistsException e) {
             log.debug("this user activity already exists");
             req.setAttribute("err_msg", "this user activity already exists");
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         } catch (ServiceException e) {
             log.error("error: ", e);
             req.setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
 
         String queryString = handler.getQueryStringWithSortingParameters(s);
         log.debug("received a url params string: '{}'", queryString);
 
-        return new Chain("controller?command=showActivitiesPage&" + queryString, false);
+        return Chain.createRedirect("controller?command=showActivitiesPage&" + queryString);
     }
 }

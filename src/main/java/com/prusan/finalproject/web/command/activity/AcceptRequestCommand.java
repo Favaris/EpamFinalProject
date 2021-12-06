@@ -48,9 +48,9 @@ public class AcceptRequestCommand implements Command {
         } catch (ServiceException e) {
             log.error("unable to accept request", e);
             req.setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, true);
+            return Chain.getErrorPageChain();
         }
 
-        return new Chain("controller?command=showUsersRequests", false);
+        return Chain.createRedirect("controller?command=showUsersRequests");
     }
 }

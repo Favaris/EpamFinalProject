@@ -1,5 +1,6 @@
 package com.prusan.finalproject.web;
 
+import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,9 +14,28 @@ import java.io.IOException;
  */
 public class Chain {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
+    private static final Chain errorPageChain = Chain.getErrorPageChain();
 
     private final String url;
     private final boolean doForward;
+
+    public static Chain getErrorPageChain() {
+        log.debug("returned an error page instance");
+        return errorPageChain;
+    }
+
+    public static Chain createRedirect(String url) {
+        Chain chain = new Chain(url, false);
+        log.debug("returned a redirect instance: {}", chain);
+        return chain;
+    }
+
+    public static Chain createForward(String url) {
+        Chain chain = new Chain(url, true);
+        log.debug("returned a forward instance: {}", chain);
+        return chain;
+    }
+
 
     @Override
     public String toString() {
@@ -25,10 +45,9 @@ public class Chain {
                 '}';
     }
 
-    public Chain(String url, boolean doForward) {
+    private Chain(String url, boolean doForward) {
         this.url = url;
         this.doForward = doForward;
-        log.debug("created new chain {}", this);
     }
 
     public String getUrl() {

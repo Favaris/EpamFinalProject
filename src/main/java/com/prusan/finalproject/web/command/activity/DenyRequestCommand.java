@@ -42,15 +42,15 @@ public class DenyRequestCommand implements Command {
                 log.debug("denied abandonment for a user activity {}", ua);
             }
 
-            return new Chain("controller?command=showUsersRequests", false);
+            return Chain.createRedirect("controller?command=showUsersRequests");
         } catch (NoSuchActivityException e) {
             log.debug("no such user activity with userId={}, activityId={}", userId, activityId);
             req.setAttribute("err_msg", e.getMessage());
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         } catch (ServiceException e) {
             log.error("unable to download corresponding user activity: userId={}, activityId={}", userId, activityId);
             req.setAttribute("err_msg", "can not download corresponding user activity");
-            return new Chain(Pages.ERROR_JSP, false);
+            return Chain.getErrorPageChain();
         }
     }
 

@@ -22,7 +22,6 @@ public class SecurityFilter implements Filter {
 
         List<String> adminPages = Arrays.asList(
                 Pages.USERS_JSP,
-                Pages.USER_EDIT_PAGE_JSP,
                 Pages.ACTIVITY_EDIT_PAGE_JSP,
                 Pages.ACTIVITY_ADD_PAGE_JSP,
                 Pages.CATEGORIES_JSP);
