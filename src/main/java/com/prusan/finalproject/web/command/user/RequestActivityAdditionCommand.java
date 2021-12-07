@@ -30,9 +30,7 @@ public class RequestActivityAdditionCommand implements Command {
         log.debug("retrieved a user id={}", userId);
         Integer activityId = Integer.valueOf(req.getParameter("aId"));
         log.debug("retrieved an activity id={}", activityId);
-        UserActivity ua = new UserActivity();
-        ua.setUserId(userId);
-        ua.setActivityId(activityId);
+        UserActivity ua = UserActivity.createStubWithIds(userId, activityId);
 
         UserActivityService uas = ServiceFactory.getInstance().getUserActivityService();
         try {

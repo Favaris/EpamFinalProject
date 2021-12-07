@@ -290,14 +290,17 @@ public class ActivityDAOImpl extends ActivityDAO {
     }
 
     private static Activity getActivity(ResultSet rs) throws SQLException {
-        Activity ac = new Activity();
-        ac.setId(rs.getInt(Fields.ACTIVITY_ID));
-        ac.setName(rs.getString(Fields.ACTIVITY_NAME));
-        ac.setDescription(rs.getString(Fields.ACTIVITY_DESCRIPTION));
-        ac.setUsersCount(rs.getInt(Fields.ACTIVITY_USERS_COUNT));
+        Activity.Builder builder = new Activity.Builder();
         Category c = new Category(rs.getInt(Fields.ACTIVITY_CATEGORY_ID), rs.getString(Fields.CATEGORY_NAME));
-        ac.setCategory(c);
-        log.debug("retrieved an activity by name: {}", ac);
+
+        Activity ac = builder.
+                setId(rs.getInt(Fields.ACTIVITY_ID)).
+                setName(rs.getString(Fields.ACTIVITY_NAME)).
+                setDescription(rs.getString(Fields.ACTIVITY_DESCRIPTION)).
+                setUsersCount(rs.getInt(Fields.ACTIVITY_USERS_COUNT)).
+                setCategory(c).
+                create();
+        log.debug("retrieved an activity instance: {}", ac);
         return ac;
     }
 }

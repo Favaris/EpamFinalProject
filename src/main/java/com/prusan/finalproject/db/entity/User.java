@@ -9,6 +9,64 @@ import java.io.Serializable;
  * Entity for table 'users'.
  */
 public class User implements Serializable {
+    private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
+
+    /**
+     * Builder pattern implementor for User class.
+     */
+    public static class Builder {
+        private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
+
+        private Integer id;
+        private String login;
+        private String password;
+        private String name;
+        private String surname;
+        private String role;
+
+        public User create() {
+            User u = new User(id, login, password, name, surname, role);
+            log.debug("created a new instance: {}", u);
+            return u;
+        }
+
+        public Builder setPassword(String password) {
+            this.password = password;
+            log.debug("got set password");
+            return this;
+        }
+
+        public Builder setName(String name) {
+            this.name = name;
+            log.debug("got set name: {}", name);
+            return this;
+        }
+
+        public Builder setSurname(String surname) {
+            this.surname = surname;
+            log.debug("got set surname: {}", surname);
+            return this;
+        }
+
+        public Builder setId(Integer id) {
+            this.id = id;
+            log.debug("got set id: {}", id);
+            return this;
+        }
+
+        public Builder setLogin(String login) {
+            this.login = login;
+            log.debug("got set login: {}", login);
+            return this;
+        }
+
+        public Builder setRole(String role) {
+            this.role = role;
+            log.debug("got set role: {}", role);
+            return this;
+        }
+    }
+
     private Integer id;
     private String login;
     private String password;
@@ -16,10 +74,7 @@ public class User implements Serializable {
     private String surname;
     private String role = "user";
 
-    public User() {
-    }
-
-    public User(Integer id, String login, String password, String name, String surname, String role) {
+    private User(Integer id, String login, String password, String name, String surname, String role) {
         this.id = id;
         this.login = login;
         this.password = password;
@@ -28,11 +83,31 @@ public class User implements Serializable {
         this.role = role;
     }
 
-    public User(String login, String password, String name, String surname) {
-        this.login = login;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
+    public static User createUserWithoutId(String login, String password, String name, String surname, String role) {
+        User u = new Builder().
+                setLogin(login).
+                setPassword(password).
+                setName(name).
+                setSurname(surname).
+                setRole(role).
+                create();
+        log.debug("returned a user without id instance: {}", u);
+        return u;
+    }
+
+    /**
+     * @return a user instance without ID and with role 'user'.
+     */
+    public static User createDefaultUserWithoutId(String login, String password, String name, String surname) {
+        User user = new Builder().
+                setLogin(login).
+                setPassword(password).
+                setName(name).
+                setSurname(surname).
+                setRole("user").
+                create();
+        log.debug("returned a default user without id instance: {}", user);
+        return user;
     }
 
     @Override

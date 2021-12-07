@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * <pre>If current user is admin, downloads all requests from all users; if it is a default user, then downloads only his requests.</pre><br>
  * Places a Map of (User, UserActivity) as request parameter 'requests'.
  */
-public class DownloadUsersRequestsCommand implements Command {
+public class ShowUsersRequestsCommand implements Command {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     @Override

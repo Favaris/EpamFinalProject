@@ -252,25 +252,21 @@ public class UserActivityDAOImpl extends UserActivityDAO {
         }
     }
 
-    private Activity getActivity(ResultSet rs) throws SQLException {
-        Activity ac = new Activity();
-        ac.setName(rs.getString(Fields.ACTIVITY_NAME));
-        ac.setId(rs.getInt(Fields.ACTIVITY_ID));
-        ac.setUsersCount(rs.getInt(Fields.ACTIVITY_USERS_COUNT));
-        ac.setDescription(rs.getString(Fields.ACTIVITY_DESCRIPTION));
-        Category c = new Category(rs.getInt(Fields.ACTIVITY_CATEGORY_ID), rs.getString(Fields.CATEGORY_NAME));
-        ac.setCategory(c);
-        log.debug("retrieved an activity by name: {}", ac);
-        return ac;
-    }
-
     private UserActivity getUserActivity(ResultSet rs) throws SQLException {
-        Activity ac = getActivity(rs);
-        UserActivity ua = new UserActivity(ac);
-        ua.setUserId(rs.getInt(Fields.USER_ACTIVITY_USER_ID));
-        ua.setMinutesSpent(rs.getInt(Fields.USER_ACTIVITY_MINUTES_SPENT));
-        ua.setAccepted(rs.getBoolean(Fields.USER_ACTIVITY_ACCEPTED));
-        ua.setRequestedAbandon(rs.getBoolean(Fields.USER_ACTIVITY_REQUESTED_ABANDON));
+        Category c = new Category(rs.getInt(Fields.ACTIVITY_CATEGORY_ID), rs.getString(Fields.CATEGORY_NAME));
+        UserActivity.Builder builder = new UserActivity.Builder();
+
+        UserActivity ua = builder.
+                setId(rs.getInt(Fields.ACTIVITY_ID)).
+                setName(rs.getString(Fields.ACTIVITY_NAME)).
+                setDescription(rs.getString(Fields.ACTIVITY_DESCRIPTION)).
+                setUsersCount(rs.getInt(Fields.ACTIVITY_USERS_COUNT)).
+                setCategory(c).
+                setUserId(rs.getInt(Fields.USER_ACTIVITY_USER_ID)).
+                setMinutesSpent(rs.getInt(Fields.USER_ACTIVITY_MINUTES_SPENT)).
+                setAccepted(rs.getBoolean(Fields.USER_ACTIVITY_ACCEPTED)).
+                setRequestedAbandon(rs.getBoolean(Fields.USER_ACTIVITY_REQUESTED_ABANDON)).
+                create();
         log.debug("retrieved a user activity: {}", ua);
         return ua;
     }

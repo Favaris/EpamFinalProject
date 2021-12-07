@@ -1,4 +1,4 @@
-package com.prusan.finalproject.web.command.user;
+package com.prusan.finalproject.web.command.activity;
 
 import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.UserActivityService;

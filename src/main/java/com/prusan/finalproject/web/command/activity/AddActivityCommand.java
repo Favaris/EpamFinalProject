@@ -38,14 +38,14 @@ public class AddActivityCommand implements Command {
 
         HttpSession session = req.getSession();
         if (!doValidation(req, name, desc)) {
-            Activity activity = createActivity(name, desc, catId);
+            Activity activity =  Activity.createWithoutIdAndUsersCount(name, desc, new Category(catId));
             session.setAttribute("invalidActivity", activity);
             log.debug("set a session attribute 'invalidActivity' ==> '{}'", activity);
             return Chain.createRedirect("controller?command=showActivityAddPage");
         }
 
         log.debug("all fields are valid");
-        Activity ac = createActivity(name, desc, catId);
+        Activity ac = Activity.createWithoutIdAndUsersCount(name, desc, new Category(catId));
         log.debug("created an activity instance {}", ac);
 
         ActivityService s = ServiceFactory.getInstance().getActivityService();
@@ -69,12 +69,6 @@ public class AddActivityCommand implements Command {
             session.setAttribute("err_msg", e.getMessage());
             return Chain.getErrorPageChain();
         }
-    }
-
-    public static Activity createActivity(String name, String desc, int catId) {
-        Activity ac = new Activity(name, desc);
-        ac.setCategory(new Category(catId));
-        return ac;
     }
 
     public static boolean doValidation(HttpServletRequest req, String name, String desc) {

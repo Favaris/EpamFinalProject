@@ -1,25 +1,18 @@
 package com.prusan.finalproject.web.command.activity;
 
-import com.prusan.finalproject.db.entity.Activity;
 import com.prusan.finalproject.db.entity.UserActivity;
-import com.prusan.finalproject.db.service.ActivityService;
 import com.prusan.finalproject.db.service.UserActivityService;
-import com.prusan.finalproject.db.service.exception.NoSuchActivityException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Adds a new user activity by user id and activity id. This activity is already set accepted.
@@ -46,8 +39,7 @@ public class AddUserActivityCommand implements Command {
         UserActivityService uas = sf.getUserActivityService();
 
         try {
-            UserActivity ua = new UserActivity(userId, activityId);
-            ua.setAccepted(true);
+            UserActivity ua = UserActivity.createAcceptedWithIds(userId, activityId);
             log.debug("created a stub for user activity: {}", ua);
 
             uas.save(ua);

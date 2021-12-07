@@ -1,5 +1,6 @@
 package com.prusan.finalproject.web.command.user;
 
+import com.prusan.finalproject.web.Encryptor;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.constant.ValidationErrorsFlags;
 import com.prusan.finalproject.db.entity.User;
@@ -30,11 +31,13 @@ public class SignUpCommand implements Command {
         String surname = req.getParameter("surname");
 
         if (!doValidation(req, login, password, name, surname)) {
-            req.getSession().setAttribute("invalidUser", new User(login, password, name, surname));
+            req.getSession().setAttribute("invalidUser", User.createDefaultUserWithoutId(login, password, name, surname));
             return Chain.createForward(Pages.SIGN_UP_JSP);
         }
 
-        User u = new User(login, password, name, surname);
+        String hashedPass = Encryptor.encodePassword(password);
+
+        User u = User.createDefaultUserWithoutId(login, hashedPass, name, surname);
         log.debug("created a user instance: {}", u);
 
         UserService us = ServiceFactory.getInstance().getUserService();

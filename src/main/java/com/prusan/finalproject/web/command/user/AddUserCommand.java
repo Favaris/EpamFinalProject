@@ -6,6 +6,7 @@ import com.prusan.finalproject.db.service.exception.LoginIsTakenException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.Encryptor;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
@@ -31,8 +32,7 @@ public class AddUserCommand implements Command {
         String role = req.getParameter("role");
         log.debug("retrieved a role: {}", role);
 
-        User u = new User(login, password, name, surname);
-        u.setRole(role);
+        User u = User.createUserWithoutId(login, password, name, surname, role);
 
         HttpSession session = req.getSession();
 
@@ -42,6 +42,9 @@ public class AddUserCommand implements Command {
             return Chain.createRedirect(Pages.SIGN_UP_JSP);
         }
 
+        String hashedPass = Encryptor.encodePassword(password);
+        u.setPassword(hashedPass);
+
         UserService us = ServiceFactory.getInstance().getUserService();
 
         try {
@@ -50,6 +53,7 @@ public class AddUserCommand implements Command {
             return Chain.createRedirect("controller?command=showAllUsers");
         } catch (LoginIsTakenException e) {
             log.debug("login '{}' is already taken", login, e);
+            u.setPassword(password);
             session.setAttribute("invalidUser", u);
             log.debug("set a session attribute 'invalidUser': {}", u);
             session.setAttribute("err_msg", "This login is already taken. Try another one.");

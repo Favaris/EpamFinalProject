@@ -21,36 +21,39 @@ public class CommandContainer {
 
     static {
         commands = new HashMap<>();
+        commands.put("acceptRequest", new AcceptRequestCommand());
+        commands.put("addActivity", new AddActivityCommand());
+        commands.put("addUserActivity", new AddUserActivityCommand());
+        commands.put("deleteActivity", new DeleteActivityCommand());
+        commands.put("removeUserActivity", new DeleteUserActivityCommand());
+        commands.put("denyRequest", new DenyRequestCommand());
+        commands.put("updateActivity", new UpdateActivityCommand());
+        commands.put("updateSpentTime", new UpdateTimeSpentCommand());
+
+        commands.put("addCategory", new AddCategoryCommand());
+        commands.put("updateCategory", new UpdateCategoryCommand());
+        commands.put("deleteCategory", new DeleteCategoryCommand());
+
+        commands.put("addUser", new AddUserCommand());
+        commands.put("cancelRequest", new CancelRequestCommand());
+        commands.put("showUsersReport", new GetUserReportCommand());
+        commands.put("requestActivityAbandonment", new RequestActivityAbandonmentCommand());
+        commands.put("requestActivityAddition", new RequestActivityAdditionCommand());
         commands.put("signIn", new SignInCommand());
         commands.put("signUp", new SignUpCommand());
         commands.put("signOut", new SignOutCommand());
-        commands.put("showActivitiesPage", new ShowActivitiesCommand());
-        commands.put("requestActivityAddition", new RequestActivityAdditionCommand());
-        commands.put("showUsersRequests", new DownloadUsersRequestsCommand());
-        commands.put("acceptRequest", new AcceptRequestCommand());
-        commands.put("showRunningActivities", new ShowRunningActivitiesCommand());
-        commands.put("denyRequest", new DenyRequestCommand());
-        commands.put("showAllUsers", new ShowAllUsersCommand());
         commands.put("updateUser", new UpdateUserCommand());
-        commands.put("showActivityEditPage", new ShowActivityEditPageCommand());
-        commands.put("updateActivity", new UpdateActivityCommand());
-        commands.put("deleteActivity", new DeleteActivityCommand());
-        commands.put("showActivityAddPage", new ShowActivityAddPageCommand());
-        commands.put("addActivity", new AddActivityCommand());
-        commands.put("addCategory", new AddCategoryCommand());
-        commands.put("showCategoriesPage", new ShowCategoriesCommand());
-        commands.put("updateCategory", new UpdateCategoryCommand());
-        commands.put("requestActivityAbandonment", new RequestActivityAbandonmentCommand());
-        commands.put("cancelRequest", new CancelRequestCommand());
-        commands.put("updateSpentTime", new UpdateTimeSpentCommand());
-        commands.put("removeUserActivity", new DeleteUserActivityCommand());
-        commands.put("addUserActivity", new AddUserActivityCommand());
-        commands.put("showUsersReport", new GetUserReportCommand());
-        commands.put("deleteCategory", new DeleteCategoryCommand());
-        commands.put("showAddActivitiesForUserPage", new ShowAddActivitiesForUserPageCommand());
-        commands.put("showDetailedUserInfo", new ShowDetailedUserInfoCommand());
+
         commands.put("manageUsersActivities", new ManageUsersActivitiesCommand());
-        commands.put("addUser", new AddUserCommand());
+        commands.put("showActivitiesPage", new ShowActivitiesCommand());
+        commands.put("showActivityAddPage", new ShowActivityAddPageCommand());
+        commands.put("showActivityEditPage", new ShowActivityEditPageCommand());
+        commands.put("showAddActivitiesForUserPage", new ShowAddActivitiesForUserPageCommand());
+        commands.put("showAllUsers", new ShowAllUsersCommand());
+        commands.put("showCategoriesPage", new ShowCategoriesCommand());
+        commands.put("showDetailedUserInfo", new ShowDetailedUserInfoCommand());
+        commands.put("showRunningActivities", new ShowRunningActivitiesCommand());
+        commands.put("showUsersRequests", new ShowUsersRequestsCommand());
     }
 
     public static Command getCommand(String command) {

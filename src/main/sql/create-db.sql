@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE IF NOT EXISTS users (
 	u_id INT PRIMARY KEY AUTO_INCREMENT,
     u_login VARCHAR(16) NOT NULL UNIQUE,
-    u_password VARCHAR(32) NOT NULL,
+    u_password VARCHAR(200) NOT NULL,
     u_name VARCHAR(30) NOT NULL,
     u_surname VARCHAR(30) NOT NULL,
     u_role ENUM('user', 'admin') DEFAULT 'user'

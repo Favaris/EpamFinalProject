@@ -44,8 +44,7 @@ public class UpdateActivityCommand implements Command {
         ServiceFactory sf = ServiceFactory.getInstance();
         ActivityService as = sf.getActivityService();
 
-        Activity activity = new Activity(activityId, name, desc);
-        activity.setCategory(new Category(catId));
+        Activity activity = Activity.createWithoutUsersCount(activityId, name, desc, new Category(catId));
         log.debug("created an activity instance {}", activity);
 
         try {

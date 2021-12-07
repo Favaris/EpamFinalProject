@@ -259,13 +259,17 @@ public class UserDAOImpl extends UserDAO {
     }
 
     private User getUser(ResultSet rs) throws SQLException {
-        User u = new User();
-        u.setId(rs.getInt(Fields.USER_ID));
-        u.setLogin(rs.getString(Fields.USER_LOGIN));
-        u.setPassword(rs.getString(Fields.USER_PASSWORD));
-        u.setName(rs.getString(Fields.USER_NAME));
-        u.setSurname(rs.getString(Fields.USER_SURNAME));
-        u.setRole(rs.getString(Fields.USER_ROLE));
+        User.Builder builder = new User.Builder();
+
+        User u = builder.setId(rs.getInt(Fields.USER_ID)).
+                setLogin(rs.getString(Fields.USER_LOGIN)).
+                setPassword(rs.getString(Fields.USER_PASSWORD)).
+                setName(rs.getString(Fields.USER_NAME)).
+                setSurname(rs.getString(Fields.USER_SURNAME)).
+                setRole(rs.getString(Fields.USER_ROLE)).
+                create();
+
+        log.debug("retrieved a user: {}", u);
         return u;
     }
 }
