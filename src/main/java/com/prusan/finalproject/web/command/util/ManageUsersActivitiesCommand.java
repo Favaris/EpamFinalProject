@@ -2,6 +2,7 @@ package com.prusan.finalproject.web.command.util;
 
 import com.prusan.finalproject.db.entity.Category;
 import com.prusan.finalproject.db.entity.UserActivity;
+import com.prusan.finalproject.db.service.ActivityService;
 import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
@@ -20,6 +21,7 @@ import java.util.List;
 public class ManageUsersActivitiesCommand implements Command {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
+    private static final CommandUtils commandUtils = CommandUtils.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -30,16 +32,17 @@ public class ManageUsersActivitiesCommand implements Command {
         String orderBy = handler.getOrderByFromParameters(req);
         String[] filterBy = handler.getFilterByFromParameters(req);
 
-        CommandUtils cu = CommandUtils.getInstance();
-        UserActivityService uas = ServiceFactory.getInstance().getUserActivityService();
+        ServiceFactory sf = ServiceFactory.getInstance();
+        UserActivityService uas = sf.getUserActivityService();
+        ActivityService as = sf.getActivityService();
 
         try {
-            cu.setAllCategoriesInRequestAttribute(req);
+            commandUtils.setAllCategoriesInRequestAttribute(req);
 
             List<UserActivity> userActivities = uas.getAcceptedForUser(userId, pageSize * (page - 1), pageSize * page, orderBy, filterBy);
             log.debug("received a list of all accepted activities for user with id={}", userId);
 
-            int entitiesCount = uas.getActivitiesCountForUser(userId);
+            int entitiesCount = uas.getActivitiesCountForUser(userId, filterBy);
             log.debug("received amount of activities for user with id = {}, amount = {}", userId, entitiesCount);
 
             handler.setPaginationParametersAsRequestAttributes(req, entitiesCount, pageSize, page, orderBy, filterBy);

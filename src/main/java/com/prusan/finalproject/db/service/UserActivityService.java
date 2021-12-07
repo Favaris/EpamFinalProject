@@ -15,7 +15,7 @@ public interface UserActivityService {
 
     List<UserActivity> getAcceptedForUser(int userId, int start, int end, String orderBy, String[] filterBy) throws ServiceException;
 
-    int getActivitiesCountForUser(int userId) throws ServiceException;
+    int getActivitiesCountForUser(int userId, String... filterBy) throws ServiceException;
 
     int getSummarizedSpentTimeForUser(int userId) throws ServiceException;
 

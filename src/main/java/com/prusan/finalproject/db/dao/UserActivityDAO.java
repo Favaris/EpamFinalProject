@@ -21,7 +21,7 @@ public abstract class UserActivityDAO extends BasicDAO<UserActivity> {
      */
     public abstract void removeAllByUserId(Connection con, int userId) throws DAOException;
 
-    public abstract int getCountByUserId(Connection con, int userId) throws DAOException;
+    public abstract int getCountByUserId(Connection con, int userId, String[] filterBy) throws DAOException;
 
     public abstract int getSummarizedSpentTimeByUserId(Connection con, int userId) throws DAOException;
 

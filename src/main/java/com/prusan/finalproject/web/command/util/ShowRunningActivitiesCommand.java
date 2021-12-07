@@ -42,7 +42,7 @@ public class ShowRunningActivitiesCommand implements Command {
             List<UserActivity> list = uas.getAcceptedForUser(u.getId(), pageSize * (page - 1), pageSize, orderBy, filterBy);
             log.debug("got a list of running activities, list size: {}", list.size());
 
-            int entitiesCount = uas.getActivitiesCountForUser(u.getId());
+            int entitiesCount = uas.getActivitiesCountForUser(u.getId(), filterBy);
             log.debug("received amount of activities for user {}, amount={}", u, entitiesCount);
 
             req.setAttribute("runningActivities", list);

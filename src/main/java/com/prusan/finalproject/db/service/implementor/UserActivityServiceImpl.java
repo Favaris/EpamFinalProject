@@ -91,9 +91,9 @@ public class UserActivityServiceImpl implements UserActivityService {
     }
 
     @Override
-    public int getActivitiesCountForUser(int userId) throws ServiceException {
+    public int getActivitiesCountForUser(int userId, String... filterBy) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
-            int count = userActivityDAO.getCountByUserId(con, userId);
+            int count = userActivityDAO.getCountByUserId(con, userId, filterBy);
             log.debug("received amount of user's activities: {}", count);
             return count;
         } catch (SQLException throwables) {

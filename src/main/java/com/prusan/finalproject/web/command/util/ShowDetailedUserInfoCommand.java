@@ -7,7 +7,6 @@ import com.prusan.finalproject.db.service.exception.NoSuchUserException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
-import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +31,7 @@ public class ShowDetailedUserInfoCommand implements Command {
             User user = us.getById(userId);
             log.debug("received a user {}", user);
 
-            int activitiesCount = uas.getActivitiesCountForUser(userId);
+            int activitiesCount = uas.getActivitiesCountForUser(userId, "all");
             log.debug("received amount of activities for user: {}", activitiesCount);
 
             int totalTime = uas.getSummarizedSpentTimeForUser(userId);

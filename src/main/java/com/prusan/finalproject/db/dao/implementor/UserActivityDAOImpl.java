@@ -2,7 +2,6 @@ package com.prusan.finalproject.db.dao.implementor;
 
 import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.dao.UserActivityDAO;
-import com.prusan.finalproject.db.entity.Activity;
 import com.prusan.finalproject.db.entity.Category;
 import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.util.Fields;
@@ -26,7 +25,9 @@ public class UserActivityDAOImpl extends UserActivityDAO {
     public static final String GET_USER_ACTIVITY =
             "SELECT * FROM users_m2m_activities, activities, categories WHERE ua_user_id = ? AND ua_activity_id = ? AND ua_activity_id = a_id AND a_category_id = c_id";
     public static final String DELETE_ALL_BY_USER_ID = "DELETE FROM users_m2m_activities WHERE ua_user_id = ?";
-    public static final String GET_COUNT_BY_USER_ID = "SELECT COUNT(*) FROM users_m2m_activities WHERE ua_user_id = ? AND ua_accepted = true";
+    public static final String GET_ALL_COUNT_BY_USER_ID = "SELECT COUNT(*) FROM users_m2m_activities WHERE ua_user_id = ? AND ua_accepted = true";
+    public static final String GET_FILTERED_COUNT_BY_USER_ID = "SELECT COUNT(*) FROM users_m2m_activities, activities WHERE ua_user_id = ? AND ua_activity_id = a_id AND a_category_id IN (%s)";
+
     public static final String GET_SUM_OF_MINUTES_BY_USER_ID = "SELECT SUM(ua_minutes_spent) FROM users_m2m_activities WHERE ua_user_id = ?";
 
 
@@ -174,9 +175,16 @@ public class UserActivityDAOImpl extends UserActivityDAO {
     }
 
     @Override
-    public int getCountByUserId(Connection con, int userId) throws DAOException {
+    public int getCountByUserId(Connection con, int userId, String[] filterBy) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_COUNT_BY_USER_ID)) {
+        String query;
+        if ("all".equals(filterBy[0])) {
+            query = GET_ALL_COUNT_BY_USER_ID;
+        } else {
+            query = String.format(GET_FILTERED_COUNT_BY_USER_ID, String.join(",", filterBy));
+        }
+        log.debug("got a query for user activities count: '{}'", query);
+        try (PreparedStatement ps = con.prepareStatement(query)) {
             ps.setInt(1, userId);
             rs = ps.executeQuery();
             int count = 0;
