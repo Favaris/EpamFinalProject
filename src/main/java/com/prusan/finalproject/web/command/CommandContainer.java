@@ -53,7 +53,7 @@ public class CommandContainer {
         commands.put("showCategoriesPage", new ShowCategoriesCommand());
         commands.put("showDetailedUserInfo", new ShowDetailedUserInfoCommand());
         commands.put("showRunningActivities", new ShowRunningActivitiesCommand());
-        commands.put("showUsersRequests", new ShowUsersRequestsCommand());
+        commands.put("showUsersRequests", new ShowRequestsCommand());
     }
 
     public static Command getCommand(String command) {

@@ -34,7 +34,6 @@ public class ManageUsersActivitiesCommand implements Command {
 
         ServiceFactory sf = ServiceFactory.getInstance();
         UserActivityService uas = sf.getUserActivityService();
-        ActivityService as = sf.getActivityService();
 
         try {
             commandUtils.setAllCategoriesInRequestAttribute(req);

@@ -35,7 +35,8 @@ public interface SQLQueries {
         public static final String GET_ALL_ACCEPTED_ACTIVITIES_BY_ID = "SELECT * FROM users_m2m_activities, activities, categories WHERE ua_user_id = ? AND ua_accepted = 1 AND ua_requested_abandon = 0 AND a_id = ua_activity_id AND c_id = a_category_id";
         public static final String INSERT_USER_ACTIVITY = "INSERT INTO users_m2m_activities VALUES (?, ?, ?, ?, ?)";
         public static final String GET_REQUESTED_USERS_ACTIVITIES =
-                "SELECT * FROM users_m2m_activities, activities, categories WHERE (ua_accepted = 0 OR ua_requested_abandon = 1) AND a_id = ua_activity_id AND c_id = a_category_id";
+                "SELECT * FROM users_m2m_activities, activities, categories WHERE (ua_accepted = 0 OR ua_requested_abandon = 1) AND a_id = ua_activity_id AND c_id = a_category_id %s LIMIT ? OFFSET ?";
+        public static final String GET_REQUESTS_COUNT = "SELECT COUNT(*) FROM users_m2m_activities WHERE (ua_accepted = false OR ua_requested_abandon = true) %s";
         public static final String UPDATE_USER_ACTIVITY = "UPDATE users_m2m_activities SET ua_accepted = ?, ua_minutes_spent = ?, ua_requested_abandon = ? WHERE ua_activity_id = ? AND ua_user_id = ?";
         public static final String DELETE_USER_ACTIVITY = "DELETE FROM users_m2m_activities WHERE ua_user_id = ? AND ua_activity_id = ?";
         public static final String GET_USER_ACTIVITY =

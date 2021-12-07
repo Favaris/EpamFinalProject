@@ -1,4 +1,4 @@
-package com.prusan.finalproject.web.command.activity;
+package com.prusan.finalproject.web.command.user;
 
 import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.UserActivityService;
@@ -6,6 +6,7 @@ import com.prusan.finalproject.db.service.exception.NoSuchActivityException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
+import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class DenyRequestCommand implements Command {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
+    private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -41,15 +43,16 @@ public class DenyRequestCommand implements Command {
                 uas.update(ua);
                 log.debug("denied abandonment for a user activity {}", ua);
             }
-
-            return Chain.createRedirect("controller?command=showUsersRequests");
+            String query = handler.getQueryString(req.getSession());
+            log.debug("received a query string: '{}'", query);
+            return Chain.createRedirect("controller?command=showUsersRequests&" + query);
         } catch (NoSuchActivityException e) {
             log.debug("no such user activity with userId={}, activityId={}", userId, activityId);
             req.setAttribute("err_msg", e.getMessage());
             return Chain.getErrorPageChain();
         } catch (ServiceException e) {
             log.error("unable to download corresponding user activity: userId={}, activityId={}", userId, activityId);
-            req.setAttribute("err_msg", "can not download corresponding user activity");
+            req.getSession().setAttribute("err_msg", "can not download corresponding user activity");
             return Chain.getErrorPageChain();
         }
     }

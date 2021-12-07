@@ -17,7 +17,8 @@ import java.util.List;
 public class UserActivityDAOImpl extends UserActivityDAO {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
-
+    public static final String GET_REQUESTED_USERS_ACTIVITIES =
+            "";
     @Override
     public void add(Connection con, UserActivity ua) throws DAOException {
         try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserActivityQueries.INSERT_USER_ACTIVITY)) {
@@ -126,24 +127,105 @@ public class UserActivityDAOImpl extends UserActivityDAO {
 
 
     /**
-     * Returns a list of all UserActvities that are not accepted yet or requested for abandonment
+     * Returns a result of {@link #getRequestedUserActivities(Connection, Integer, int, int)} with a null for the userId parameter.
      */
     @Override
-    public List<UserActivity> getRequestedUserActivities(Connection con) throws DAOException {
-        List<UserActivity> uas = new ArrayList<>();
-        try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(SQLQueries.UserActivityQueries.GET_REQUESTED_USERS_ACTIVITIES)) {
+    public List<UserActivity> getRequestedUserActivities(Connection con, int limit, int offset) throws DAOException {
+        return getRequestedUserActivities(con, null, limit, offset);
+    }
+
+    /**
+     * Returns a list of user activities that are not accepted or requested for abandonment for user specified by a userId.<br>
+     * If a userId param was null, returns a list of all requested user activities for all users.
+     * @param userId id for whom to download the requests
+     */
+    @Override
+    public List<UserActivity> getRequestedUserActivities(Connection con, Integer userId, int limit, int offset) throws DAOException {
+        String query = SQLQueries.UserActivityQueries.GET_REQUESTED_USERS_ACTIVITIES;
+        if (userId == null) {
+            query = String.format(query, "");
+            log.debug("userId was null, setting the query without userId filtering");
+        } else {
+            query = String.format(query, "AND ua_user_id = ?");
+            log.debug("userId was {}, setting the query with userId filtering", userId);
+        }
+        log.debug("query: '{}'", query);
+
+        ResultSet rs = null;
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            int k = 0;
+            if (userId != null) {
+                ps.setInt(++k,  userId);
+            }
+            ps.setInt(++k, limit);
+            ps.setInt(++k, offset);
+
+            rs = ps.executeQuery();
+            List<UserActivity> uas = new ArrayList<>();
             while (rs.next()) {
                 UserActivity ua = getUserActivity(rs);
                 log.debug("retrieved a user activity {}", ua);
                 uas.add(ua);
             }
+            log.debug("retrieved a list of requested users' activities, list size: {}", uas.size());
+            return uas;
         } catch (SQLException throwables) {
             log.error("unable to retrieve all requested user activities");
             throw new DAOException("unable to retrieve all requested user activities", throwables);
+        } finally {
+            try {
+                close(rs);
+            } catch (DAOException e) {
+                log.warn("unable to close the result set {}", rs, e);
+            }
         }
+    }
 
-        return uas;
+    /**
+     * Returns a result of {@link #getRequestsCount(Connection, Integer)} with a null for the userId parameter.
+     */
+    @Override
+    public int getRequestsCount(Connection con) throws DAOException {
+        return getRequestsCount(con, null);
+    }
+
+    /**
+     * Returns a count of requests for specified user id. If id was null, returns count of all users' requests.
+     */
+    @Override
+    public int getRequestsCount(Connection con, Integer userId) throws DAOException {
+        String query = SQLQueries.UserActivityQueries.GET_REQUESTS_COUNT;
+        if (userId == null) {
+            query = String.format(query, "");
+            log.debug("user id was null, set a query for counting all users' requests");
+        } else {
+            query = String.format(query, "AND ua_user_id = ?");
+            log.debug("user id was {}, set a query for counting this user's requests", userId);
+        }
+        log.debug("query: '{}'", query);
+        ResultSet rs = null;
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            if (userId != null) {
+                ps.setInt(1, userId);
+            }
+
+            rs = ps.executeQuery();
+            int count = 0;
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            log.debug("retrieved a count of requests for user id={}", userId);
+            return count;
+        } catch (SQLException throwables) {
+            log.error("failed to get count of requests for userId={}", userId);
+            throw new DAOException("failed to get count of requests", throwables);
+        } finally {
+            try {
+                close(rs);
+            } catch (DAOException e) {
+                log.warn("unable to close the result set {}", rs, e);
+            }
+        }
     }
 
     @Override

@@ -39,11 +39,12 @@ public class UserActivityServiceImpl implements UserActivityService {
 
     /**
      * Gets a List of all users' activities that are not accepted or requested for abandon.
+
      */
     @Override
-    public List<UserActivity> getUsersRequests() throws ServiceException {
+    public List<UserActivity> getRequestedActivitiesForAllUsers(int start, int amount) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
-            List<UserActivity> list = userActivityDAO.getRequestedUserActivities(con);
+            List<UserActivity> list = userActivityDAO.getRequestedUserActivities(con, amount, start);
             log.debug("retrieved a list with users requests with size={}", list.size());
             return list;
         } catch (SQLException throwables) {
@@ -161,12 +162,58 @@ public class UserActivityServiceImpl implements UserActivityService {
     public void delete(int userId, int activityId) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
             userActivityDAO.remove(con, userId, activityId);
+            log.debug("deleted a user activity by userId={}, activityId={}", userId, activityId);
         } catch (SQLException throwables) {
             log.error("unable to get connection", throwables);
             throw new ServiceException("unable to get connection", throwables);
         } catch (DAOException e) {
             log.error("error in delete(userId={}, activityId={})", userId, activityId, e);
             throw new ServiceException("unable to delete user activity", e);
+        }
+    }
+
+    @Override
+    public List<UserActivity> getRequestedActivitiesForUser(Integer userId, int start, int amount) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            List<UserActivity> requested = userActivityDAO.getRequestedUserActivities(con, userId, amount, start);
+            log.debug("received a list of requested activities for userId={}, list size: {}", userId, requested.size());
+            return requested;
+        } catch (SQLException throwables) {
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("unable to get connection", throwables);
+        } catch (DAOException e) {
+            log.error("failed to get requested activities for user #{}, start={}, amount={}", userId, start, amount, e);
+            throw new ServiceException("Failed to download requests");
+        }
+    }
+
+    @Override
+    public int getRequestsCountForUser(Integer userId) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            int count = userActivityDAO.getRequestsCount(con, userId);
+            log.debug("received a requests amount for userId={}, amount={}", userId, count);
+            return count;
+        } catch (SQLException throwables) {
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("unable to get connection", throwables);
+        } catch (DAOException e) {
+            log.error("failed to get requests count for user id={}", userId);
+            throw new ServiceException("Failed to get amount of requests");
+        }
+    }
+
+    @Override
+    public int getRequestsCountForAdmin() throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            int count = userActivityDAO.getRequestsCount(con);
+            log.debug("received a requests amount for admin, amount={}", count);
+            return count;
+        } catch (SQLException throwables) {
+            log.error("unable to get connection", throwables);
+            throw new ServiceException("unable to get connection", throwables);
+        } catch (DAOException e) {
+            log.error("failed to get requests count for admin");
+            throw new ServiceException("Failed to get amount of requests");
         }
     }
 }

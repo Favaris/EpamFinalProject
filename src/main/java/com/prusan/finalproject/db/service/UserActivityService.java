@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserActivityService {
 
-    List<UserActivity> getUsersRequests() throws ServiceException;
+    List<UserActivity> getRequestedActivitiesForAllUsers(int start, int amount) throws ServiceException;
 
     void save(UserActivity ua) throws ServiceException;
 
@@ -24,4 +24,10 @@ public interface UserActivityService {
     void update(UserActivity ua) throws ServiceException;
 
     void delete(int userId, int activityId) throws ServiceException;
+
+    List<UserActivity> getRequestedActivitiesForUser(Integer userId, int start, int amount) throws ServiceException;
+
+    int getRequestsCountForUser(Integer userId) throws ServiceException;
+
+    int getRequestsCountForAdmin() throws ServiceException;
 }

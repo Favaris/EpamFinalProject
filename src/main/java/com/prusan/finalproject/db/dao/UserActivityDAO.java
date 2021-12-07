@@ -13,7 +13,13 @@ public abstract class UserActivityDAO extends BasicDAO<UserActivity> {
 
     public abstract void remove(Connection con, int userId, int activityId) throws DAOException;
 
-    public abstract List<UserActivity> getRequestedUserActivities(Connection con) throws DAOException;
+    public abstract List<UserActivity> getRequestedUserActivities(Connection con, int limit, int offset) throws DAOException;
+
+    public abstract List<UserActivity> getRequestedUserActivities(Connection con, Integer userId, int limit, int offset) throws DAOException;
+
+    public abstract int getRequestsCount(Connection con) throws DAOException;
+
+    public abstract int getRequestsCount(Connection con, Integer userId) throws DAOException;
 
     /**
      * Removes all user's activities by given user id.
