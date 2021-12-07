@@ -4,6 +4,7 @@ import com.prusan.finalproject.db.dao.CategoryDAO;
 import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.entity.Category;
 import com.prusan.finalproject.db.util.Fields;
+import com.prusan.finalproject.db.util.SQLQueries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,13 +15,6 @@ import java.util.List;
 public class CategoryDAOImpl extends CategoryDAO {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
-    public static final String GET_ALL_CATEGORIES = "SELECT * FROM categories";
-    public static final String INSERT_CATEGORY = "INSERT INTO categories(c_name) VALUES (?)";
-    public static final String UPDATE_CATEGORY_BY_ID = "UPDATE categories SET c_name = ? WHERE c_id = ?";
-    public static final String DELETE_CATEGORY_BY_ID = "DELETE FROM categories WHERE c_id = ?";
-    public static final String GET_BY_ID = "SELECT * FROM categories WHERE c_id = ?";
-    public static final String GET_ALL_WITH_LIMIT_OFFSET = "SELECT * FROM categories LIMIT ? OFFSET ?";
-
     /**
      * Add a new category to the db. If operation was successful, updated id field on given Category object.
      * @throws DAOException if such category is already in the db or some exceptions occurred with statements/resultsets processing.
@@ -28,7 +22,7 @@ public class CategoryDAOImpl extends CategoryDAO {
     @Override
     public void add(Connection con, Category category) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(INSERT_CATEGORY, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.CategoryQueries.INSERT_CATEGORY, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, category.getName());
 
             if (ps.executeUpdate() > 0) {
@@ -60,7 +54,7 @@ public class CategoryDAOImpl extends CategoryDAO {
     public List<Category> getAll(Connection con) throws DAOException {
         List<Category> categories = new ArrayList<>();
         try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(GET_ALL_CATEGORIES)) {
+             ResultSet rs = st.executeQuery(SQLQueries.CategoryQueries.GET_ALL_CATEGORIES)) {
             while (rs.next()) {
                 Category ct = getCategory(rs);
                 categories.add(ct);
@@ -81,7 +75,7 @@ public class CategoryDAOImpl extends CategoryDAO {
     @Override
     public Category get(Connection con, int id) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_BY_ID)) {
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.CategoryQueries.GET_BY_ID)) {
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -108,7 +102,7 @@ public class CategoryDAOImpl extends CategoryDAO {
      */
     @Override
     public void update(Connection con, Category category) throws DAOException {
-        try (PreparedStatement ps = con.prepareStatement(UPDATE_CATEGORY_BY_ID)) {
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.CategoryQueries.UPDATE_CATEGORY_BY_ID)) {
             int k = 0;
             ps.setString(++k, category.getName());
             ps.setInt(++k, category.getId());
@@ -126,7 +120,7 @@ public class CategoryDAOImpl extends CategoryDAO {
 
     @Override
     public void remove(Connection con, int id) throws DAOException {
-        try (PreparedStatement ps = con.prepareStatement(DELETE_CATEGORY_BY_ID)) {
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.CategoryQueries.DELETE_CATEGORY_BY_ID)) {
             ps.setInt(1, id);
             if (ps.executeUpdate() > 0) {
                 log.debug("deleted a category #id={}", id);
@@ -142,7 +136,7 @@ public class CategoryDAOImpl extends CategoryDAO {
     @Override
     public List<Category> getCategories(Connection con, int limit, int offset) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_ALL_WITH_LIMIT_OFFSET)) {
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.CategoryQueries.GET_ALL_WITH_LIMIT_OFFSET)) {
             ps.setInt(1, limit);
             ps.setInt(2, offset);
             rs = ps.executeQuery();

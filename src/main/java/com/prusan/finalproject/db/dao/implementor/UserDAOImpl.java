@@ -4,6 +4,7 @@ import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.dao.UserDAO;
 import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.util.Fields;
+import com.prusan.finalproject.db.util.SQLQueries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,16 +18,6 @@ import java.util.List;
 public class UserDAOImpl extends UserDAO {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
-    private static final String INSERT_USER = "INSERT INTO users VALUES (DEFAULT, ?, ?, ?, ?, ?)";
-    private static final String GET_USER_BY_ID = "SELECT * FROM users WHERE u_id = ?";
-    private static final String UPDATE_USER_BY_ID = "UPDATE users SET u_login = ?, u_password = ?, u_name = ?, u_surname = ? WHERE u_id = ?";
-    private static final String DELETE_USER_BY_ID = "DELETE FROM users WHERE u_id = ?";
-    private static final String SELECT_ALL_USERS = "SELECT * FROM users";
-    public static final String SELECT_USER_BY_LOGIN = "SELECT * FROM users WHERE u_login = ?";
-    public static final String GET_ALL_ADMINS = "SELECT * FROM users WHERE u_role='admin'";
-    public static final String GET_DEFAULT_USERS = "SELECT * FROM users WHERE u_role='user' LIMIT ? OFFSET ?";
-    public static final String GET_COUNT_WITH_ROLE_USER = "SELECT COUNT(*) FROM users WHERE u_role = 'user'";
-
     /**
      * Inserts a user with the given fields. For passed user object, updates the id field if the insertion was successful.
      * @param user user to add
@@ -35,7 +26,7 @@ public class UserDAOImpl extends UserDAO {
     @Override
     public void add(Connection con, User user) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(INSERT_USER, Statement.RETURN_GENERATED_KEYS))
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserQueries.INSERT_USER, Statement.RETURN_GENERATED_KEYS))
         {
             int k = 0;
             ps.setString(++k, user.getLogin());
@@ -73,7 +64,7 @@ public class UserDAOImpl extends UserDAO {
     @Override
     public User get(Connection con, int id) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_USER_BY_ID))
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserQueries.GET_USER_BY_ID))
         {
             ps.setInt(1, id);
             rs = ps.executeQuery();
@@ -103,7 +94,7 @@ public class UserDAOImpl extends UserDAO {
      */
     @Override
     public void update(Connection con, User user) throws DAOException {
-        try (PreparedStatement ps = con.prepareStatement(UPDATE_USER_BY_ID))
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserQueries.UPDATE_USER_BY_ID))
         {
             int k = 0;
             ps.setString(++k, user.getLogin());
@@ -125,7 +116,7 @@ public class UserDAOImpl extends UserDAO {
 
     @Override
     public void remove(Connection con, int id) throws DAOException {
-        try (PreparedStatement ps = con.prepareStatement(DELETE_USER_BY_ID))
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserQueries.DELETE_USER_BY_ID))
         {
             ps.setInt(1, id);
             ps.executeUpdate();
@@ -140,7 +131,7 @@ public class UserDAOImpl extends UserDAO {
     public List<User> getAll(Connection con) throws DAOException {
         List<User> users = new ArrayList<>();
         try (Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(SELECT_ALL_USERS))
+            ResultSet rs = st.executeQuery(SQLQueries.UserQueries.SELECT_ALL_USERS))
         {
             while (rs.next()) {
                 User u = getUser(rs);
@@ -157,7 +148,7 @@ public class UserDAOImpl extends UserDAO {
     @Override
     public User getByLogin(Connection con, String login) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(SELECT_USER_BY_LOGIN)){
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserQueries.SELECT_USER_BY_LOGIN)){
             ps.setString(1, login);
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -197,7 +188,7 @@ public class UserDAOImpl extends UserDAO {
     public List<User> getAllAdmins(Connection con) throws DAOException {
         List<User> admins = new ArrayList<>();
         try (Statement ps = con.createStatement();
-            ResultSet rs = ps.executeQuery(GET_ALL_ADMINS)) {
+            ResultSet rs = ps.executeQuery(SQLQueries.UserQueries.GET_ALL_ADMINS)) {
             while (rs.next()) {
                 User u = getUser(rs);
                 log.debug("retrieved an admin user: {}", u);
@@ -219,7 +210,7 @@ public class UserDAOImpl extends UserDAO {
     public List<User> getWithRoleUser(Connection con, int limit, int offset) throws DAOException {
         List<User> users = new ArrayList<>();
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_DEFAULT_USERS)) {
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserQueries.GET_DEFAULT_USERS)) {
             ps.setInt(1, limit);
             ps.setInt(2, offset);
             rs = ps.executeQuery();
@@ -245,7 +236,7 @@ public class UserDAOImpl extends UserDAO {
     @Override
     public int getCountWithRoleUser(Connection con) throws DAOException {
         try (Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(GET_COUNT_WITH_ROLE_USER)) {
+            ResultSet rs = st.executeQuery(SQLQueries.UserQueries.GET_COUNT_WITH_ROLE_USER)) {
             int count = 0;
             if (rs.next()) {
                 count = rs.getInt(1);

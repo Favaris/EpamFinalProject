@@ -4,11 +4,11 @@ import com.prusan.finalproject.db.dao.ActivityDAO;
 import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.entity.Activity;
 import com.prusan.finalproject.db.entity.Category;
-import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.util.Fields;
 import com.prusan.finalproject.db.util.PaginationQueries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import static com.prusan.finalproject.db.util.SQLQueries.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,17 +19,6 @@ import java.util.List;
  */
 public class ActivityDAOImpl extends ActivityDAO {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
-    public static final String INSERT_ACTIVITY = "INSERT INTO activities(a_name, a_description, a_category_id) VALUES (?,?,?)";
-    public static final String GET_ACTIVITY_BY_ID = "SELECT * FROM activities, categories WHERE a_id = ?";
-    public static final String UPDATE_ACTIVITY_BY_ID = "UPDATE activities SET a_name = ?, a_description = ?, a_category_id = ? WHERE a_id = ?";
-    public static final String DELETE_ACTIVITY_BY_ID = "DELETE FROM activities WHERE a_id = ?";
-    public static final String GET_ALL_ACTIVITIES = "SELECT * FROM activities, categories WHERE a_category_id = c_id";
-
-
-
-    public static final String GET_COUNT_OF_AVAILABLE_ACTIVITIES_FOR_USER = "SELECT COUNT(*) FROM activities WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?)";
-    public static final String GET_AVAILABLE_ACTIVITIES_COUNT_WITH_FILTERS = "SELECT COUNT(*) FROM activities WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?) AND a_category_id IN (%s)";
-
 
     /**
      * Returns a list of activities sorted by a given entity name in ASC order.
@@ -72,7 +61,7 @@ public class ActivityDAOImpl extends ActivityDAO {
     @Override
     public int getCount(Connection con, int userId) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_COUNT_OF_AVAILABLE_ACTIVITIES_FOR_USER)) {
+        try (PreparedStatement ps = con.prepareStatement(ActivityQueries.GET_COUNT_OF_AVAILABLE_ACTIVITIES_FOR_USER)) {
             ps.setInt(1, userId);
             rs = ps.executeQuery();
             int count = 0;
@@ -134,7 +123,7 @@ public class ActivityDAOImpl extends ActivityDAO {
         String filters = String.join(",", filterBy);
         log.debug("got a string of filters '{}'", filters);
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(String.format(GET_AVAILABLE_ACTIVITIES_COUNT_WITH_FILTERS, filters))) {
+        try (PreparedStatement ps = con.prepareStatement(String.format(ActivityQueries.GET_AVAILABLE_ACTIVITIES_COUNT_WITH_FILTERS, filters))) {
             ps.setInt(1, userId);
             rs = ps.executeQuery();
             int count = 0;
@@ -164,7 +153,7 @@ public class ActivityDAOImpl extends ActivityDAO {
     @Override
     public void add(Connection con, Activity activity) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(INSERT_ACTIVITY, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = con.prepareStatement(ActivityQueries.INSERT_ACTIVITY, Statement.RETURN_GENERATED_KEYS)) {
             int k = 0;
             ps.setString(++k, activity.getName());
             ps.setString(++k, activity.getDescription());
@@ -199,7 +188,7 @@ public class ActivityDAOImpl extends ActivityDAO {
     public List<Activity> getAll(Connection con) throws DAOException {
         List<Activity> actvts = new ArrayList<>();
         try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(GET_ALL_ACTIVITIES))
+             ResultSet rs = st.executeQuery(ActivityQueries.GET_ALL_ACTIVITIES))
         {
             while (rs.next()) {
                 Activity ac = getActivity(rs);
@@ -223,7 +212,7 @@ public class ActivityDAOImpl extends ActivityDAO {
     @Override
     public Activity get(Connection con, int id) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_ACTIVITY_BY_ID)) {
+        try (PreparedStatement ps = con.prepareStatement(ActivityQueries.GET_ACTIVITY_BY_ID)) {
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -251,7 +240,7 @@ public class ActivityDAOImpl extends ActivityDAO {
      */
     @Override
     public void update(Connection con, Activity activity) throws DAOException {
-        try (PreparedStatement ps = con.prepareStatement(UPDATE_ACTIVITY_BY_ID)) {
+        try (PreparedStatement ps = con.prepareStatement(ActivityQueries.UPDATE_ACTIVITY_BY_ID)) {
             int k = 0;
             ps.setString(++k, activity.getName());
             ps.setString(++k, activity.getDescription());
@@ -275,7 +264,7 @@ public class ActivityDAOImpl extends ActivityDAO {
      */
     @Override
     public void remove(Connection con, int id) throws DAOException {
-        try (PreparedStatement ps = con.prepareStatement(DELETE_ACTIVITY_BY_ID)) {
+        try (PreparedStatement ps = con.prepareStatement(ActivityQueries.DELETE_ACTIVITY_BY_ID)) {
             ps.setInt(1, id);
 
             if (ps.executeUpdate() > 0) {

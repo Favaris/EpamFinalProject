@@ -6,6 +6,7 @@ import com.prusan.finalproject.db.entity.Category;
 import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.util.Fields;
 import com.prusan.finalproject.db.util.PaginationQueries;
+import com.prusan.finalproject.db.util.SQLQueries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,24 +17,10 @@ import java.util.List;
 public class UserActivityDAOImpl extends UserActivityDAO {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
-    public static final String GET_ALL_ACCEPTED_ACTIVITIES_BY_ID = "SELECT * FROM users_m2m_activities, activities, categories WHERE ua_user_id = ? AND ua_accepted = 1 AND ua_requested_abandon = 0 AND a_id = ua_activity_id AND c_id = a_category_id";
-    public static final String INSERT_USER_ACTIVITY = "INSERT INTO users_m2m_activities VALUES (?, ?, ?, ?, ?)";
-    public static final String GET_REQUESTED_USERS_ACTIVITIES =
-            "SELECT * FROM users_m2m_activities, activities, categories WHERE (ua_accepted = 0 OR ua_requested_abandon = 1) AND a_id = ua_activity_id AND c_id = a_category_id";
-    public static final String UPDATE_USER_ACTIVITY = "UPDATE users_m2m_activities SET ua_accepted = ?, ua_minutes_spent = ?, ua_requested_abandon = ? WHERE ua_activity_id = ? AND ua_user_id = ?";
-    public static final String DELETE_USER_ACTIVITY = "DELETE FROM users_m2m_activities WHERE ua_user_id = ? AND ua_activity_id = ?";
-    public static final String GET_USER_ACTIVITY =
-            "SELECT * FROM users_m2m_activities, activities, categories WHERE ua_user_id = ? AND ua_activity_id = ? AND ua_activity_id = a_id AND a_category_id = c_id";
-    public static final String DELETE_ALL_BY_USER_ID = "DELETE FROM users_m2m_activities WHERE ua_user_id = ?";
-    public static final String GET_ALL_COUNT_BY_USER_ID = "SELECT COUNT(*) FROM users_m2m_activities WHERE ua_user_id = ? AND ua_accepted = true";
-    public static final String GET_FILTERED_COUNT_BY_USER_ID = "SELECT COUNT(*) FROM users_m2m_activities, activities WHERE ua_user_id = ? AND ua_activity_id = a_id AND a_category_id IN (%s)";
-
-    public static final String GET_SUM_OF_MINUTES_BY_USER_ID = "SELECT SUM(ua_minutes_spent) FROM users_m2m_activities WHERE ua_user_id = ?";
-
 
     @Override
     public void add(Connection con, UserActivity ua) throws DAOException {
-        try (PreparedStatement ps = con.prepareStatement(INSERT_USER_ACTIVITY)) {
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserActivityQueries.INSERT_USER_ACTIVITY)) {
             int k = 0;
             ps.setInt(++k, ua.getUserId());
             ps.setInt(++k, ua.getActivityId());
@@ -52,7 +39,7 @@ public class UserActivityDAOImpl extends UserActivityDAO {
     @Override
     public UserActivity get(Connection con, int userId, int activityId) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_USER_ACTIVITY)) {
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserActivityQueries.GET_USER_ACTIVITY)) {
             ps.setInt(1, userId);
             ps.setInt(2, activityId);
 
@@ -77,7 +64,7 @@ public class UserActivityDAOImpl extends UserActivityDAO {
 
     @Override
     public void update(Connection con, UserActivity ua) throws DAOException {
-        try (PreparedStatement ps = con.prepareStatement(UPDATE_USER_ACTIVITY)) {
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserActivityQueries.UPDATE_USER_ACTIVITY)) {
             int k = 0;
             ps.setBoolean(++k, ua.isAccepted());
             ps.setInt(++k, ua.getMinutesSpent());
@@ -98,7 +85,7 @@ public class UserActivityDAOImpl extends UserActivityDAO {
 
     @Override
     public void remove(Connection con, int userId, int activityId) throws DAOException {
-        try (PreparedStatement ps = con.prepareStatement(DELETE_USER_ACTIVITY)) {
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserActivityQueries.DELETE_USER_ACTIVITY)) {
             ps.setInt(1, userId);
             ps.setInt(2, activityId);
             if (ps.executeUpdate() > 0) {
@@ -119,7 +106,7 @@ public class UserActivityDAOImpl extends UserActivityDAO {
     @Override
     public List<UserActivity> getAcceptedByUserId(Connection con, int id) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_ALL_ACCEPTED_ACTIVITIES_BY_ID)) {
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserActivityQueries.GET_ALL_ACCEPTED_ACTIVITIES_BY_ID)) {
             ps.setInt(1, id);
 
             rs = ps.executeQuery();
@@ -145,7 +132,7 @@ public class UserActivityDAOImpl extends UserActivityDAO {
     public List<UserActivity> getRequestedUserActivities(Connection con) throws DAOException {
         List<UserActivity> uas = new ArrayList<>();
         try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(GET_REQUESTED_USERS_ACTIVITIES)) {
+             ResultSet rs = st.executeQuery(SQLQueries.UserActivityQueries.GET_REQUESTED_USERS_ACTIVITIES)) {
             while (rs.next()) {
                 UserActivity ua = getUserActivity(rs);
                 log.debug("retrieved a user activity {}", ua);
@@ -161,7 +148,7 @@ public class UserActivityDAOImpl extends UserActivityDAO {
 
     @Override
     public void removeAllByUserId(Connection con, int userId) throws DAOException {
-        try (PreparedStatement ps = con.prepareStatement(DELETE_ALL_BY_USER_ID)){
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserActivityQueries.DELETE_ALL_BY_USER_ID)){
             ps.setInt(1, userId);
             if (ps.executeUpdate() > 0) {
                 log.debug("successfully deleted all user's activities by userId={}", userId);
@@ -179,9 +166,9 @@ public class UserActivityDAOImpl extends UserActivityDAO {
         ResultSet rs = null;
         String query;
         if ("all".equals(filterBy[0])) {
-            query = GET_ALL_COUNT_BY_USER_ID;
+            query = SQLQueries.UserActivityQueries.GET_ALL_COUNT_BY_USER_ID;
         } else {
-            query = String.format(GET_FILTERED_COUNT_BY_USER_ID, String.join(",", filterBy));
+            query = String.format(SQLQueries.UserActivityQueries.GET_FILTERED_COUNT_BY_USER_ID, String.join(",", filterBy));
         }
         log.debug("got a query for user activities count: '{}'", query);
         try (PreparedStatement ps = con.prepareStatement(query)) {
@@ -208,7 +195,7 @@ public class UserActivityDAOImpl extends UserActivityDAO {
     @Override
     public int getSummarizedSpentTimeByUserId(Connection con, int userId) throws DAOException {
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(GET_SUM_OF_MINUTES_BY_USER_ID)) {
+        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserActivityQueries.GET_SUM_OF_MINUTES_BY_USER_ID)) {
             ps.setInt(1, userId);
             rs = ps.executeQuery();
             int sum = 0;
