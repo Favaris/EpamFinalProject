@@ -17,25 +17,15 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="entry" items="${requestScope.report}">
+        <c:forEach var="i" begin="0" end="${requestScope.users.size() - 1}" step="1">
             <tr>
-                <td>${entry.key.login}</td>
-                <td>${entry.key.name}</td>
-                <td>${entry.key.surname}</td>
+                <td>${requestScope.users.get(i).login}</td>
+                <td>${requestScope.users.get(i).name}</td>
+                <td>${requestScope.users.get(i).surname}</td>
                 <td>
                     <c:choose>
-                        <c:when test="${not empty entry.value}">
-                            ${entry.value.size()}
-<%--                            <table border="10" class="table">--%>
-<%--                                <tbody>--%>
-<%--                                <c:forEach var="activity" items="${entry.value}">--%>
-<%--                                    <tr>--%>
-<%--                                        <td> ${activity.name}</td>--%>
-<%--                                        <td><ut:convert minutes="${activity.minutesSpent}" minutesLabel="mins" hoursLabel="hrs"/></td>--%>
-<%--                                    </tr>--%>
-<%--                                </c:forEach>--%>
-<%--                                </tbody>--%>
-<%--                            </table>--%>
+                        <c:when test="${requestScope.activitiesCounts.get(i) != 0}">
+                            ${requestScope.activitiesCounts.get(i)}
                         </c:when>
                         <c:otherwise>
                             No activities yet
@@ -43,11 +33,7 @@
                     </c:choose>
                 </td>
                 <td>
-                    <c:set var="summ" value="0" scope="page"/>
-                    <c:forEach var="activity" items="${entry.value}">
-                        <c:set var="summ" value="${summ + activity.minutesSpent}"/>
-                    </c:forEach>
-                    <ut:convert minutes="${summ}" minutesLabel="mins" hoursLabel="hrs"/>
+                    <ut:convert minutes="${requestScope.totalTimeList.get(i)}" minutesLabel="mins" hoursLabel="hrs"/>
                 </td>
             </tr>
         </c:forEach>

@@ -14,7 +14,7 @@ import java.io.IOException;
  */
 public class Chain {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
-    private static final Chain errorPageChain = Chain.getErrorPageChain();
+    private static final Chain errorPageChain = new Chain(Pages.ERROR_JSP, false);
 
     private final String url;
     private final boolean doForward;

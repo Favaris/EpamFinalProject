@@ -23,9 +23,11 @@ public class User implements Serializable {
         private String name;
         private String surname;
         private String role;
+        private int activitiesCount;
+        private int totalTime;
 
         public User create() {
-            User u = new User(id, login, password, name, surname, role);
+            User u = new User(id, login, password, name, surname, role, activitiesCount, totalTime);
             log.debug("created a new instance: {}", u);
             return u;
         }
@@ -65,6 +67,18 @@ public class User implements Serializable {
             log.debug("got set role: {}", role);
             return this;
         }
+
+        public Builder setActivitiesCount(int activitiesCount) {
+            this.activitiesCount = activitiesCount;
+            log.debug("got set activities count: {}", activitiesCount);
+            return this;
+        }
+
+        public Builder setTotalTime(int totalTime) {
+            this.totalTime = totalTime;
+            log.debug("got set total time: {}", totalTime);
+            return this;
+        }
     }
 
     private Integer id;
@@ -72,15 +86,19 @@ public class User implements Serializable {
     private String password;
     private String name;
     private String surname;
-    private String role = "user";
+    private String role;
+    private int activitiesCount;
+    private int totalTime;
 
-    private User(Integer id, String login, String password, String name, String surname, String role) {
+    public User(Integer id, String login, String password, String name, String surname, String role, int activitiesCount, int totalTime) {
         this.id = id;
         this.login = login;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.role = role;
+        this.activitiesCount = activitiesCount;
+        this.totalTime = totalTime;
     }
 
     public static User createUserWithoutId(String login, String password, String name, String surname, String role) {

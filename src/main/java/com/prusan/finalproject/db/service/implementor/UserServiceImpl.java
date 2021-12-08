@@ -122,6 +122,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getAllWithRoleUser() throws ServiceException {
+        return getWithRoleUser(0, Integer.MAX_VALUE);
+    }
+
+    @Override
     public int getDefaultUsersCount() throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
             int count = userDAO.getCountWithRoleUser(con);

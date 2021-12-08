@@ -8,6 +8,7 @@ import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
+import com.prusan.finalproject.web.command.CommandContainer;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +39,7 @@ public class UpdateActivityCommand implements Command {
 
         if (!doValidation(req, name, desc)) {
             log.debug("input is invalid, sending back to activity editing page");
-            return Chain.createRedirect("controller?command=showActivityEditPage&id=" + activityId);
+            return Chain.createRedirect(String.format("controller?command=%s&id=" + activityId, CommandContainer.CommandNames.SHOW_ACTIVITY_EDIT_PAGE));
         }
 
         ServiceFactory sf = ServiceFactory.getInstance();
@@ -58,7 +59,7 @@ public class UpdateActivityCommand implements Command {
             String queryString = handler.getQueryStringWithSortingParameters(s);
             log.debug("received a url params string: '{}'", queryString);
 
-            return Chain.createRedirect("controller?command=showActivitiesPage&" + queryString);
+            return Chain.createRedirect(String.format("controller?command=%s&" + queryString, CommandContainer.CommandNames.SHOW_ACTIVITIES_PAGE));
         } catch (ServiceException e) {
             log.error("unable to update an activity {}", activity);
             req.getSession().setAttribute("err_msg", e.getMessage());

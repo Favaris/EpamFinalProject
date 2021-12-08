@@ -78,3 +78,4 @@
         </div>
     </div>
 </my:html-carcass>
+<c:remove var="invalidUser" scope="session"/>

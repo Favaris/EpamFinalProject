@@ -36,8 +36,8 @@ public class SecurityTag extends SimpleTagSupport {
 
         destinations = new HashMap<>();
         destinations.put("", Pages.SIGN_IN_JSP);
-        //destinations.put("user", Pages.USER_PAGE_JSP);
-        //destinations.put("admin", Pages.ADMIN_PAGE_JSP);
+        destinations.put("user", Pages.HOME_JSP);
+        destinations.put("admin", Pages.HOME_JSP);
     }
 
     private String role;

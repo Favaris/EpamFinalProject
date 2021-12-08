@@ -8,6 +8,7 @@ import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
+import com.prusan.finalproject.web.command.CommandContainer;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,7 +46,7 @@ public class DenyRequestCommand implements Command {
             }
             String query = handler.getQueryString(req.getSession());
             log.debug("received a query string: '{}'", query);
-            return Chain.createRedirect("controller?command=showUsersRequests&" + query);
+            return Chain.createRedirect(String.format("controller?command=%s&" + query, CommandContainer.CommandNames.SHOW_USERS_REQUESTS));
         } catch (NoSuchActivityException e) {
             log.debug("no such user activity with userId={}, activityId={}", userId, activityId);
             req.setAttribute("err_msg", e.getMessage());

@@ -8,6 +8,7 @@ import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
+import com.prusan.finalproject.web.command.CommandContainer;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,7 +53,8 @@ public class UpdateTimeSpentCommand implements Command {
 
             String query = handler.getQueryStringWithSortingParameters(req.getSession());
             log.debug("received a query string: '{}'", query);
-            return Chain.createRedirect("controller?command=showRunningActivities&" + query);
+
+            return Chain.createRedirect(String.format("controller?command=%s&" + query, CommandContainer.CommandNames.SHOW_RUNNING_ACTIVITIES));
         } catch (NoSuchActivityException ex) {
             log.error("no such activity with userId={} and activityId={}", userId, activityId, ex);
             req.getSession().setAttribute("err_msg", ex.getMessage());

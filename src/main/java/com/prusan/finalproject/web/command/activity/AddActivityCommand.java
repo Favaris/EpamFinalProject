@@ -10,6 +10,7 @@ import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.Validator;
 import com.prusan.finalproject.web.command.Command;
+import com.prusan.finalproject.web.command.CommandContainer;
 import com.prusan.finalproject.web.constant.ValidationErrorsFlags;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +42,8 @@ public class AddActivityCommand implements Command {
             Activity activity =  Activity.createWithoutIdAndUsersCount(name, desc, new Category(catId));
             session.setAttribute("invalidActivity", activity);
             log.debug("set a session attribute 'invalidActivity' ==> '{}'", activity);
-            return Chain.createRedirect("controller?command=showActivityAddPage");
+
+            return Chain.createRedirect(String.format("controller?command=%s", CommandContainer.CommandNames.SHOW_ACTIVITY_ADD_PAGE));
         }
 
         log.debug("all fields are valid");
@@ -58,7 +60,7 @@ public class AddActivityCommand implements Command {
             String queryString = handler.getQueryStringWithSortingParameters(session);
             log.debug("received a query string: '{}'", queryString);
 
-            return Chain.createRedirect("controller?command=showActivitiesPage&" + queryString);
+            return Chain.createRedirect(String.format("controller?command=%s&" + queryString, CommandContainer.CommandNames.SHOW_ACTIVITIES_PAGE));
         } catch (NameIsTakenException ex) {
             log.debug("unable to add new activity {}, such activity already exists", ac);
             session.setAttribute("invalidActivity", ac);

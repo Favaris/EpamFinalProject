@@ -7,6 +7,7 @@ import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.command.Command;
+import com.prusan.finalproject.web.command.CommandContainer;
 import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,6 +52,6 @@ public class AcceptRequestCommand implements Command {
             return Chain.getErrorPageChain();
         }
 
-        return Chain.createRedirect("controller?command=showUsersRequests");
+        return Chain.createRedirect(String.format("controller?command=%s", CommandContainer.CommandNames.SHOW_USERS_REQUESTS));
     }
 }

@@ -1,4 +1,4 @@
-package com.prusan.finalproject.web.command.user;
+package com.prusan.finalproject.web.command.util;
 
 import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.entity.UserActivity;
@@ -14,11 +14,12 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GetUserReportCommand implements Command {
+public class ShowUsersReportCommand implements Command {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     @Override
@@ -28,17 +29,24 @@ public class GetUserReportCommand implements Command {
         UserActivityService uas = sf.getUserActivityService();
 
         try {
-            Map<User, List<UserActivity>> report = new HashMap<>();
-            for (User user : us.getWithRoleUser(0, Integer.MAX_VALUE)) {
-                log.debug("retrieved a user {}", user);
-                List<UserActivity> userActivities = uas.getAllAcceptedForUser(user.getId());
-                log.debug("retrieved a list of all activities for user {}", user);
-                report.put(user, userActivities);
-                log.debug("put a user {} and list of his activities with size={} into the map", user, userActivities.size());
-            }
-            log.debug("successfully downloaded a user report, map size={}", report.size());
+            List<User> users = us.getAllWithRoleUser();
+            log.debug("received a list of all default users, list size: {}", users.size());
 
-            req.setAttribute("report", report);
+            List<Integer> activitiesCounts = new ArrayList<>(users.size());
+            List<Integer> totalTimeList = new ArrayList<>(users.size());
+            String[] filterByStub = {"all"};
+            for (User u : users) {
+                int activitiesCount = uas.getActivitiesCountForUser(u.getId(), filterByStub);
+                activitiesCounts.add(activitiesCount);
+                int totalTime = uas.getSummarizedSpentTimeForUser(u.getId());
+                totalTimeList.add(totalTime);
+                log.debug("received a total time spent={} and activities count={} for user {}", totalTime, activitiesCount, u);
+            }
+
+            req.setAttribute("users", users);
+            req.setAttribute("activitiesCounts", activitiesCounts);
+            req.setAttribute("totalTimeList", totalTimeList);
+            log.debug("set up all needed request attributes");
             return Chain.createForward(Pages.USERS_REPORT_PAGE_JSP);
         } catch (ServiceException e) {
             log.error("failed to download a users report", e);

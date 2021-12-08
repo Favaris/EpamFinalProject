@@ -1,5 +1,7 @@
 package com.prusan.finalproject.web.command.user;
 
+import static com.prusan.finalproject.web.command.CommandContainer.*;
+
 import com.prusan.finalproject.db.entity.User;
 
 import com.prusan.finalproject.db.service.UserService;
@@ -7,7 +9,6 @@ import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,7 +40,7 @@ public class UpdateUserCommand implements Command {
             log.debug("edited a user: {}", user);
             log.debug("successfully saved all changes");
 
-            return Chain.createRedirect("controller?command=showDetailedUserInfo&uId="+userId);
+            return Chain.createRedirect(String.format("controller?command=%s&uId="+userId, CommandNames.SHOW_DETAILED_USER_INFO));
         } catch (ServiceException e) {
             log.error("error while trying to update a user by id={}", userId, e);
             req.getSession().setAttribute("err_msg", e.getMessage());

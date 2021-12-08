@@ -7,6 +7,7 @@ import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
+import com.prusan.finalproject.web.command.CommandContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,7 +47,8 @@ public class AddUserActivityCommand implements Command {
             log.debug("successfully added a new user activity with userId={}, activityId={}", userId, activityId);
 
             String queryString = handler.getQueryStringWithSortingParameters(session);
-            return Chain.createRedirect(String.format("controller?command=showAddActivitiesForUserPage&uId=%d&", userId) + queryString);
+
+            return Chain.createRedirect(String.format("controller?command=%s&uId=%d&", CommandContainer.CommandNames.SHOW_ADD_ACTIVITIES_FOR_USER_PAGE, userId) + queryString);
         } catch (ServiceException e) {
             log.error("failed to get a user activity by activityId={}", activityId, e);
             session.setAttribute("err_msg", e.getMessage());

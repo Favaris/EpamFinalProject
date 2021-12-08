@@ -17,6 +17,8 @@ public interface UserService {
 
     List<User> getWithRoleUser(int start, int end) throws ServiceException;
 
+    List<User> getAllWithRoleUser() throws ServiceException;
+
     int getDefaultUsersCount() throws ServiceException;
 
     void delete(int id) throws ServiceException;
