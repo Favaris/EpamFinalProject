@@ -23,11 +23,10 @@ public class User implements Serializable {
         private String name;
         private String surname;
         private String role;
-        private int activitiesCount;
-        private int totalTime;
+        private Info info;
 
         public User create() {
-            User u = new User(id, login, password, name, surname, role, activitiesCount, totalTime);
+            User u = new User(id, login, password, name, surname, role, info);
             log.debug("created a new instance: {}", u);
             return u;
         }
@@ -68,16 +67,44 @@ public class User implements Serializable {
             return this;
         }
 
-        public Builder setActivitiesCount(int activitiesCount) {
-            this.activitiesCount = activitiesCount;
-            log.debug("got set activities count: {}", activitiesCount);
+        public Builder setInfo(Info info) {
+            this.info = info;
+            log.debug("got set additional info: {}", info);
             return this;
         }
+    }
 
-        public Builder setTotalTime(int totalTime) {
+    public static class Info {
+        private int totalTime;
+        private int activitiesCount;
+
+        public Info(int totalTime, int activitiesCount) {
             this.totalTime = totalTime;
-            log.debug("got set total time: {}", totalTime);
-            return this;
+            this.activitiesCount = activitiesCount;
+        }
+
+        @Override
+        public String toString() {
+            return "Info{" +
+                    "totalTime=" + totalTime +
+                    ", activitiesCount=" + activitiesCount +
+                    '}';
+        }
+
+        public int getTotalTime() {
+            return totalTime;
+        }
+
+        public void setTotalTime(int totalTime) {
+            this.totalTime = totalTime;
+        }
+
+        public int getActivitiesCount() {
+            return activitiesCount;
+        }
+
+        public void setActivitiesCount(int activitiesCount) {
+            this.activitiesCount = activitiesCount;
         }
     }
 
@@ -87,18 +114,16 @@ public class User implements Serializable {
     private String name;
     private String surname;
     private String role;
-    private int activitiesCount;
-    private int totalTime;
+    private Info info;
 
-    public User(Integer id, String login, String password, String name, String surname, String role, int activitiesCount, int totalTime) {
+    private User(Integer id, String login, String password, String name, String surname, String role, Info info) {
         this.id = id;
         this.login = login;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.role = role;
-        this.activitiesCount = activitiesCount;
-        this.totalTime = totalTime;
+        this.info = info;
     }
 
     public static User createUserWithoutId(String login, String password, String name, String surname, String role) {
@@ -201,5 +226,13 @@ public class User implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Info getInfo() {
+        return info;
+    }
+
+    public void setInfo(Info info) {
+        this.info = info;
     }
 }

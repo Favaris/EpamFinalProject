@@ -31,15 +31,7 @@ public class ShowDetailedUserInfoCommand implements Command {
             User user = us.getById(userId);
             log.debug("received a user {}", user);
 
-            int activitiesCount = uas.getActivitiesCountForUser(userId, "all");
-            log.debug("received amount of activities for user: {}", activitiesCount);
-
-            int totalTime = uas.getSummarizedSpentTimeForUser(userId);
-            log.debug("received total time spent by user on activities: {}", totalTime);
-
             req.setAttribute("userToShow", user);
-            req.setAttribute("activitiesCount", activitiesCount);
-            req.setAttribute("totalTime", totalTime);
             log.debug("set up all needed request attributes");
 
             return Chain.createForward(Pages.USER_DETAILED_JSP);

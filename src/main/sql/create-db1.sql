@@ -13,6 +13,19 @@ CREATE TABLE IF NOT EXISTS users (
                                      u_role ENUM('user', 'admin') DEFAULT 'user'
 );
 
+DROP TABLE IF EXISTS user_infos;
+
+CREATE TABLE IF NOT EXISTS user_infos (
+                                          ui_user_id INT PRIMARY KEY NOT NULL,
+                                          ui_activities_count INT UNSIGNED DEFAULT 0,
+                                          ui_total_time INT UNSIGNED DEFAULT 0,
+                                          CONSTRAINT fk_user_info_id
+                                              FOREIGN KEY (ui_user_id)
+                                                  REFERENCES users(u_id)
+                                                  ON DELETE CASCADE
+                                                  ON UPDATE CASCADE
+);
+
 DROP TABLE IF EXISTS categories;
 
 CREATE TABLE IF NOT EXISTS categories (
@@ -69,3 +82,34 @@ DROP TRIGGER IF EXISTS decrement_users_count;
 
 CREATE TRIGGER decrement_users_count AFTER DELETE ON users_m2m_activities
     FOR EACH ROW UPDATE activities SET a_users_count = a_users_count - 1 WHERE a_id = OLD.ua_activity_id;
+
+/*triggers for automatic activities/total time count for user_infos table*/
+DROP TRIGGER IF EXISTS increment_activities_count;
+
+CREATE TRIGGER increment_activities_count AFTER INSERT ON users_m2m_activities
+    FOR EACH ROW UPDATE user_infos SET ui_activities_count = ui_activities_count + 1 WHERE ui_user_id = NEW.ua_user_id;
+
+DROP TRIGGER IF EXISTS decrement_activities_count;
+
+CREATE TRIGGER decrement_activities_count AFTER DELETE ON users_m2m_activities
+    FOR EACH ROW UPDATE user_infos SET ui_activities_count = ui_activities_count - 1 WHERE ui_user_id = OLD.ua_user_id;
+
+/*trigger for automatic update of a total time for a user*/
+DROP TRIGGER IF EXISTS update_total_time;
+
+CREATE TRIGGER update_total_time AFTER UPDATE ON users_m2m_activities
+    FOR EACH ROW UPDATE user_infos SET ui_total_time = ui_total_time + (NEW.ua_minutes_spent - OLD.ua_minutes_spent) WHERE ui_user_id = OLD.ua_user_id;
+
+/*trigger for automatic insertion of a row into user_infos table for a user with role=='user'*/
+DROP TRIGGER IF EXISTS create_user_info_row;
+
+delimiter //
+CREATE TRIGGER create_user_info_row AFTER INSERT ON users
+    FOR EACH ROW
+BEGIN
+    IF NEW.u_role = 'user' THEN
+        INSERT INTO user_infos VALUES(NEW.u_id, DEFAULT, DEFAULT);
+    END IF;
+END//
+delimiter ;
+

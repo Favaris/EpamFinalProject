@@ -17,15 +17,15 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach var="i" begin="0" end="${requestScope.users.size() - 1}" step="1">
+        <c:forEach var="user" items="${requestScope.users}">
             <tr>
-                <td>${requestScope.users.get(i).login}</td>
-                <td>${requestScope.users.get(i).name}</td>
-                <td>${requestScope.users.get(i).surname}</td>
+                <td>${user.login}</td>
+                <td>${user.name}</td>
+                <td>${user.surname}</td>
                 <td>
                     <c:choose>
-                        <c:when test="${requestScope.activitiesCounts.get(i) != 0}">
-                            ${requestScope.activitiesCounts.get(i)}
+                        <c:when test="${user.info.activitiesCount != 0}">
+                            ${user.info.activitiesCount}
                         </c:when>
                         <c:otherwise>
                             No activities yet
@@ -33,7 +33,7 @@
                     </c:choose>
                 </td>
                 <td>
-                    <ut:convert minutes="${requestScope.totalTimeList.get(i)}" minutesLabel="mins" hoursLabel="hrs"/>
+                    <ut:convert minutes="${user.info.totalTime}" minutesLabel="mins" hoursLabel="hrs"/>
                 </td>
             </tr>
         </c:forEach>

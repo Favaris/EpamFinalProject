@@ -82,12 +82,12 @@
         </div>
         <br>
         <label>
-            Activities count: ${requestScope.activitiesCount}
+            Activities count: ${requestScope.userToShow.info.activitiesCount}
         </label>
 
         <br>
         <label>
-            Total time spent: <ut:convert minutes="${requestScope.totalTime}" minutesLabel="mins" hoursLabel="hrs"/>
+            Total time spent: <ut:convert minutes="${requestScope.userToShow.info.totalTime}" minutesLabel="mins" hoursLabel="hrs"/>
         </label>
 <br>
         <form action="${root}/controller">

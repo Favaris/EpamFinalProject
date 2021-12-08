@@ -26,26 +26,12 @@ public class ShowUsersReportCommand implements Command {
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
         ServiceFactory sf = ServiceFactory.getInstance();
         UserService us = sf.getUserService();
-        UserActivityService uas = sf.getUserActivityService();
 
         try {
             List<User> users = us.getAllWithRoleUser();
             log.debug("received a list of all default users, list size: {}", users.size());
 
-            List<Integer> activitiesCounts = new ArrayList<>(users.size());
-            List<Integer> totalTimeList = new ArrayList<>(users.size());
-            String[] filterByStub = {"all"};
-            for (User u : users) {
-                int activitiesCount = uas.getActivitiesCountForUser(u.getId(), filterByStub);
-                activitiesCounts.add(activitiesCount);
-                int totalTime = uas.getSummarizedSpentTimeForUser(u.getId());
-                totalTimeList.add(totalTime);
-                log.debug("received a total time spent={} and activities count={} for user {}", totalTime, activitiesCount, u);
-            }
-
             req.setAttribute("users", users);
-            req.setAttribute("activitiesCounts", activitiesCounts);
-            req.setAttribute("totalTimeList", totalTimeList);
             log.debug("set up all needed request attributes");
             return Chain.createForward(Pages.USERS_REPORT_PAGE_JSP);
         } catch (ServiceException e) {

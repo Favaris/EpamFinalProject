@@ -57,8 +57,8 @@ public interface SQLQueries {
         public static final String UPDATE_USER_BY_ID = "UPDATE users SET u_login = ?, u_password = ?, u_name = ?, u_surname = ? WHERE u_id = ?";
         public static final String DELETE_USER_BY_ID = "DELETE FROM users WHERE u_id = ?";
         public static final String SELECT_ALL_USERS = "SELECT * FROM users";
+        public static final String GET_USER_INFO_BY_ID = "SELECT * FROM user_infos WHERE ui_user_id = ?";
         public static final String SELECT_USER_BY_LOGIN = "SELECT * FROM users WHERE u_login = ?";
-        public static final String GET_ALL_ADMINS = "SELECT * FROM users WHERE u_role='admin'";
         public static final String GET_DEFAULT_USERS = "SELECT * FROM users WHERE u_role='user' LIMIT ? OFFSET ?";
 
         public static final String GET_COUNT_WITH_ROLE_USER = "SELECT COUNT(*) FROM users WHERE u_role = 'user'";

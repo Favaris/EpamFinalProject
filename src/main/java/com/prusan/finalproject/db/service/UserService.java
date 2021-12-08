@@ -22,6 +22,4 @@ public interface UserService {
     int getDefaultUsersCount() throws ServiceException;
 
     void delete(int id) throws ServiceException;
-
-    void updateWithUserActivities(User u, List<UserActivity> activities) throws ServiceException;
 }

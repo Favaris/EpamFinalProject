@@ -13,6 +13,10 @@ public abstract class Fields {
     public static final String USER_SURNAME = "u_surname";
     public static final String USER_ROLE = "u_role";
 
+    public static final String USER_INFOS_USER_ID = "ui_user_id";
+    public static final String USER_INFOS_ACTIVITIES_COUNT = "ui_activities_count";
+    public static final String USER_INFOS_TOTAL_TIME = "ui_total_time";
+
     public static final String CATEGORY_ID = "c_id";
     public static final String CATEGORY_NAME = "c_name";
 

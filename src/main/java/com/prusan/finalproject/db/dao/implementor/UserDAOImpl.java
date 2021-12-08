@@ -12,6 +12,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Implementor class for UserDAO. Has SQL queries as private static fields.
  */
@@ -70,6 +71,7 @@ public class UserDAOImpl extends UserDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 User u = getUser(rs);
+                addInfoIfNeeded(con, u);
                 log.debug("returned a user from db: {}", u);
                 return u;
             }
@@ -135,6 +137,7 @@ public class UserDAOImpl extends UserDAO {
         {
             while (rs.next()) {
                 User u = getUser(rs);
+                addInfoIfNeeded(con, u);
                 users.add(u);
                 log.debug("extracted a user: {}", u);
             }
@@ -153,6 +156,7 @@ public class UserDAOImpl extends UserDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 User u = getUser(rs);
+                addInfoIfNeeded(con, u);
                 log.debug("extracted user by login: {}", u);
                 return u;
             }
@@ -181,28 +185,6 @@ public class UserDAOImpl extends UserDAO {
 
 
     /**
-     * Returns a list of users with role='admin'
-     * @throws DAOException if there are some issues with the connection to the db.
-     */
-    @Override
-    public List<User> getAllAdmins(Connection con) throws DAOException {
-        List<User> admins = new ArrayList<>();
-        try (Statement ps = con.createStatement();
-            ResultSet rs = ps.executeQuery(SQLQueries.UserQueries.GET_ALL_ADMINS)) {
-            while (rs.next()) {
-                User u = getUser(rs);
-                log.debug("retrieved an admin user: {}", u);
-                admins.add(u);
-            }
-            log.debug("got a list of all admins, list size: {}", admins.size());
-        } catch (SQLException throwables) {
-            log.error("error in getAllAdmins()", throwables);
-            throw new DAOException(throwables);
-        }
-        return admins;
-    }
-
-    /**
      * Returns a list of users with role='user'.
      * @throws DAOException if there are some issues with the connection to the db.
      */
@@ -216,6 +198,7 @@ public class UserDAOImpl extends UserDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 User u = getUser(rs);
+                addInfoIfNeeded(con, u);
                 log.debug("retrieved a user with role='user': {}", u);
                 users.add(u);
             }
@@ -262,5 +245,21 @@ public class UserDAOImpl extends UserDAO {
 
         log.debug("retrieved a user: {}", u);
         return u;
+    }
+
+    private void addInfoIfNeeded(Connection con, User u) throws SQLException {
+        if (!"user".equals(u.getRole())) {
+            return;
+        }
+        PreparedStatement ps = con.prepareStatement(SQLQueries.UserQueries.GET_USER_INFO_BY_ID);
+        ps.setInt(1, u.getId());
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            int totalTime = rs.getInt(Fields.USER_INFOS_TOTAL_TIME);
+            int activitiesCount = rs.getInt(Fields.USER_INFOS_ACTIVITIES_COUNT);
+            User.Info info = new User.Info(totalTime, activitiesCount);
+            log.debug("retrieved a user info {} for user {}", info, u);
+            u.setInfo(info);
+        }
     }
 }
