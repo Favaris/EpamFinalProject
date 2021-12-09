@@ -9,7 +9,6 @@ import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.command.CommandContainer;
-import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,7 +41,7 @@ public class UpdateCategoryCommand implements Command {
             return Chain.getErrorPageChain();
         }
 
-        String queryString = handler.getQueryString(req.getSession());
+        String queryString = handler.getPaginationQueryString(req.getSession());
         log.debug("received a url params string: '{}'", queryString);
 
         return Chain.createRedirect(String.format("controller?command=%s&" + queryString, CommandContainer.CommandNames.SHOW_CATEGORIES_PAGE));

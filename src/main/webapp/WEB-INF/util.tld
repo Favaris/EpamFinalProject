@@ -33,7 +33,17 @@
         <tag-class>com.prusan.finalproject.web.tag.PaginationHelperTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <name>includeSortingParameters</name>
+            <name>includeSorting</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>includeFiltering</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>includeSearching</name>
             <required>false</required>
             <rtexprvalue>false</rtexprvalue>
         </attribute>

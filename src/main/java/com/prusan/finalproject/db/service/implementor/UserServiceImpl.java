@@ -2,7 +2,6 @@ package com.prusan.finalproject.db.service.implementor;
 
 import com.prusan.finalproject.db.dao.*;
 import com.prusan.finalproject.db.entity.User;
-import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.exception.IncorrectCredentialsException;
 import com.prusan.finalproject.db.service.exception.LoginIsTakenException;
 import com.prusan.finalproject.db.service.exception.NoSuchUserException;
@@ -103,13 +102,15 @@ public class UserServiceImpl implements UserService {
     /**
      * Return a list of all users with role='user'.
      * @throws ServiceException if there are some connection issues with the db.
-     * @param start
      * @param end
+     * @param start
+     * @param countLessThen
+     * @param countBiggerThen
      */
     @Override
-    public List<User> getWithRoleUser(int start, int end) throws ServiceException {
+    public List<User> getWithRoleUser(int start, int amount, String orderBy, String countLessThen, String countBiggerThen, String searchBy) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
-            List<User> users = userDAO.getWithRoleUser(con, end, start);
+            List<User> users = userDAO.getWithRoleUser(con, amount, start, orderBy, countLessThen, countBiggerThen, searchBy);
             log.debug("retrieved a list of all users with role='user', list size: {}", users.size());
             return users;
         } catch (SQLException throwables) {
@@ -119,11 +120,6 @@ public class UserServiceImpl implements UserService {
             log.error("unable to get all users with role='user'");
             throw new ServiceException("error while downloading all users", e);
         }
-    }
-
-    @Override
-    public List<User> getAllWithRoleUser() throws ServiceException {
-        return getWithRoleUser(0, Integer.MAX_VALUE);
     }
 
     @Override

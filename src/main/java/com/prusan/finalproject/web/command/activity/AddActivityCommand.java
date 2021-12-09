@@ -12,7 +12,6 @@ import com.prusan.finalproject.web.Validator;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.command.CommandContainer;
 import com.prusan.finalproject.web.constant.ValidationErrorsFlags;
-import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,7 +56,7 @@ public class AddActivityCommand implements Command {
             session.removeAttribute("categories");
             session.removeAttribute("invalidActivity");
 
-            String queryString = handler.getQueryStringWithSortingParameters(session);
+            String queryString = handler.getQueryString(session, true, true, true, false);
             log.debug("received a query string: '{}'", queryString);
 
             return Chain.createRedirect(String.format("controller?command=%s&" + queryString, CommandContainer.CommandNames.SHOW_ACTIVITIES_PAGE));

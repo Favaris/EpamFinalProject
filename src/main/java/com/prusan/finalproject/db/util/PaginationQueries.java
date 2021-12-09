@@ -37,12 +37,20 @@ public abstract class PaginationQueries {
                 "JOIN users_m2m_activities ON a_id = ua_activity_id AND ua_accepted = true AND ua_user_id = ? " +
                 "JOIN categories ON c_id = a_category_id AND c_id IN (%s) ORDER BY %s DESC LIMIT ? OFFSET ?");
 
+        queries.put("users", "SELECT * FROM users " +
+                "JOIN user_infos ui ON u_id = ui_user_id AND u_login LIKE '%%%s%%' %s " +
+                "ORDER BY %s DESC LIMIT ? OFFSET ?");
+
         names = new HashMap<>();
 
         names.put("activityName", Fields.ACTIVITY_NAME);
         names.put("categoryName", Fields.CATEGORY_NAME);
         names.put("usersCount", Fields.ACTIVITY_USERS_COUNT);
         names.put("timeSpent", Fields.USER_ACTIVITY_MINUTES_SPENT);
+
+        names.put("userLogin", Fields.USER_LOGIN);
+        names.put("activitiesCount", Fields.USER_INFOS_ACTIVITIES_COUNT);
+        names.put("totalTime", Fields.USER_INFOS_TOTAL_TIME);
     }
 
     public static String getActivityQuery(String orderBy, String... filterBy) {
@@ -70,6 +78,29 @@ public abstract class PaginationQueries {
             return query;
         }
         return getQueryWithFilters(orderBy, filterBy, "userActivity");
+    }
+
+    public static String getUserQuery(String orderBy, String countLessThen, String countBiggerThen, String like) {
+        StringBuilder restrictionQueryBuilder = new StringBuilder();
+
+        if (!countLessThen.isEmpty()) {
+            String lessThenQuery = String.format("%s < %s", Fields.USER_INFOS_ACTIVITIES_COUNT, countLessThen);
+            log.debug("generated a less then restriction: '{}'", lessThenQuery);
+            restrictionQueryBuilder.append("AND ").append(lessThenQuery);
+        }
+
+        if (!countBiggerThen.isEmpty()) {
+            String biggerThenQuery = String.format("%s > %s", Fields.USER_INFOS_ACTIVITIES_COUNT, countBiggerThen);
+            log.debug("generated a bigger then restriction: '{}'", biggerThenQuery);
+            restrictionQueryBuilder.append(" AND ").append(biggerThenQuery);
+        }
+
+        String restrictionQuery = restrictionQueryBuilder.toString();
+        log.debug("generated a restriction query: '{}'", restrictionQuery);
+
+        String query = String.format(queries.get("users"), like, restrictionQuery, names.get(orderBy));
+        log.debug("generated a query: '{}'", query);
+        return query;
     }
 
     private static String getQueryWithFilters(String orderBy, String[] filterBy, String queryName) {

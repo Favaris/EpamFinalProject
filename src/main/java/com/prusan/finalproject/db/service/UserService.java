@@ -1,7 +1,6 @@
 package com.prusan.finalproject.db.service;
 
 import com.prusan.finalproject.db.entity.User;
-import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 
 import java.util.List;
@@ -15,9 +14,7 @@ public interface UserService {
 
     User getByLoginAndPass(String login, String pass) throws ServiceException;
 
-    List<User> getWithRoleUser(int start, int end) throws ServiceException;
-
-    List<User> getAllWithRoleUser() throws ServiceException;
+    List<User> getWithRoleUser(int start, int amount, String orderBy, String countLessThen, String countBiggerThen, String searchBy) throws ServiceException;
 
     int getDefaultUsersCount() throws ServiceException;
 

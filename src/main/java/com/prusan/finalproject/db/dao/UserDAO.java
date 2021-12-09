@@ -13,7 +13,7 @@ public abstract class UserDAO extends BasicDAO<User> {
 
     public abstract User getByLoginAndPassword(Connection con, String login, String password) throws DAOException;
 
-    public abstract List<User> getWithRoleUser(Connection con, int limit, int offset) throws DAOException;
+    public abstract List<User> getWithRoleUser(Connection con, int limit, int offset, String orderBy, String countLessThen, String countBiggerThen, String like) throws DAOException;
 
     public abstract int getCountWithRoleUser(Connection con) throws DAOException;
 }

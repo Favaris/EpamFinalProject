@@ -7,7 +7,7 @@
 <my:html-carcass title="${sessionScope.user.login} - ${requestScope.userToShow.login}'s detailed info">
     <div class="managing sidenav">
         <div class="login-main-text">
-            <button type="button" class="btn btn-black" onclick="location.href='${root}/controller?command=showAllUsers&${sessionScope.paginationQueryString}';">Go back</button>
+            <button type="button" class="btn btn-black" onclick="location.href='${root}/controller?command=showAllUsers&${sessionScope.paginationQueryString}&${sessionScope.sortingQueryString}&${sessionScope.searchingQueryString}';">Go back</button>
         </div>
     </div>
     <div class="container">

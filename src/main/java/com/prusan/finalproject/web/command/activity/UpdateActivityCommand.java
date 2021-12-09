@@ -9,7 +9,6 @@ import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.command.CommandContainer;
-import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,7 +55,7 @@ public class UpdateActivityCommand implements Command {
             s.removeAttribute("categories");
             log.debug("removed activity specific attributes from a session");
 
-            String queryString = handler.getQueryStringWithSortingParameters(s);
+            String queryString = handler.getQueryString(s, true, true, true, false);
             log.debug("received a url params string: '{}'", queryString);
 
             return Chain.createRedirect(String.format("controller?command=%s&" + queryString, CommandContainer.CommandNames.SHOW_ACTIVITIES_PAGE));

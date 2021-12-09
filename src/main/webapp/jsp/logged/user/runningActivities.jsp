@@ -4,7 +4,7 @@
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
 <%@taglib uri="http://com.prusan.finalproject.util" prefix="ut" %>
 <s:check role="${sessionScope.user.role}"  permission="user"/>
-<ut:set-pagination-query includeSortingParameters="true"/>
+<ut:set-pagination-query includeSorting="true" includeFiltering="true"/>
 <my:html-carcass title="${sessionScope.user.login} - your activities">
     <div class="managing sidenav">
         <div class="login-main-text">

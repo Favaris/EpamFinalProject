@@ -4,7 +4,7 @@
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
 <s:check role="${sessionScope.user.role}"  permission="admin"/>
 <%@taglib uri="http://com.prusan.finalproject.util" prefix="ut" %>
-<ut:set-pagination-query/>
+<ut:set-pagination-query includeSorting="true" includeSearching="true"/>
 <my:html-carcass title="${sessionScope.user.login} - users list">
     <div class="managing sidenav">
         <div class="login-main-text">
@@ -17,12 +17,62 @@
                 <button type="submit" class="btn btn-black">Create new user</button>
             </form>
         </div>
+
+    <div class="sorting-panel container">
+        <form action="${root}/controller">
+            <input type="hidden" name="command" value="showAllUsers">
+            <input type="hidden" name="page" value="1">
+            <input type="hidden" name="pageSize" value="5">
+            <label>Sort by:</label><br>
+            <c:choose>
+                <c:when test="${'userLogin'.equals(requestScope.orderBy)}">
+                    <input type="radio" name="orderBy" value="userLogin" id="userLoginId" checked>
+                </c:when>
+                <c:otherwise>
+                    <input type="radio" name="orderBy" value="userLogin" id="userLoginId">
+                </c:otherwise>
+            </c:choose>
+            <label for="userLoginId">Login</label><br>
+            <c:choose>
+                <c:when test="${'activitiesCount'.equals(requestScope.orderBy)}">
+                    <input type="radio" name="orderBy" value="activitiesCount" id="count" checked>
+                </c:when>
+                <c:otherwise>
+                    <input type="radio" name="orderBy" value="activitiesCount" id="count">
+                </c:otherwise>
+            </c:choose>
+            <label for="count">Activities count</label><br>
+            <c:choose>
+                <c:when test="${'totalTime'.equals(requestScope.orderBy)}">
+                    <input type="radio" name="orderBy" value="totalTime" id="time" checked>
+                </c:when>
+                <c:otherwise>
+                    <input type="radio" name="orderBy" value="totalTime" id="time">
+                </c:otherwise>
+            </c:choose>
+            <label for="time">Total time</label> <br>
+            <label>Activities count less then:</label>
+            <input type="number" name="countLessThen" value="${requestScope.countLessThen}">
+            <br>
+            <label>Activities count bigger then:</label>
+            <input type="number" name="countBiggerThen" value="${requestScope.countBiggerThen}">
+            <br>
+            <label>Search by login: </label>
+            <input type="text" name="searchBy" value="${requestScope.searchBy}">
+            <br>
+            <button type="submit" class="btn btn-black">OK</button>
+        </form>
+    </div>
     </div>
     <div class="tables">
     <form action="${root}/controller">
         <input type="hidden" name="command" value="showAllUsers">
         <input type="hidden" name="page" value="${requestScope.page - 1}">
         <input type="hidden" name="pageSize" value="5">
+        <input type="hidden" name="orderBy" value="${requestScope.orderBy}">
+        <input type="hidden" name="countLessThen" value="${requestScope.countLessThen}">
+        <input type="hidden" name="countBiggerThen" value="${requestScope.countBiggerThen}">
+        <input type="hidden" name="searchBy" value="${requestScope.searchBy}">
         <c:choose>
             <c:when test="${requestScope.page - 1 > 0}">
                 <button type="submit" class="btn btn-black">Prev</button>
@@ -36,6 +86,10 @@
         <input type="hidden" name="command" value="showAllUsers">
         <input type="hidden" name="page" value="${requestScope.page + 1}">
         <input type="hidden" name="pageSize" value="5">
+        <input type="hidden" name="orderBy" value="${requestScope.orderBy}">
+        <input type="hidden" name="countLessThen" value="${requestScope.countLessThen}">
+        <input type="hidden" name="countBiggerThen" value="${requestScope.countBiggerThen}">
+        <input type="hidden" name="searchBy" value="${requestScope.searchBy}">
         <c:choose>
             <c:when test="${requestScope.page < requestScope.pageCount}">
                 <button type="submit" class="btn btn-black">Next</button>

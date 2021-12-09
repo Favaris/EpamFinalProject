@@ -17,11 +17,23 @@ import java.util.Arrays;
  */
 public class PaginationHelperTag extends SimpleTagSupport {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
-    private boolean includeSortingParameters;
+    private boolean includeSorting;
+    private boolean includeFiltering;
+    private boolean includeSearching;
 
-    public void setIncludeSortingParameters(boolean includeSorting) {
-        this.includeSortingParameters = includeSorting;
-        log.debug("got set 'includeSortingParameters'={}", includeSorting);
+    public void setIncludeSorting(boolean includeSorting) {
+        this.includeSorting = includeSorting;
+        log.debug("got set 'includeSorting'={}", includeSorting);
+    }
+
+    public void setIncludeFiltering(boolean includeFiltering) {
+        this.includeFiltering = includeFiltering;
+        log.debug("got set 'includeFiltering'={}", includeSorting);
+    }
+
+    public void setIncludeSearching(boolean includeSearching) {
+        this.includeSearching = includeSearching;
+        log.debug("got set 'includeSearching'={}", includeSorting);
     }
 
     @Override
@@ -46,23 +58,53 @@ public class PaginationHelperTag extends SimpleTagSupport {
             pageSize = 5;
             log.debug("pageSize was null, setting the default value: pageSize={}", pageSize);
         }
+        String queryString = String.format("page=%d&pageSize=%d", page, pageSize);
+        log.debug("generated a query string: '{}'", queryString);
 
-        if (!includeSortingParameters) {
-            String queryString = String.format("page=%d&pageSize=%d", page, pageSize);
-            log.debug("generated a query string: '{}'", queryString);
+        session.setAttribute("paginationQueryString", queryString);
+        log.debug("set pagination query string as a session attribute");
 
-            session.setAttribute("paginationQueryString", queryString);
-            log.debug("set query string as a session attribute");
-            return;
+        if (includeSorting) {
+            setUpSortingString(req);
         }
 
-        String orderBy = (String) req.getAttribute("orderBy");
-        log.debug("retrieved a 'orderBy' attribute: '{}'", orderBy);
-        if (orderBy == null) {
-            orderBy = "activityName";
-            log.debug("orderBy was null, setting the default value: orderBy='{}'", orderBy);
+        if (includeFiltering) {
+            setUpFilteringString(req);
         }
 
+        if (includeSearching) {
+            setUpSearchingString(req);
+        }
+    }
+
+    private void setUpSearchingString(HttpServletRequest req) {
+        String countLessThen = (String) req.getAttribute("countLessThen");
+        log.debug("retrieved a 'countLessThen' attribute: {}", countLessThen);
+        if (countLessThen == null) {
+            countLessThen = "";
+            log.debug("countLessThen was null, setting the default value: countLessThen='{}'", countLessThen);
+        }
+
+        String countBiggerThen = (String) req.getAttribute("countBiggerThen");
+        log.debug("retrieved a 'countBiggerThen' attribute: {}", countBiggerThen);
+        if (countBiggerThen == null) {
+            countBiggerThen = "";
+            log.debug("countBiggerThen was null, setting the default value: countBiggerThen='{}'", countBiggerThen);
+        }
+
+        String searchBy = (String) req.getAttribute("searchBy");
+        log.debug("retrieved a 'searchBy' attribute: {}", searchBy);
+        if (searchBy == null) {
+            searchBy = "";
+            log.debug("searchBy was null, setting the default value: searchBy='{}'", searchBy);
+        }
+
+        String queryString = String.format("countLessThen=%s&countBiggerThen=%s&searchBy=%s", countLessThen, countBiggerThen, searchBy);
+        req.getSession().setAttribute("searchingQueryString", queryString);
+        log.debug("set a 'searchingQueryString' session attribute: '{}'", queryString);
+    }
+
+    private void setUpFilteringString(HttpServletRequest req) {
         String[] paramsfilterBy = (String[]) req.getAttribute("filterBy");
         log.debug("retrieved a 'filterBy' attribute: '{}'", Arrays.toString(paramsfilterBy));
         if (paramsfilterBy == null) {
@@ -71,10 +113,21 @@ public class PaginationHelperTag extends SimpleTagSupport {
         }
         String filterBy = String.join("&filterBy=", paramsfilterBy);
 
-        String queryString = String.format("page=%d&pageSize=%d&orderBy=%s&filterBy=%s", page, pageSize, orderBy, filterBy);
-        log.debug("generated a query string: '{}'", queryString);
+        String queryString = String.format("filterBy=%s", filterBy);
 
-        session.setAttribute("paginationQueryString", queryString);
-        log.debug("set query string as a session attribute");
+        req.getSession().setAttribute("filteringQueryString", queryString);
+        log.debug("set a 'filteringQueryString' session attribute: '{}'", queryString);
+    }
+
+    private void setUpSortingString(HttpServletRequest req) {
+        String orderBy = (String) req.getAttribute("orderBy");
+        log.debug("retrieved a 'orderBy' attribute: '{}'", orderBy);
+        if (orderBy == null) {
+            orderBy = "activityName";
+            log.debug("orderBy was null, setting the default value: orderBy='{}'", orderBy);
+        }
+        String queryString = String.format("orderBy=%s", orderBy);
+        req.getSession().setAttribute("sortingQueryString", queryString);
+        log.debug("set a 'sortingQueryString' session attribute: '{}'", queryString);
     }
 }

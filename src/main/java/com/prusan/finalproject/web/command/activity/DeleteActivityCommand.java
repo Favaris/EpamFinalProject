@@ -7,7 +7,6 @@ import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.command.CommandContainer;
-import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +27,7 @@ public class DeleteActivityCommand implements Command {
             as.delete(activityId);
             log.debug("deleted an activity with id={}", activityId);
 
-            String queryString = handler.getQueryStringWithSortingParameters(req.getSession());
+            String queryString = handler.getQueryString(req.getSession(), true, true, true, false);
 
             return Chain.createRedirect(String.format("controller?command=%s&" + queryString, CommandContainer.CommandNames.SHOW_ACTIVITIES_PAGE));
         } catch (ServiceException e) {

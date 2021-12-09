@@ -46,7 +46,7 @@ public class AddUserActivityCommand implements Command {
             uas.save(ua);
             log.debug("successfully added a new user activity with userId={}, activityId={}", userId, activityId);
 
-            String queryString = handler.getQueryStringWithSortingParameters(session);
+            String queryString = handler.getQueryString(session, true, true, true, false);
 
             return Chain.createRedirect(String.format("controller?command=%s&uId=%d&", CommandContainer.CommandNames.SHOW_ADD_ACTIVITIES_FOR_USER_PAGE, userId) + queryString);
         } catch (ServiceException e) {

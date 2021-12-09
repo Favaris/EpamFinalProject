@@ -9,7 +9,6 @@ import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.command.CommandContainer;
-import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,7 +43,7 @@ public class RequestActivityAbandonmentCommand implements Command {
             return Chain.getErrorPageChain();
         }
 
-        String query = handler.getQueryStringWithSortingParameters(req.getSession());
+        String query = handler.getQueryString(req.getSession(), true, true, true, false);
         log.debug("received a query string: '{}'", query);
         return Chain.createRedirect(String.format("controller?command=%s&" + query, CommandContainer.CommandNames.SHOW_RUNNING_ACTIVITIES));
     }

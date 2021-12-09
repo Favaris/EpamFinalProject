@@ -27,17 +27,17 @@ public class ShowUsersReportCommand implements Command {
         ServiceFactory sf = ServiceFactory.getInstance();
         UserService us = sf.getUserService();
 
-        try {
-            List<User> users = us.getAllWithRoleUser();
-            log.debug("received a list of all default users, list size: {}", users.size());
-
-            req.setAttribute("users", users);
-            log.debug("set up all needed request attributes");
+//        try {
+//            List<User> users = us.getAllWithRoleUser();
+//            log.debug("received a list of all default users, list size: {}", users.size());
+//
+//            req.setAttribute("users", users);
+//            log.debug("set up all needed request attributes");
             return Chain.createForward(Pages.USERS_REPORT_PAGE_JSP);
-        } catch (ServiceException e) {
-            log.error("failed to download a users report", e);
-            req.getSession().setAttribute("err_msg", e.getMessage());
-            return Chain.getErrorPageChain();
-        }
+//        } catch (ServiceException e) {
+//            log.error("failed to download a users report", e);
+//            req.getSession().setAttribute("err_msg", e.getMessage());
+//            return Chain.getErrorPageChain();
+//        }
     }
 }

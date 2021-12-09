@@ -28,18 +28,27 @@ public class ShowAllUsersCommand implements Command {
 
         int page = handler.getPageFromParameters(req);
         int pageSize = handler.getPageSizeFromParameters(req);
+        String orderBy = handler.getOrderByFromParameters(req, "userLogin");
+        String countLessThen = handler.getCountLessThenFromParameters(req);
+        String countBiggerThen = handler.getCountBiggerThenFromParameters(req);
+        String searchBy = handler.getSearchByFromParameters(req);
 
         try {
-            List<User> usersList = us.getWithRoleUser(pageSize * (page - 1), pageSize);
+            List<User> usersList = us.getWithRoleUser(pageSize * (page - 1), pageSize, orderBy, countLessThen, countBiggerThen, searchBy);
             log.debug("got a usersList, list size: {}", usersList.size());
             int usersCount = us.getDefaultUsersCount();
             log.debug("received a users amount: {}", usersCount);
+
             req.setAttribute("usersList", usersList);
-            handler.setPaginationParametersAsRequestAttributes(req, usersCount, pageSize, page, null, null);
+            handler.setPaginationParametersAsRequestAttributes(req, usersCount, pageSize, page, orderBy, null);
+            req.setAttribute("countLessThen", countLessThen);
+            req.setAttribute("countBiggerThen", countBiggerThen);
+            req.setAttribute("searchBy", searchBy);
+            log.debug("set up all needed request params");
             return Chain.createForward(Pages.USERS_JSP);
         } catch (ServiceException e) {
             log.error("error while trying to download all users with role='user'", e);
-            req.setAttribute("err_msg", e.getMessage());
+            req.getSession().setAttribute("err_msg", e.getMessage());
             return Chain.getErrorPageChain();
         }
     }

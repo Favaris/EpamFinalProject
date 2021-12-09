@@ -7,7 +7,6 @@ import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.command.CommandContainer;
-import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,10 +33,10 @@ public class DeleteUserActivityCommand implements Command {
             uas.delete(userId, activityId);
             log.debug("successfully deleted a user activity by userId={}, activityId={}", userId, activityId);
 
-            String query = handler.getQueryStringWithSortingParameters(req.getSession());
-            log.debug("received a query string: '{}'", query);
+            String queryString = handler.getQueryString(session, true, true, true, false);
+            log.debug("received a query string: '{}'", queryString);
 
-            return Chain.createRedirect(String.format("controller?command=%s&uId=%d&", CommandContainer.CommandNames.MANAGE_USERS_ACTIVITIES, userId) + query);
+            return Chain.createRedirect(String.format("controller?command=%s&uId=%d&", CommandContainer.CommandNames.MANAGE_USERS_ACTIVITIES, userId) + queryString);
         } catch (ServiceException e) {
             log.error("failed to delete a user activity by userId={}, activityId={}", userId, activityId);
             return Chain.getErrorPageChain();

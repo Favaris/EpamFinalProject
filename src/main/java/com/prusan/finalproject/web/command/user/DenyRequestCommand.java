@@ -9,7 +9,6 @@ import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
 import com.prusan.finalproject.web.command.CommandContainer;
-import com.prusan.finalproject.web.constant.Pages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,7 +43,7 @@ public class DenyRequestCommand implements Command {
                 uas.update(ua);
                 log.debug("denied abandonment for a user activity {}", ua);
             }
-            String query = handler.getQueryString(req.getSession());
+            String query = handler.getPaginationQueryString(req.getSession());
             log.debug("received a query string: '{}'", query);
             return Chain.createRedirect(String.format("controller?command=%s&" + query, CommandContainer.CommandNames.SHOW_USERS_REQUESTS));
         } catch (NoSuchActivityException e) {

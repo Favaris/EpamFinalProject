@@ -4,6 +4,7 @@ import com.prusan.finalproject.db.dao.DAOException;
 import com.prusan.finalproject.db.dao.UserDAO;
 import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.util.Fields;
+import com.prusan.finalproject.db.util.PaginationQueries;
 import com.prusan.finalproject.db.util.SQLQueries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -189,10 +190,10 @@ public class UserDAOImpl extends UserDAO {
      * @throws DAOException if there are some issues with the connection to the db.
      */
     @Override
-    public List<User> getWithRoleUser(Connection con, int limit, int offset) throws DAOException {
+    public List<User> getWithRoleUser(Connection con, int limit, int offset, String orderBy, String countLessThen, String countBiggerThen, String like) throws DAOException {
         List<User> users = new ArrayList<>();
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserQueries.GET_DEFAULT_USERS)) {
+        try (PreparedStatement ps = con.prepareStatement(PaginationQueries.getUserQuery(orderBy, countLessThen, countBiggerThen, like))) {
             ps.setInt(1, limit);
             ps.setInt(2, offset);
             rs = ps.executeQuery();
