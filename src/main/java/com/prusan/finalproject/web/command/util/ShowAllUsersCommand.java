@@ -36,7 +36,7 @@ public class ShowAllUsersCommand implements Command {
         try {
             List<User> usersList = us.getWithRoleUser(pageSize * (page - 1), pageSize, orderBy, countLessThen, countBiggerThen, searchBy);
             log.debug("got a usersList, list size: {}", usersList.size());
-            int usersCount = us.getDefaultUsersCount();
+            int usersCount = us.getDefaultUsersCount(countLessThen, countBiggerThen, searchBy);
             log.debug("received a users amount: {}", usersCount);
 
             req.setAttribute("usersList", usersList);

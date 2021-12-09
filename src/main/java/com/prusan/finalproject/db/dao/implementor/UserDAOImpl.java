@@ -218,9 +218,18 @@ public class UserDAOImpl extends UserDAO {
     }
 
     @Override
-    public int getCountWithRoleUser(Connection con) throws DAOException {
+    public int getCountWithRoleUser(Connection con, String countLessThen, String countBiggerThen, String like) throws DAOException {
+        StringBuilder builder = new StringBuilder();
+        if (!countLessThen.isEmpty()) {
+            builder.append("AND ").append(String.format("%s < %s", Fields.USER_INFOS_ACTIVITIES_COUNT, countLessThen));
+        }
+        if (!countBiggerThen.isEmpty()) {
+            builder.append(" AND ").append(String.format("%s > %s", Fields.USER_INFOS_ACTIVITIES_COUNT, countBiggerThen));
+        }
+        String query = String.format(SQLQueries.UserQueries.GET_COUNT_WITH_ROLE_USER, like, builder);
+        log.debug("generated query for counting users: '{}'", query);
         try (Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(SQLQueries.UserQueries.GET_COUNT_WITH_ROLE_USER)) {
+            ResultSet rs = st.executeQuery(query)) {
             int count = 0;
             if (rs.next()) {
                 count = rs.getInt(1);

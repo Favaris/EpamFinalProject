@@ -61,6 +61,6 @@ public interface SQLQueries {
         public static final String SELECT_USER_BY_LOGIN = "SELECT * FROM users WHERE u_login = ?";
         public static final String GET_DEFAULT_USERS = "SELECT * FROM users WHERE u_role='user' LIMIT ? OFFSET ?";
 
-        public static final String GET_COUNT_WITH_ROLE_USER = "SELECT COUNT(*) FROM users WHERE u_role = 'user'";
+        public static final String GET_COUNT_WITH_ROLE_USER = "SELECT COUNT(*) FROM users JOIN user_infos ON u_id = ui_user_id AND u_role = 'user' AND u_login LIKE '%%%s%%' %s";
     }
 }

@@ -38,7 +38,6 @@ public class CommandContainer {
         String SIGN_IN = "signIn";
         String REQUEST_ACTIVITY_ADDITION = "requestActivityAddition";
         String REQUEST_ACTIVITY_ABANDONMENT = "requestActivityAbandonment";
-        String SHOW_USERS_REPORT = "showUsersReport";
         String CANCEL_REQUEST = "cancelRequest";
         String MANAGE_USERS_ACTIVITIES = "manageUsersActivities";
         String SHOW_ACTIVITIES_PAGE = "showActivitiesPage";
@@ -87,7 +86,6 @@ public class CommandContainer {
         commands.put(CommandNames.SHOW_DETAILED_USER_INFO, new ShowDetailedUserInfoCommand());
         commands.put(CommandNames.SHOW_RUNNING_ACTIVITIES, new ShowRunningActivitiesCommand());
         commands.put(CommandNames.SHOW_USERS_REQUESTS, new ShowRequestsCommand());
-        commands.put(CommandNames.SHOW_USERS_REPORT, new ShowUsersReportCommand());
     }
 
     public static Command getCommand(String command) {

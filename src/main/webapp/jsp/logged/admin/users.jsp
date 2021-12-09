@@ -57,7 +57,7 @@
             <label>Activities count bigger then:</label>
             <input type="number" name="countBiggerThen" value="${requestScope.countBiggerThen}">
             <br>
-            <label>Search by login: </label>
+            <label>Search by login: </label><br>
             <input type="text" name="searchBy" value="${requestScope.searchBy}">
             <br>
             <button type="submit" class="btn btn-black">OK</button>
@@ -106,15 +106,28 @@
             <th scope="col">login</th>
             <th scope="col">name</th>
             <th scope="col">surname</th>
+            <th scope="col">activities count</th>
+            <th scope="col">total time</th>
             <th scope="col">options</th>
         </tr>
         </thead>
         <tbody>
         <c:forEach var="user" items="${requestScope.usersList}">
             <tr>
-                <td>${user.login}</td>
+                <td><a href="${root}/controller?command=showDetailedUserInfo&uId=${user.id}">${user.login}</a></td>
                 <td>${user.name}</td>
                 <td>${user.surname}</td>
+                <td>
+                    <c:choose>
+                        <c:when test="${user.info.activitiesCount == 0}">
+                            No activities yet
+                        </c:when>
+                        <c:otherwise>
+                            ${user.info.activitiesCount}
+                        </c:otherwise>
+                    </c:choose>
+                </td>
+                <td><ut:convert minutes="${user.info.totalTime}" minutesLabel="mins" hoursLabel="hrs"/></td>
                 <td>
                     <a href="${root}/controller?command=showDetailedUserInfo&uId=${user.id}">show details</a>
                 </td>

@@ -46,18 +46,11 @@ public class PaginationHelperTag extends SimpleTagSupport {
         log.debug("retrieved a session instance {}", session);
 
         Integer page = (Integer) req.getAttribute("page");
-        log.debug("retrieved a 'page' attribute: '{}}'", page);
-        if (page == null) {
-            page = 1;
-            log.debug("page was null, setting the default value: page={}", page);
-        }
+        log.debug("retrieved a 'page' attribute: '{}'", page);
 
         Integer pageSize = (Integer) req.getAttribute("pageSize");
-        log.debug("retrieved a 'pageSize' attribute: '{}}'", pageSize);
-        if (pageSize == null) {
-            pageSize = 5;
-            log.debug("pageSize was null, setting the default value: pageSize={}", pageSize);
-        }
+        log.debug("retrieved a 'pageSize' attribute: '{}'", pageSize);
+
         String queryString = String.format("page=%d&pageSize=%d", page, pageSize);
         log.debug("generated a query string: '{}'", queryString);
 
@@ -65,7 +58,7 @@ public class PaginationHelperTag extends SimpleTagSupport {
         log.debug("set pagination query string as a session attribute");
 
         if (includeSorting) {
-            setUpSortingString(req);
+                    setUpSortingString(req);
         }
 
         if (includeFiltering) {
@@ -80,24 +73,15 @@ public class PaginationHelperTag extends SimpleTagSupport {
     private void setUpSearchingString(HttpServletRequest req) {
         String countLessThen = (String) req.getAttribute("countLessThen");
         log.debug("retrieved a 'countLessThen' attribute: {}", countLessThen);
-        if (countLessThen == null) {
-            countLessThen = "";
-            log.debug("countLessThen was null, setting the default value: countLessThen='{}'", countLessThen);
-        }
+
 
         String countBiggerThen = (String) req.getAttribute("countBiggerThen");
         log.debug("retrieved a 'countBiggerThen' attribute: {}", countBiggerThen);
-        if (countBiggerThen == null) {
-            countBiggerThen = "";
-            log.debug("countBiggerThen was null, setting the default value: countBiggerThen='{}'", countBiggerThen);
-        }
+
 
         String searchBy = (String) req.getAttribute("searchBy");
         log.debug("retrieved a 'searchBy' attribute: {}", searchBy);
-        if (searchBy == null) {
-            searchBy = "";
-            log.debug("searchBy was null, setting the default value: searchBy='{}'", searchBy);
-        }
+
 
         String queryString = String.format("countLessThen=%s&countBiggerThen=%s&searchBy=%s", countLessThen, countBiggerThen, searchBy);
         req.getSession().setAttribute("searchingQueryString", queryString);
@@ -107,10 +91,7 @@ public class PaginationHelperTag extends SimpleTagSupport {
     private void setUpFilteringString(HttpServletRequest req) {
         String[] paramsfilterBy = (String[]) req.getAttribute("filterBy");
         log.debug("retrieved a 'filterBy' attribute: '{}'", Arrays.toString(paramsfilterBy));
-        if (paramsfilterBy == null) {
-            paramsfilterBy = new String[] { "all" };
-            log.debug("filterBy was null, setting the default value: filterBy='{}'", Arrays.toString(paramsfilterBy));
-        }
+
         String filterBy = String.join("&filterBy=", paramsfilterBy);
 
         String queryString = String.format("filterBy=%s", filterBy);
@@ -122,10 +103,7 @@ public class PaginationHelperTag extends SimpleTagSupport {
     private void setUpSortingString(HttpServletRequest req) {
         String orderBy = (String) req.getAttribute("orderBy");
         log.debug("retrieved a 'orderBy' attribute: '{}'", orderBy);
-        if (orderBy == null) {
-            orderBy = "activityName";
-            log.debug("orderBy was null, setting the default value: orderBy='{}'", orderBy);
-        }
+
         String queryString = String.format("orderBy=%s", orderBy);
         req.getSession().setAttribute("sortingQueryString", queryString);
         log.debug("set a 'sortingQueryString' session attribute: '{}'", queryString);

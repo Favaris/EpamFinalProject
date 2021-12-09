@@ -123,9 +123,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int getDefaultUsersCount() throws ServiceException {
+    public int getDefaultUsersCount(String countLessThen, String countBiggerThen, String searchBy) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
-            int count = userDAO.getCountWithRoleUser(con);
+            int count = userDAO.getCountWithRoleUser(con, countLessThen, countBiggerThen, searchBy);
             log.debug("received a default users count: {}", count);
             return count;
         } catch (SQLException throwables) {

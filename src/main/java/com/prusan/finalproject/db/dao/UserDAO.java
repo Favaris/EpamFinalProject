@@ -15,5 +15,5 @@ public abstract class UserDAO extends BasicDAO<User> {
 
     public abstract List<User> getWithRoleUser(Connection con, int limit, int offset, String orderBy, String countLessThen, String countBiggerThen, String like) throws DAOException;
 
-    public abstract int getCountWithRoleUser(Connection con) throws DAOException;
+    public abstract int getCountWithRoleUser(Connection con, String countLessThen, String countBiggerThen, String like) throws DAOException;
 }

@@ -16,7 +16,7 @@ public interface UserService {
 
     List<User> getWithRoleUser(int start, int amount, String orderBy, String countLessThen, String countBiggerThen, String searchBy) throws ServiceException;
 
-    int getDefaultUsersCount() throws ServiceException;
+    int getDefaultUsersCount(String countLessThen, String countBiggerThen, String searchBy) throws ServiceException;
 
     void delete(int id) throws ServiceException;
 }

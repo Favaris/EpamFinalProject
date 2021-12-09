@@ -31,11 +31,14 @@ public class PaginationAttributesHandler {
         return instance;
     }
 
-
     public int getPageFromParameters(HttpServletRequest req) {
+        return getPageFromParameters(req, DEFAULT_PAGE_NUMBER);
+    }
+
+    public int getPageFromParameters(HttpServletRequest req, int defaultValue) {
         String paramPage = req.getParameter("page");
         log.debug("retrieved a 'page' parameter: '{}'", paramPage);
-        int page = DEFAULT_PAGE_NUMBER;
+        int page = defaultValue;
         if (paramPage != null) {
             page = Integer.parseInt(paramPage);
         }
@@ -43,15 +46,19 @@ public class PaginationAttributesHandler {
         return page;
     }
 
-    public int getPageSizeFromParameters(HttpServletRequest req) {
+    public int getPageSizeFromParameters(HttpServletRequest req, int defaultValue) {
         String paramPageSize = req.getParameter("pageSize");
         log.debug("retrieved a 'pageSize' parameter: '{}'", paramPageSize);
-        int pageSize = DEFAULT_PAGE_SIZE;
+        int pageSize = defaultValue;
         if (paramPageSize != null) {
             pageSize = Integer.parseInt(paramPageSize);
         }
         log.debug("returned a page number: {}", pageSize);
         return pageSize;
+    }
+
+    public int getPageSizeFromParameters(HttpServletRequest req) {
+        return getPageSizeFromParameters(req, DEFAULT_PAGE_SIZE);
     }
 
     public String getOrderByFromParameters(HttpServletRequest req) {
@@ -134,6 +141,8 @@ public class PaginationAttributesHandler {
      * </pre>
      */
     public void setPaginationParametersAsRequestAttributes(HttpServletRequest req, int entitiesCount, int pageSize, int page, String orderBy, String[] filterBy) {
+        req.setAttribute("pageSize", pageSize);
+        log.debug("set a 'pageSize' attribute: '{}'", pageSize);
         int pageCount = entitiesCount / pageSize;
         pageCount += entitiesCount % pageSize == 0 ? 0 : 1;
         req.setAttribute("pageCount" , pageCount);
