@@ -3,6 +3,7 @@ package com.prusan.finalproject.web.command.activity;
 import com.prusan.finalproject.db.entity.Activity;
 import com.prusan.finalproject.db.entity.Category;
 import com.prusan.finalproject.db.service.ActivityService;
+import com.prusan.finalproject.db.service.exception.NameIsTakenException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
@@ -36,16 +37,19 @@ public class UpdateActivityCommand implements Command {
         int catId = Integer.parseInt(req.getParameter("cId"));
         log.debug("received a category id: {}", catId);
 
+        Activity activity = Activity.createWithoutUsersCount(activityId, name, desc, new Category(catId));
+        log.debug("created an activity instance {}", activity);
+
         if (!doValidation(req, name, desc)) {
             log.debug("input is invalid, sending back to activity editing page");
+            req.getSession().setAttribute("invalidActivity", activity);
+            log.debug("set a session attribute 'invalidActivity'");
             return Chain.createRedirect(String.format("controller?command=%s&id=" + activityId, CommandContainer.CommandNames.SHOW_ACTIVITY_EDIT_PAGE));
         }
 
         ServiceFactory sf = ServiceFactory.getInstance();
         ActivityService as = sf.getActivityService();
 
-        Activity activity = Activity.createWithoutUsersCount(activityId, name, desc, new Category(catId));
-        log.debug("created an activity instance {}", activity);
 
         try {
             as.update(activity);
@@ -59,6 +63,11 @@ public class UpdateActivityCommand implements Command {
             log.debug("received a url params string: '{}'", queryString);
 
             return Chain.createRedirect(String.format("controller?command=%s&" + queryString, CommandContainer.CommandNames.SHOW_ACTIVITIES_PAGE));
+        } catch (NameIsTakenException e) {
+              log.error("activity with name {} is already taken", activity.getName(), e);
+              req.getSession().setAttribute("invalidActivity", activity);
+              log.debug("set a session attribute 'invalidActivity'");
+              return Chain.createRedirect(String.format("controller?command=%s&id=" + activityId, CommandContainer.CommandNames.SHOW_ACTIVITY_EDIT_PAGE));
         } catch (ServiceException e) {
             log.error("unable to update an activity {}", activity);
             req.getSession().setAttribute("err_msg", e.getMessage());

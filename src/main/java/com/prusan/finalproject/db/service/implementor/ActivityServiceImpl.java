@@ -61,7 +61,7 @@ public class ActivityServiceImpl implements ActivityService {
             throw new ServiceException("unable to get connection", throwables);
         } catch (DAOException e) {
             log.error("unable to update an activity {}", activity, e);
-            throw new ServiceException("Can not save this activity", e);
+            throw new NameIsTakenException("Activity with name '" + activity.getName() + "' already exists. Please, try another name.", e);
         }
     }
 

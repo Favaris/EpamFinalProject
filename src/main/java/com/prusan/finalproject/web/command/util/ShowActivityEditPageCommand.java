@@ -25,6 +25,7 @@ public class ShowActivityEditPageCommand implements Command {
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
+
         int activityId = Integer.parseInt(req.getParameter("id"));
         log.debug("retrieved an activityId={}", activityId);
 
@@ -34,6 +35,11 @@ public class ShowActivityEditPageCommand implements Command {
         try {
             commandUtils.setAllCategoriesInRequestAttribute(req);
 
+            if (req.getSession().getAttribute("invalidActivity") != null) {
+                log.debug("'invalidActivity' attribute is present, not downloading an activity");
+                return Chain.createForward(Pages.ACTIVITY_EDIT_PAGE_JSP);
+            }
+
             Activity activity = as.getById(activityId);
             log.debug("retrieved an activity {}", activity);
             req.setAttribute("activityToEdit", activity);
@@ -41,11 +47,11 @@ public class ShowActivityEditPageCommand implements Command {
             return Chain.createForward(Pages.ACTIVITY_EDIT_PAGE_JSP);
         } catch (NoSuchActivityException e) {
             log.debug("no such activity with id={}", activityId, e);
-            req.setAttribute("err_msg", "Activity you are looking for does not exist");
+            req.getSession().setAttribute("err_msg", "Activity you are looking for does not exist");
             return Chain.getErrorPageChain();
         } catch (ServiceException e) {
             log.error("can not get an activity by id={}", activityId, e);
-            req.setAttribute("err_msg", e.getMessage());
+            req.getSession().setAttribute("err_msg", e.getMessage());
             return Chain.getErrorPageChain();
         }
     }
