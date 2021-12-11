@@ -37,13 +37,13 @@ public class AddUserCommand implements Command {
 
         HttpSession session = req.getSession();
 
-        if (!SignUpCommand.doValidation(req, login, password, name, surname)) {
+        if (!SignUpCommand.doValidation(session, login, password, name, surname)) {
             session.setAttribute("invalidUser", u);
             log.debug("set a session attribute 'invalidUser': {}", u);
             return Chain.createRedirect(Pages.SIGN_UP_JSP);
         }
 
-        String hashedPass = Encryptor.encodePassword(password);
+        String hashedPass = Encryptor.encrypt(password);
         u.setPassword(hashedPass);
 
         UserService us = ServiceFactory.getInstance().getUserService();

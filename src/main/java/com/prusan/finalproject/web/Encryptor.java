@@ -27,7 +27,7 @@ public abstract class Encryptor {
 
     private Encryptor() {}
 
-    public static String encodePassword(String password) {
+    public static String encrypt(String password) {
         md.update(password.getBytes(StandardCharsets.UTF_8));
         byte[] bytes = md.digest();
         log.debug("got an array of digested bytes");

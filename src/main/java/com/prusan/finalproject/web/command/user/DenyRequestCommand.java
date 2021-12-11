@@ -43,9 +43,10 @@ public class DenyRequestCommand implements Command {
                 uas.update(ua);
                 log.debug("denied abandonment for a user activity {}", ua);
             }
-            String query = handler.getPaginationQueryString(req.getSession());
-            log.debug("received a query string: '{}'", query);
-            return Chain.createRedirect(String.format("controller?command=%s&" + query, CommandContainer.CommandNames.SHOW_USERS_REQUESTS));
+            String referer = req.getHeader("referer");
+            log.debug("retrieved a referer string: '{}'", referer);
+
+            return Chain.createRedirect(referer);
         } catch (NoSuchActivityException e) {
             log.debug("no such user activity with userId={}, activityId={}", userId, activityId);
             req.setAttribute("err_msg", e.getMessage());

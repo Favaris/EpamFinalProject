@@ -45,9 +45,9 @@ public class RequestActivityAdditionCommand implements Command {
             return Chain.getErrorPageChain();
         }
 
-        String queryString = handler.getQueryString(req.getSession(), true, true, true, false);
-        log.debug("received a url params string: '{}'", queryString);
+        String referer = req.getHeader("referer");
+        log.debug("retrieved a referer string: '{}'", referer);
 
-        return Chain.createRedirect(String.format("controller?command=%s&" + queryString, CommandContainer.CommandNames.SHOW_ACTIVITIES_PAGE));
+        return Chain.createRedirect(referer);
     }
 }

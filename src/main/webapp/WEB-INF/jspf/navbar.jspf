@@ -1,54 +1,98 @@
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-        <c:choose>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+        <li class="ml-5 nav-item active">
+            <a class="navbar-btn btn btn-outline-light" href="${root}/jsp/logged/home.jsp">Home</a>
+        </li>
 
+        <c:choose>
             <c:when test="${sessionScope.user.role eq 'user'}">
-                <form action="${root}/jsp/logged/home.jsp">
-                    <button type="submit" class="btn btn-black">Home</button>
-                </form>
-                <form action="${root}/controller">
-                    <input type="hidden" name="command" value="showRunningActivities"/>
-                    <button type="submit" class="btn btn-black">Your activities</button>
-                </form>
-                <form action="${root}/controller">
-                    <input type="hidden" name="command" value="showUsersRequests">
-                    <button type="submit" class="btn btn-black">Your requests</button>
-                </form>
-                <form action="${root}/controller">
-                    <input type="hidden" name="command" value="showActivitiesPage"/>
-                    <input type="hidden" name="page" value="1">
-                    <input type="hidden" name="pageSize" value="5">
-                    <input type="hidden" name="orderBy" value="activityName">
-                    <button type="submit" class="btn btn-black">Add activities</button>
-                </form>
+
+                <li class="ml-5 my-auto nav-item active">
+                    <a class="navbar-btn btn btn-outline-light" href="${root}/controller?command=showRunningActivities">Your activities</a>
+                </li>
+                <li class="ml-5 my-auto nav-item active">
+                    <a class="navbar-btn btn btn-outline-light" href="${root}/controller?command=showUsersRequests">Your requests</a>
+                </li>
+
+                <li class="ml-5 my-auto nav-item active">
+                    <a class="navbar-btn btn btn-outline-light" href="${root}/controller?command=showActivitiesPage">Add activities</a>
+                </li>
             </c:when>
 
             <c:otherwise>
-                <form action="${root}/jsp/logged/home.jsp">
-                    <button type="submit" class="btn btn-black">Home</button>
-                </form>
-                <form action="${root}/controller">
-                    <input type="hidden" name="command" value="showActivitiesPage"/>
-                    <input type="hidden" name="page" value="1">
-                    <input type="hidden" name="pageSize" value="5">
-                    <input type="hidden" name="orderBy" value="activityName">
-                    <button type="submit" class="btn btn-black">Manage activities</button>
-                </form>
-                <form action="${root}/controller">
-                    <input type="hidden" name="command" value="showUsersRequests">
-                    <button type="submit" class="btn btn-black">Users' requests</button>
-                </form>
-                <form action="${root}/controller">
-                    <input type="hidden" name="command" value="showAllUsers"/>
-                    <button type="submit" class="btn btn-black">Show users</button>
-                </form>
+                <li class="ml-5 my-auto nav-item active">
+                    <a class="navbar-btn btn btn-outline-light" href="${root}/controller?command=showActivitiesPage">Manage activities</a>
+                </li>
+
+                <li class="ml-5 my-auto nav-item active">
+                    <a class="navbar-btn btn btn-outline-light" href="${root}/controller?command=showUsersRequests">Users' requests</a>
+                </li>
+
+                <li class="ml-5 my-auto nav-item active">
+                    <a class="navbar-btn btn btn-outline-light" href="${root}/controller?command=showAllUsers">Show users</a>
+                </li>
             </c:otherwise>
         </c:choose>
-
-        <form action="${root}/controller">
-            <input type="hidden" name="command" value="signOut"/>
-            <button type="submit" class="btn btn-black">Sign out</button>
-        </form>
-
-    </div>
+    </ul>
+    <%@ include file="changeLocaleForm.jspf"%>
+    <form action="${root}/controller" class="form-inline my-2 my-lg-0 text-white">
+        <input type="hidden" name="command" value="signOut"/>
+        <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Sign out</button>
+    </form>
+</div>
 </nav>
+
+<%--<nav class="navbar navbar-default navbar-fixed-top">--%>
+<%--    <div class="container">--%>
+<%--        <c:choose>--%>
+<%--            <c:when test="${sessionScope.user.role eq 'user'}">--%>
+<%--                <form action="${root}/jsp/logged/home.jsp">--%>
+<%--                    <button type="submit" class="btn btn-black">Home</button>--%>
+<%--                </form>--%>
+<%--                <form action="${root}/controller">--%>
+<%--                    <input type="hidden" name="command" value="showRunningActivities"/>--%>
+<%--                    <button type="submit" class="btn btn-black">Your activities</button>--%>
+<%--                </form>--%>
+<%--                <form action="${root}/controller">--%>
+<%--                    <input type="hidden" name="command" value="showUsersRequests">--%>
+<%--                    <button type="submit" class="btn btn-black">Your requests</button>--%>
+<%--                </form>--%>
+<%--                <form action="${root}/controller">--%>
+<%--                    <input type="hidden" name="command" value="showActivitiesPage"/>--%>
+<%--                    <input type="hidden" name="page" value="1">--%>
+<%--                    <input type="hidden" name="pageSize" value="5">--%>
+<%--                    <input type="hidden" name="orderBy" value="activityName">--%>
+<%--                    <button type="submit" class="btn btn-black">Add activities</button>--%>
+<%--                </form>--%>
+<%--            </c:when>--%>
+
+<%--            <c:otherwise>--%>
+<%--                <form action="${root}/jsp/logged/home.jsp">--%>
+<%--                    <button type="submit" class="btn btn-black">Home</button>--%>
+<%--                </form>--%>
+<%--                <form action="${root}/controller">--%>
+<%--                    <input type="hidden" name="command" value="showActivitiesPage"/>--%>
+<%--                    <input type="hidden" name="page" value="1">--%>
+<%--                    <input type="hidden" name="pageSize" value="5">--%>
+<%--                    <input type="hidden" name="orderBy" value="activityName">--%>
+<%--                    <button type="submit" class="btn btn-black">Manage activities</button>--%>
+<%--                </form>--%>
+<%--                <form action="${root}/controller">--%>
+<%--                    <input type="hidden" name="command" value="showUsersRequests">--%>
+<%--                    <button type="submit" class="btn btn-black">Users' requests</button>--%>
+<%--                </form>--%>
+<%--                <form action="${root}/controller">--%>
+<%--                    <input type="hidden" name="command" value="showAllUsers"/>--%>
+<%--                    <button type="submit" class="btn btn-black">Show users</button>--%>
+<%--                </form>--%>
+<%--            </c:otherwise>--%>
+<%--        </c:choose>--%>
+
+<%--        <form action="${root}/controller">--%>
+<%--            <input type="hidden" name="command" value="signOut"/>--%>
+<%--            <button type="submit" class="btn btn-black">Sign out</button>--%>
+<%--        </form>--%>
+
+<%--    </div>--%>
+<%--</nav>--%>

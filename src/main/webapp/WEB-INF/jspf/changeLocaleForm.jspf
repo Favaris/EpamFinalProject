@@ -1,0 +1,10 @@
+<%@ include file="/WEB-INF/jspf/taglibs.jspf" %>
+
+<form action="${root}/changeLocale">
+    <select class="form-select my-auto mx-1" name="locale" onchange="this.form.submit()">
+        <c:forEach var="locale" items="${applicationScope.locales}">
+            <c:set var="selected" scope="page" value="${locale.key.equals(sessionScope.get('javax.servlet.jsp.jstl.fmt.locale.session')) ? 'selected' : ''}"/>
+            <option value="${locale.key}" ${selected}>${locale.value}</option>
+        </c:forEach>
+    </select>
+</form>

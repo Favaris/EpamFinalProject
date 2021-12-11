@@ -23,6 +23,7 @@ public class Validator {
     public static final Integer USER_SURNAME = 3; // for convenience, same as USER_NAME
     public static final Integer ACTIVITY_NAME = 4;
     public static final Integer ACTIVITY_DESCRIPTION = 5;
+    public static final Integer CATEGORY_NAME = 4; // for convenience, same as ACTIVITY_NAME
 
     public static synchronized Validator getInstance() {
         if (instance == null) {
@@ -40,7 +41,7 @@ public class Validator {
         // validating pattern for user's name AND surname
         fields.put(USER_NAME, Pattern.compile("([A-Z][a-z]{1,30}|[А-ЯІЇЄЁ][а-яіїєґё]{1,30})"));
         // validating pattern for activity's name
-        fields.put(ACTIVITY_NAME, Pattern.compile("[A-ZА-ЯІЇЄЁa-zа-яіїєґё]{1,30}"));
+        fields.put(ACTIVITY_NAME, Pattern.compile("[A-ZА-ЯІЇЄЁa-zа-яіїєґё ]{1,30}"));
         // validating pattern for activity's description
         fields.put(ACTIVITY_DESCRIPTION, Pattern.compile(".{1,1000}"));
     }

@@ -4,7 +4,7 @@
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
 <s:check role="${sessionScope.user.role}"  permission="admin"/>
 
-<my:html-carcass title="${sessionScope.user.login} - create new user">
+<my:htmlCarcass title="${sessionScope.user.login} - create new user">
     <div class="managing sidenav">
         <div class="login-main-text">
             <button type="button" class="btn btn-black" onclick="location.href='${root}/controller?command=showAllUsers&${sessionScope.paginationQueryString}';">Go back</button>
@@ -77,5 +77,5 @@
             </div>
         </div>
     </div>
-</my:html-carcass>
+</my:htmlCarcass>
 <c:remove var="invalidUser" scope="session"/>

@@ -4,8 +4,10 @@
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
 <s:check role="${sessionScope.user.role}"  permission="admin"/>
 <%@taglib uri="http://com.prusan.finalproject.util" prefix="ut" %>
-<ut:set-pagination-query includeSorting="true" includeSearching="true"/>
-<my:html-carcass title="${sessionScope.user.login} - users list">
+
+<c:set var="backPage" scope="session" value="page=${requestScope.page}&pageSize=${requestScope.pageSize}&orderBy=${requestScope.orderBy}&countLessThen=${requestScope.countLessThen}&countBiggerThen=${requestScope.countBiggerThen}&searchBy=${requestScope.searchBy}"/>
+
+<my:htmlCarcass title="${sessionScope.user.login} - users list">
     <div class="managing sidenav">
         <div class="login-main-text">
             <form action="${root}/controller" method="get">
@@ -65,41 +67,7 @@
     </div>
     </div>
     <div class="tables">
-    <form action="${root}/controller">
-        <input type="hidden" name="command" value="showAllUsers">
-        <input type="hidden" name="page" value="${requestScope.page - 1}">
-        <input type="hidden" name="pageSize" value="5">
-        <input type="hidden" name="orderBy" value="${requestScope.orderBy}">
-        <input type="hidden" name="countLessThen" value="${requestScope.countLessThen}">
-        <input type="hidden" name="countBiggerThen" value="${requestScope.countBiggerThen}">
-        <input type="hidden" name="searchBy" value="${requestScope.searchBy}">
-        <c:choose>
-            <c:when test="${requestScope.page - 1 > 0}">
-                <button type="submit" class="btn btn-black">Prev</button>
-            </c:when>
-            <c:otherwise>
-                <button type="submit" class="btn btn-black" disabled>Prev</button>
-            </c:otherwise>
-        </c:choose>
-    </form>
-    <form action="${root}/controller">
-        <input type="hidden" name="command" value="showAllUsers">
-        <input type="hidden" name="page" value="${requestScope.page + 1}">
-        <input type="hidden" name="pageSize" value="5">
-        <input type="hidden" name="orderBy" value="${requestScope.orderBy}">
-        <input type="hidden" name="countLessThen" value="${requestScope.countLessThen}">
-        <input type="hidden" name="countBiggerThen" value="${requestScope.countBiggerThen}">
-        <input type="hidden" name="searchBy" value="${requestScope.searchBy}">
-        <c:choose>
-            <c:when test="${requestScope.page < requestScope.pageCount}">
-                <button type="submit" class="btn btn-black">Next</button>
-            </c:when>
-            <c:otherwise>
-                <button type="submit" class="btn btn-black" disabled>Next</button>
-            </c:otherwise>
-        </c:choose>
-    </form>
-
+        <my:paginationNavigation command="showAllUsers"/>
     <table class="table">
         <thead>
         <tr>
@@ -136,4 +104,4 @@
         </tbody>
     </table>
     </div>
-</my:html-carcass>
+</my:htmlCarcass>

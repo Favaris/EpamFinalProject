@@ -3,9 +3,8 @@
 <%@taglib tagdir="/WEB-INF/tags/html" prefix="my"%>
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
 <%@taglib uri="http://com.prusan.finalproject.util" prefix="ut" %>
-<ut:set-pagination-query includeSorting="true" includeFiltering="true"/>
 <s:check role="${sessionScope.user.role}"  permission="admin"/>
-<my:html-carcass title="${sessionScope.user.login} - manage user's activities">
+<my:htmlCarcass title="${sessionScope.user.login} - manage user's activities">
     <div class="managing sidenav">
         <div class="login-main-text">
             <div class="sorting-panel container">
@@ -94,56 +93,7 @@
             <button type="submit" class="btn btn-black">Add new activities</button>
         </form>
         <br>
-        <form action="${root}/controller">
-            <input type="hidden" name="command" value="manageUsersActivities">
-            <input type="hidden" name="uId" value="${requestScope.uId}">
-            <input type="hidden" name="page" value="${requestScope.page - 1}">
-            <input type="hidden" name="pageSize" value="5">
-            <c:choose>
-                <c:when test="${empty requestScope.orderBy}">
-                    <input type="hidden" name="orderBy" value="activityName">
-                </c:when>
-                <c:otherwise>
-                    <input type="hidden" name="orderBy" value="${requestScope.orderBy}">
-                </c:otherwise>
-            </c:choose>
-            <c:choose>
-                <c:when test="${requestScope.page - 1 > 0}">
-                    <button type="submit" class="btn btn-black">Prev</button>
-                </c:when>
-                <c:otherwise>
-                    <button type="submit" class="btn btn-black" disabled>Prev</button>
-                </c:otherwise>
-            </c:choose>
-            <c:forEach var="catId" items="${requestScope.filterBy}">
-                <input type="hidden" name="filterBy" value="${catId}">
-            </c:forEach>
-        </form>
-        <form action="${root}/controller">
-            <input type="hidden" name="command" value="manageUsersActivities">
-            <input type="hidden" name="uId" value="${requestScope.uId}">
-            <input type="hidden" name="page" value="${requestScope.page + 1}">
-            <input type="hidden" name="pageSize" value="5">
-            <c:choose>
-                <c:when test="${empty requestScope.orderBy}">
-                    <input type="hidden" name="orderBy" value="activityName">
-                </c:when>
-                <c:otherwise>
-                    <input type="hidden" name="orderBy" value="${requestScope.orderBy}">
-                </c:otherwise>
-            </c:choose>
-            <c:choose>
-                <c:when test="${requestScope.page < requestScope.pageCount}">
-                    <button type="submit" class="btn btn-black">Next</button>
-                </c:when>
-                <c:otherwise>
-                    <button type="submit" class="btn btn-black" disabled>Next</button>
-                </c:otherwise>
-            </c:choose>
-            <c:forEach var="catId" items="${requestScope.filterBy}">
-                <input type="hidden" name="filterBy" value="${catId}">
-            </c:forEach>
-        </form>
+        <my:paginationNavigation command="manageUsersActivities"/>
         <table class="table">
             <thead>
             <tr>
@@ -199,4 +149,4 @@
             </tbody>
         </table>
     </div>
-</my:html-carcass>
+</my:htmlCarcass>

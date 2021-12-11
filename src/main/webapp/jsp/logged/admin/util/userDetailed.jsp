@@ -4,10 +4,10 @@
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
 <%@taglib uri="http://com.prusan.finalproject.util" prefix="ut" %>
 <s:check role="${sessionScope.user.role}"  permission="admin"/>
-<my:html-carcass title="${sessionScope.user.login} - ${requestScope.userToShow.login}'s detailed info">
+<my:htmlCarcass title="${sessionScope.user.login} - ${requestScope.userToShow.login}'s detailed info">
     <div class="managing sidenav">
         <div class="login-main-text">
-            <button type="button" class="btn btn-black" onclick="location.href='${root}/controller?command=showAllUsers&${sessionScope.paginationQueryString}&${sessionScope.sortingQueryString}&${sessionScope.searchingQueryString}';">Go back</button>
+            <button type="button" class="btn btn-black" onclick="location.href='${root}/controller?command=showAllUsers&${sessionScope.backPage}';">Go back</button>
         </div>
     </div>
     <div class="container">
@@ -96,4 +96,4 @@
             <button type="submit" class="btn btn-black">Manage ${requestScope.userToShow.login}'s activities</button>
         </form>
     </div>
-</my:html-carcass>
+</my:htmlCarcass>

@@ -2,15 +2,7 @@ body {
     font-family: "Lato", sans-serif;
 }
 
-
-
-.main-head{
-    height: 150px;
-    background: #FFF;
-
-}
-
-.sidenav {
+.login-sidenav {
     height: 100%;
     background-color: #000;
     overflow-x: hidden;
@@ -22,34 +14,35 @@ body {
     padding: 0px 10px;
 }
 
-@media screen and (min-width: 768px){
-    .main{
-        margin-left: 40%;
-    }
+.main{
+    margin-left: 40%;
+}
 
-    .tables {
-        margin-left: 20% !important;
-    }
+.tables {
+    margin-left: 20% !important;
+}
 
-    .sidenav{
-        width: 40%;
-        position: fixed;
-        z-index: 1;
-        top: 0;
-        left: 0;
-    }
+.sidenav{
+    width: 40%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+}
 
-    .managing {
-        width: 20%;
-    }
+.managing {
+    border-width: 1px;
+    width: 20%;
+    background-color: #f1f1f1;
+    height: 100%;
+}
 
-    .login-form{
-        margin-top: 50%;
-    }
+.login-form{
+    margin-top: 50%;
+}
 
-    .register-form{
-        margin-top: 20%;
-    }
+.register-form{
+    margin-top: 20%;
 }
 
 
@@ -68,32 +61,33 @@ body {
     color: #fff;
 }
 
+.bg-dark {
+    background-color: #000 !important;
+}
+
 /* Navigation Bar */
 .navbar{
-    padding: 30px 10px 20px 0px;
-    background-color: #000 !important;
-    transition: all ease 0.4s;
     z-index: 999;
-}
-.navbar-brand{
-    font-size: 22px;
-    color: white !important;
-}
-.navbar .navbar-nav li a{
-    font-size: 16px;
-    color: white;
+    height: 80px;
 }
 
-/* Animation */
-.animate{
-    padding: 0px 10px 0px 0px;
-    transition: all ease 0.4s;
+.navbar-btn {
+    /*border-width: 0;*/
+    border-color: black;
+    padding: 27px 30px;
+    border-radius: 0;
+    height: 100%;
 }
 
-/* Jumbotron */
-.jumbotron{
-    margin-top: 110px;
-}
+/*.navbar-brand{*/
+/*    font-size: 22px;*/
+/*    color: white !important;*/
+/*}*/
+/*.navbar .navbar-nav li a{*/
+/*    font-size: 16px;*/
+/*    color: white;*/
+/*}*/
+
 
 .valid {
     border-bottom: 2px solid #00c851;
@@ -108,10 +102,14 @@ body {
 }
 
 .sorting-panel {
-    background-color: #FFFFFF;
+    background-color: #f1f1f1;
     color: black;
 }
 
 div form {
     display: inline-block;
+}
+
+.btn-group {
+    align-self: center;
 }

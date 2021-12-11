@@ -43,8 +43,9 @@ public class RequestActivityAbandonmentCommand implements Command {
             return Chain.getErrorPageChain();
         }
 
-        String query = handler.getQueryString(req.getSession(), true, true, true, false);
-        log.debug("received a query string: '{}'", query);
-        return Chain.createRedirect(String.format("controller?command=%s&" + query, CommandContainer.CommandNames.SHOW_RUNNING_ACTIVITIES));
+        String referer = req.getHeader("referer");
+        log.debug("retrieved a referer string: '{}'", referer);
+
+        return Chain.createRedirect(referer);
     }
 }

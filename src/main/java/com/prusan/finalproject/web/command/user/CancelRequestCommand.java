@@ -43,9 +43,10 @@ public class CancelRequestCommand implements Command {
                 uas.delete(userId, activityId);
                 log.debug("removed user activity {} from requested for acceptance", ua);
             }
-            String query = handler.getPaginationQueryString(req.getSession());
-            log.debug("received a query string: '{}'", query);
-            return Chain.createRedirect(String.format("controller?command=%s&" + query, CommandContainer.CommandNames.SHOW_USERS_REQUESTS));
+            String referer = req.getHeader("referer");
+            log.debug("retrieved a referer string: '{}'", referer);
+
+            return Chain.createRedirect(referer);
         } catch (NoSuchActivityException ex) {
             log.debug("unable to find a user activity by userId={} and activityId={}", userId, activityId);
             req.getSession().setAttribute("err_msg", ex.getMessage());

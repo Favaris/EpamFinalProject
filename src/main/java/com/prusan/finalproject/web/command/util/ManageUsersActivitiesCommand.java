@@ -40,6 +40,12 @@ public class ManageUsersActivitiesCommand implements Command {
 
             List<UserActivity> userActivities = uas.getAcceptedForUser(userId, pageSize * (page - 1), pageSize * page, orderBy, filterBy);
             log.debug("received a list of all accepted activities for user with id={}", userId);
+            if (userActivities.isEmpty() && page > 1) {
+                log.debug("a list of activities is empty when page={}, reducing the page value and reloading the list", page);
+                --page;
+                userActivities = uas.getAcceptedForUser(userId, pageSize * (page - 1), pageSize * page, orderBy, filterBy);
+                log.debug("received a list of all accepted activities for user with id={}", userId);
+            }
 
             int entitiesCount = uas.getActivitiesCountForUser(userId, filterBy);
             log.debug("received amount of activities for user with id = {}, amount = {}", userId, entitiesCount);

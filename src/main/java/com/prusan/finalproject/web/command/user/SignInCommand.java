@@ -32,7 +32,7 @@ public class SignInCommand implements Command {
             return Chain.createRedirect(Pages.SIGN_IN_JSP);
         }
 
-        String hashedPass = Encryptor.encodePassword(password);
+        String hashedPass = Encryptor.encrypt(password);
 
         UserService us = ServiceFactory.getInstance().getUserService();
         try {

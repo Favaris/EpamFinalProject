@@ -4,34 +4,11 @@
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
 <%@taglib uri="http://com.prusan.finalproject.util" prefix="ut" %>
 <s:check role="${sessionScope.user.role}"  permission="logged"/>
-<ut:set-pagination-query/>
-<my:html-carcass title="${sessionScope.user.login} - requests">
-    <form action="${root}/controller">
-        <input type="hidden" name="command" value="showUsersRequests">
-        <input type="hidden" name="page" value="${requestScope.page - 1}">
-        <input type="hidden" name="pageSize" value="5">
-        <c:choose>
-            <c:when test="${requestScope.page - 1 > 0}">
-                <button type="submit" class="btn btn-black">Prev</button>
-            </c:when>
-            <c:otherwise>
-                <button type="submit" class="btn btn-black" disabled>Prev</button>
-            </c:otherwise>
-        </c:choose>
-    </form>
-    <form action="${root}/controller">
-        <input type="hidden" name="command" value="showUsersRequests">
-        <input type="hidden" name="page" value="${requestScope.page + 1}">
-        <input type="hidden" name="pageSize" value="5">
-        <c:choose>
-            <c:when test="${requestScope.page < requestScope.pageCount}">
-                <button type="submit" class="btn btn-black">Next</button>
-            </c:when>
-            <c:otherwise>
-                <button type="submit" class="btn btn-black" disabled>Next</button>
-            </c:otherwise>
-        </c:choose>
-    </form>
+<my:htmlCarcass title="${sessionScope.user.login} - requests">
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+    <my:paginationNavigation command="showUsersRequests"/>
     <table class="table">
         <thead>
         <tr>
@@ -93,4 +70,8 @@
         </c:forEach>
         </tbody>
     </table>
-</my:html-carcass>
+        </div>
+        <div class="col-1"></div>
+
+    </div>
+</my:htmlCarcass>

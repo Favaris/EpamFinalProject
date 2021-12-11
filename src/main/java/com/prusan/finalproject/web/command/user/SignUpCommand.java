@@ -2,7 +2,6 @@ package com.prusan.finalproject.web.command.user;
 
 import com.prusan.finalproject.web.Encryptor;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.constant.ValidationErrorsFlags;
 import com.prusan.finalproject.db.entity.User;
 import com.prusan.finalproject.db.service.UserService;
 import com.prusan.finalproject.db.service.exception.LoginIsTakenException;
@@ -17,6 +16,8 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SignUpCommand implements Command {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
@@ -30,12 +31,14 @@ public class SignUpCommand implements Command {
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
 
-        if (!doValidation(req, login, password, name, surname)) {
-            req.getSession().setAttribute("invalidUser", User.createDefaultUserWithoutId(login, password, name, surname));
+        HttpSession s = req.getSession();
+
+        if (!doValidation(s, login, password, name, surname)) {
+            s.setAttribute("invalidUser", User.createDefaultUserWithoutId(login, password, name, surname));
             return Chain.createForward(Pages.SIGN_UP_JSP);
         }
 
-        String hashedPass = Encryptor.encodePassword(password);
+        String hashedPass = Encryptor.encrypt(password);
 
         User u = User.createDefaultUserWithoutId(login, hashedPass, name, surname);
         log.debug("created a user instance: {}", u);
@@ -43,7 +46,6 @@ public class SignUpCommand implements Command {
         UserService us = ServiceFactory.getInstance().getUserService();
         try {
             us.save(u);
-            HttpSession s = req.getSession();
             s.setAttribute("user", u);
             return Chain.createRedirect(Pages.HOME_JSP);
         } catch (LoginIsTakenException ex) {
@@ -59,27 +61,33 @@ public class SignUpCommand implements Command {
         }
     }
 
-    public static boolean doValidation(HttpServletRequest req, String login, String password, String name, String surname) {
+    public static boolean doValidation(HttpSession s, String login, String password, String name, String surname) {
         boolean isValid = true;
-        HttpSession session = req.getSession();
+        List<String> invalidFields = new ArrayList<>();
         if (!validator.validate(Validator.USER_LOGIN, login)) {
-            session.setAttribute(ValidationErrorsFlags.LOGIN_ERROR_MESSAGE, "");
+            invalidFields.add("login");
             isValid = false;
         }
 
         if (!validator.validate(Validator.USER_PASSWORD, password)) {
-            session.setAttribute(ValidationErrorsFlags.PASSWORD_ERROR_MESSAGE, "");
+            invalidFields.add("password");
             isValid = false;
         }
 
         if (!name.isEmpty() && !validator.validate(Validator.USER_NAME, name)) {
-            session.setAttribute(ValidationErrorsFlags.USER_NAME_ERROR_MESSAGE, "");
+            invalidFields.add("name");
             isValid = false;
         }
 
         if (!surname.isEmpty() && !validator.validate(Validator.USER_SURNAME, surname)) {
-            session.setAttribute(ValidationErrorsFlags.USER_SURNAME_ERROR_MESSAGE, "");
+            invalidFields.add("surname");
             isValid = false;
+        }
+
+        if (!isValid) {
+            String fields = String.join(", ", invalidFields.toArray(new String[] {}));
+            s.setAttribute("invalidFields", fields);
+            log.debug("set up a session attribute 'invalidFields': '{}'", fields);
         }
 
         return isValid;

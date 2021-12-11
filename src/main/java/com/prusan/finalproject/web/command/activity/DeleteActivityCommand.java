@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class DeleteActivityCommand implements Command {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
-    private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -27,9 +26,10 @@ public class DeleteActivityCommand implements Command {
             as.delete(activityId);
             log.debug("deleted an activity with id={}", activityId);
 
-            String queryString = handler.getQueryString(req.getSession(), true, true, true, false);
+            String referer = req.getHeader("referer");
+            log.debug("retrieved a referer string: '{}'", referer);
 
-            return Chain.createRedirect(String.format("controller?command=%s&" + queryString, CommandContainer.CommandNames.SHOW_ACTIVITIES_PAGE));
+            return Chain.createRedirect(referer);
         } catch (ServiceException e) {
             log.error("unable to delete an activity by id={}", activityId, e);
             req.getSession().setAttribute("err_msg", "Can not delete this activity");

@@ -10,14 +10,14 @@ import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.Validator;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.command.CommandContainer;
-import com.prusan.finalproject.web.constant.ValidationErrorsFlags;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Add a new activity. Has validation for all fields.
@@ -25,7 +25,6 @@ import javax.servlet.http.HttpSession;
 public class AddActivityCommand implements Command {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
     private static final Validator validator = Validator.getInstance();
-    private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -37,12 +36,16 @@ public class AddActivityCommand implements Command {
         log.debug("retrieved a category id: {}", catId);
 
         HttpSession session = req.getSession();
-        if (!doValidation(req, name, desc)) {
-            Activity activity =  Activity.createWithoutIdAndUsersCount(name, desc, new Category(catId));
-            session.setAttribute("invalidActivity", activity);
-            log.debug("set a session attribute 'invalidActivity' ==> '{}'", activity);
 
-            return Chain.createRedirect(String.format("controller?command=%s", CommandContainer.CommandNames.SHOW_ACTIVITY_ADD_PAGE));
+        String referer = req.getHeader("referer");
+        log.debug("retrieved a referer string: '{}'", referer);
+
+        if (!doValidation(session, name, desc)) {
+            Activity activity =  Activity.createWithoutIdAndUsersCount(name, desc, new Category(catId));
+            session.setAttribute("invalidAddActivity", activity);
+            log.debug("set a session attribute 'invalidAddActivity' ==> '{}'", activity);
+
+            return Chain.createRedirect(referer);
         }
 
         log.debug("all fields are valid");
@@ -56,15 +59,14 @@ public class AddActivityCommand implements Command {
             session.removeAttribute("categories");
             session.removeAttribute("invalidActivity");
 
-            String queryString = handler.getQueryString(session, true, true, true, false);
-            log.debug("received a query string: '{}'", queryString);
-
-            return Chain.createRedirect(String.format("controller?command=%s&" + queryString, CommandContainer.CommandNames.SHOW_ACTIVITIES_PAGE));
+            return Chain.createRedirect(referer);
         } catch (NameIsTakenException ex) {
             log.debug("unable to add new activity {}, such activity already exists", ac);
-            session.setAttribute("invalidActivity", ac);
-            session.setAttribute("err_msg", ex.getMessage());
-            return Chain.createRedirect("controller?command=showActivityAddPage");
+            session.setAttribute("activityAddErrMsg", ex.getMessage());
+            session.setAttribute("invalidAddActivity", ac);
+            log.debug("set a session attribute 'invalidAddActivity' ==> '{}'", ac);
+
+            return Chain.createRedirect(referer);
         } catch (ServiceException e) {
             log.error("error while trying to add new activity {}", ac, e);
             session.setAttribute("err_msg", e.getMessage());
@@ -72,21 +74,26 @@ public class AddActivityCommand implements Command {
         }
     }
 
-    public static boolean doValidation(HttpServletRequest req, String name, String desc) {
+    public static boolean doValidation(HttpSession session, String name, String desc) {
         boolean isValid = true;
-        HttpSession session = req.getSession();
+        List<String> invalidFields = new ArrayList<>();
 
         if (!validator.validate(Validator.ACTIVITY_NAME, name)) {
-            session.setAttribute(ValidationErrorsFlags.ACTIVITY_NAME_ERROR_MESSAGE, "");
-            log.debug("activity name is invalid, set a flag for corresponding error message as a session attribute '{}'", ValidationErrorsFlags.ACTIVITY_NAME_ERROR_MESSAGE);
+            invalidFields.add("name");
             isValid = false;
         }
 
         if (!validator.validate(Validator.ACTIVITY_DESCRIPTION, desc)) {
-            session.setAttribute(ValidationErrorsFlags.ACTIVITY_DESC_ERROR_MESSAGE, "");
-            log.debug("activity description is invalid, set a flag for corresponding error message as a session attribute '{}'", ValidationErrorsFlags.ACTIVITY_DESC_ERROR_MESSAGE);
+            invalidFields.add("description");
             isValid = false;
         }
+
+        if (!isValid) {
+            String fields = String.join(", ", invalidFields.toArray(new String[] {}));
+            session.setAttribute("invalidFields", fields);
+            log.debug("set up a session attribute 'invalidFields': '{}'", fields);
+        }
+
 
         return isValid;
     }

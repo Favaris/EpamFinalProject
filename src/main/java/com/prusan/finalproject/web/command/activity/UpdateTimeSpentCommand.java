@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class UpdateTimeSpentCommand implements Command {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
-    private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -50,10 +49,10 @@ public class UpdateTimeSpentCommand implements Command {
             uas.update(ua);
             log.debug("added {} minutes to time count on user activity {}", additionalMinutes, ua);
 
-            String queryString = handler.getQueryString(req.getSession(), true, true, true, false);
-            log.debug("received a query string: '{}'", queryString);
+            String referer = req.getHeader("referer");
+            log.debug("retrieved a referer string: '{}'", referer);
 
-            return Chain.createRedirect(String.format("controller?command=%s&" + queryString, CommandContainer.CommandNames.SHOW_RUNNING_ACTIVITIES));
+            return Chain.createRedirect(referer);
         } catch (NoSuchActivityException ex) {
             log.error("no such activity with userId={} and activityId={}", userId, activityId, ex);
             req.getSession().setAttribute("err_msg", ex.getMessage());

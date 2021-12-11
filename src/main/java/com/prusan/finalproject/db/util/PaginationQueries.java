@@ -31,10 +31,10 @@ public abstract class PaginationQueries {
                 "WHERE a_id NOT IN (SELECT ua_activity_id FROM users_m2m_activities WHERE ua_user_id = ?) AND c_id = activities.a_category_id AND a_category_id IN (%s) ORDER BY %s DESC LIMIT ? OFFSET ?");
 
         queries.put("userActivityAll", "SELECT * FROM activities " +
-                "JOIN users_m2m_activities ON a_id = ua_activity_id AND ua_accepted = true AND ua_user_id = ? " +
+                "JOIN users_m2m_activities ON a_id = ua_activity_id AND ua_accepted = true AND ua_requested_abandon = false AND ua_user_id = ? " +
                 "JOIN categories ON c_id = a_category_id ORDER BY %s DESC LIMIT ? OFFSET ?");
         queries.put("userActivity", "SELECT * FROM activities " +
-                "JOIN users_m2m_activities ON a_id = ua_activity_id AND ua_accepted = true AND ua_user_id = ? " +
+                "JOIN users_m2m_activities ON a_id = ua_activity_id AND ua_accepted = true AND ua_requested_abandon = false AND ua_user_id = ? " +
                 "JOIN categories ON c_id = a_category_id AND c_id IN (%s) ORDER BY %s DESC LIMIT ? OFFSET ?");
 
         queries.put("users", "SELECT * FROM users " +

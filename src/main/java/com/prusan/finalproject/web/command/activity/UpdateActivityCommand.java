@@ -24,7 +24,6 @@ import static com.prusan.finalproject.web.command.activity.AddActivityCommand.do
  */
 public class UpdateActivityCommand implements Command {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
-    private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -37,14 +36,19 @@ public class UpdateActivityCommand implements Command {
         int catId = Integer.parseInt(req.getParameter("cId"));
         log.debug("received a category id: {}", catId);
 
+        String referer = req.getHeader("referer");
+        log.debug("retrieved a referer string: '{}'", referer);
+
         Activity activity = Activity.createWithoutUsersCount(activityId, name, desc, new Category(catId));
         log.debug("created an activity instance {}", activity);
 
-        if (!doValidation(req, name, desc)) {
+        HttpSession session = req.getSession();
+        if (!doValidation(session, name, desc)) {
             log.debug("input is invalid, sending back to activity editing page");
-            req.getSession().setAttribute("invalidActivity", activity);
-            log.debug("set a session attribute 'invalidActivity'");
-            return Chain.createRedirect(String.format("controller?command=%s&id=" + activityId, CommandContainer.CommandNames.SHOW_ACTIVITY_EDIT_PAGE));
+            session.setAttribute("invalidEditActivity", activity);
+            log.debug("set a session attribute 'invalidEditActivity'");
+
+            return Chain.createRedirect(referer);
         }
 
         ServiceFactory sf = ServiceFactory.getInstance();
@@ -54,23 +58,19 @@ public class UpdateActivityCommand implements Command {
         try {
             as.update(activity);
             log.debug("successfully updated an activity {}", activity);
-            HttpSession s = req.getSession();
-            s.removeAttribute("activityToEdit");
-            s.removeAttribute("categories");
             log.debug("removed activity specific attributes from a session");
 
-            String queryString = handler.getQueryString(s, true, true, true, false);
-            log.debug("received a url params string: '{}'", queryString);
-
-            return Chain.createRedirect(String.format("controller?command=%s&" + queryString, CommandContainer.CommandNames.SHOW_ACTIVITIES_PAGE));
+            return Chain.createRedirect(referer);
         } catch (NameIsTakenException e) {
-              log.error("activity with name {} is already taken", activity.getName(), e);
-              req.getSession().setAttribute("invalidActivity", activity);
-              log.debug("set a session attribute 'invalidActivity'");
-              return Chain.createRedirect(String.format("controller?command=%s&id=" + activityId, CommandContainer.CommandNames.SHOW_ACTIVITY_EDIT_PAGE));
+            log.error("activity with name {} is already taken", activity.getName(), e);
+            session.setAttribute("invalidEditActivity", activity);
+            session.setAttribute("activityEditErrMsg", e.getMessage());
+            log.debug("set a session attribute 'invalidEditActivity'");
+
+            return Chain.createRedirect(referer);
         } catch (ServiceException e) {
             log.error("unable to update an activity {}", activity);
-            req.getSession().setAttribute("err_msg", e.getMessage());
+            session.setAttribute("err_msg", e.getMessage());
             return Chain.getErrorPageChain();
         }
     }

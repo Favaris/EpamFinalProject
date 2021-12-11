@@ -34,6 +34,10 @@ public class ShowRunningActivitiesCommand implements Command {
 
         User u = (User) req.getSession().getAttribute("user");
         log.debug("retrieved a user from the session: {}", u);
+        if (u == null) {
+            log.warn("user instance was null, sending him to sign in page");
+            return Chain.createForward(Pages.SIGN_IN_JSP);
+        }
 
         UserActivityService uas = ServiceFactory.getInstance().getUserActivityService();
         try {

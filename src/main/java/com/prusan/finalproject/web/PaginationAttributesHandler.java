@@ -39,7 +39,7 @@ public class PaginationAttributesHandler {
         String paramPage = req.getParameter("page");
         log.debug("retrieved a 'page' parameter: '{}'", paramPage);
         int page = defaultValue;
-        if (paramPage != null) {
+        if (paramPage != null && !paramPage.isEmpty()) {
             page = Integer.parseInt(paramPage);
         }
         log.debug("returned a page number: {}", page);
@@ -50,7 +50,7 @@ public class PaginationAttributesHandler {
         String paramPageSize = req.getParameter("pageSize");
         log.debug("retrieved a 'pageSize' parameter: '{}'", paramPageSize);
         int pageSize = defaultValue;
-        if (paramPageSize != null) {
+        if (paramPageSize != null && !paramPageSize.isEmpty()) {
             pageSize = Integer.parseInt(paramPageSize);
         }
         log.debug("returned a page number: {}", pageSize);
@@ -68,7 +68,7 @@ public class PaginationAttributesHandler {
     public String getOrderByFromParameters(HttpServletRequest req, String defaultRule) {
         String orderBy = req.getParameter("orderBy");
         log.debug("retrieved an 'orderBy' parameter: '{}'", orderBy);
-        if (orderBy == null) {
+        if (orderBy == null || orderBy.isEmpty()) {
             orderBy = defaultRule;
             log.debug("set default value to orderBy: '{}'", orderBy);
         }
@@ -159,66 +159,4 @@ public class PaginationAttributesHandler {
         }
     }
 
-    public String getSearchingQueryString(HttpSession session) {
-        String queryString = (String) session.getAttribute("searchingQueryString");
-        log.debug("retrieved a 'searchingQueryString' attribute: '{}'", queryString);
-        if (queryString == null) {
-            queryString = String.format("countLessThen=%s&countBiggerThen=%s&searchBy=%s", DEFAULT_LESS_THEN, DEFAULT_BIGGER_THEN, DEFAULT_SEARCH_BY);
-            log.debug("query string attribute was null, set default value: '{}'", queryString);
-        }
-        return queryString;
-    }
-
-    public String getFilteringQueryString(HttpSession session) {
-        String queryString = (String) session.getAttribute("filteringQueryString");
-        log.debug("retrieved a 'filteringQueryString' attribute: '{}'", queryString);
-        if (queryString == null) {
-            queryString = String.format("filterBy=%s", String.join("&filterBy=", DEFAULT_FILTERING_PARAMETERS));
-            log.debug("query string attribute was null, set default value: '{}'", queryString);
-        }
-        return queryString;
-    }
-
-    /**
-     * Retrieves a session attribute 'paginationQueryString' and returns it. If the attribute is missing, returns query string with the default parameters' values.
-     * @return session.getAttribute("paginationQueryString") or the default query string if this parameter is missing.
-     */
-    public String getSortingQueryString(HttpSession session) {
-        String queryString = (String) session.getAttribute("sortingQueryString");
-        log.debug("retrieved a 'sortingQueryString' attribute: '{}'", queryString);
-        if (queryString == null) {
-            queryString = String.format("orderBy=%s", DEFAULT_ORDERING_RULE);
-            log.debug("query string attribute was null, set default value: '{}'", queryString);
-        }
-        return queryString;
-    }
-
-    public String getPaginationQueryString(HttpSession session) {
-        String queryString = (String) session.getAttribute("paginationQueryString");
-        log.debug("retrieved a 'paginationQueryString' attribute: '{}'", queryString);
-        if (queryString == null) {
-            queryString = String.format("page=%d&pageSize=%d", DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
-            log.debug("query string attribute was null, set default value: '{}'", queryString);
-        }
-        return queryString;
-    }
-
-    public String getQueryString(HttpSession session, boolean includePagination, boolean includeSorting, boolean includeFiltering, boolean includeSearching) {
-        StringBuilder builder = new StringBuilder();
-        if (includePagination) {
-            builder.append(getPaginationQueryString(session)).append("&");
-        }
-        if (includeSorting) {
-            builder.append(getSortingQueryString(session)).append("&");
-        }
-        if (includeFiltering) {
-            builder.append(getFilteringQueryString(session)).append("&");
-        }
-        if (includeSearching) {
-            builder.append(getSearchingQueryString(session)).append("&");
-        }
-        String query = builder.toString();
-        log.debug("generated a query string: '{}'", query);
-        return query;
-    }
 }

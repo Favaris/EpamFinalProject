@@ -4,8 +4,23 @@
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
 <%@taglib uri="http://com.prusan.finalproject.util" prefix="ut" %>
 <s:check role="${sessionScope.user.role}"  permission="admin"/>
-<ut:set-pagination-query/>
-<my:html-carcass title="${sessionScope.user.login} - manage categories">
+<my:htmlCarcass title="${sessionScope.user.login} - manage categories">
+
+    <c:if test="${sessionScope.invalidAddCategory != null}">
+        <script>
+            $(window).on('load',function() {
+                $('#createNewCategoryAction').modal('show');
+            });
+        </script>
+    </c:if>
+    <c:if test="${sessionScope.invalidEditCategory != null}">
+        <script>
+            $(window).on('load',function() {
+                $('#editCategoryModal${sessionScope.invalidEditCategory.id}').modal('show');
+            });
+        </script>
+    </c:if>
+
     <div class="managing sidenav">
         <div class="login-main-text">
             <form>
@@ -21,36 +36,8 @@
         </div>
     </div>
     <div class="tables">
-    <c:if test="${not empty sessionScope.err_msg}">
-        ${sessionScope.err_msg}<br>
-        <c:remove var="err_msg" scope="session"/>
-    </c:if>
-        <form action="${root}/controller">
-            <input type="hidden" name="command" value="showCategoriesPage">
-            <input type="hidden" name="page" value="${requestScope.page - 1}">
-            <input type="hidden" name="pageSize" value="5">
-            <c:choose>
-                <c:when test="${requestScope.page - 1 > 0}">
-                    <button type="submit" class="btn btn-black">Prev</button>
-                </c:when>
-                <c:otherwise>
-                    <button type="submit" class="btn btn-black" disabled>Prev</button>
-                </c:otherwise>
-            </c:choose>
-        </form>
-        <form action="${root}/controller">
-            <input type="hidden" name="command" value="showCategoriesPage">
-            <input type="hidden" name="page" value="${requestScope.page + 1}">
-            <input type="hidden" name="pageSize" value="5">
-            <c:choose>
-                <c:when test="${requestScope.page < requestScope.pageCount}">
-                    <button type="submit" class="btn btn-black">Next</button>
-                </c:when>
-                <c:otherwise>
-                    <button type="submit" class="btn btn-black" disabled>Next</button>
-                </c:otherwise>
-            </c:choose>
-        </form>
+
+        <my:paginationNavigation command="showCategoriesPage"/>
     <table class="table">
         <thead>
         <tr>
@@ -60,13 +47,16 @@
         </thead>
         <tbody>
         <c:forEach var="category" items="${sessionScope.categories}">
+            <c:if test="${sessionScope.invalidEditCategory.equals(category)}">
+                <c:set var="category" value="${sessionScope.invalidEditCategory}"/>
+            </c:if>
             <tr>
                 <td>${category.name}</td>
                 <td>
                     <button type="button" class="btn btn-black" data-toggle="modal" data-target="#editCategoryModal${category.id}">
                         Edit
                     </button>
-                    <div class="modal fade" id="editCategoryModal${category.id}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
+                    <div class="modal show" id="editCategoryModal${category.id}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <form action="${root}/controller" method="post">
                                 <input type="hidden" name="command" value="updateCategory">
@@ -74,7 +64,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Edit</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick = "$('.modal').removeClass('show').addClass('fade');">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -82,8 +72,13 @@
                                     <label>Name</label>
                                     <input type="text" name="name" value="${category.name}" required>
                                 </div>
+                                <c:if test="${not empty sessionScope.invalidInputError}">
+                                    Category with this name already exists. Try another one.
+                                    <c:remove var="invalidInputError" scope="session"/>
+                                </c:if>
+                                    ${sessionScope.editCategoryErrMsg}
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick = "$('.modal').removeClass('show').addClass('fade');">Cancel</button>
                                     <button type="submit" class="btn btn-black">Save</button>
                                 </div>
                             </div>
@@ -143,6 +138,11 @@
                         <label>Set a name for new category:</label>
                         <input type="text" name="name" required/>
                     </div>
+                    <c:if test="${not empty sessionScope.invalidInputError}">
+                        Category with this name already exists. Try another one.
+                        <c:remove var="invalidInputError" scope="session"/>
+                    </c:if>
+                    ${sessionScope.addCategoryErrMsg}
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-black">Add</button>
@@ -151,4 +151,7 @@
             </div>
         </div>
     </div>
-</my:html-carcass>
+</my:htmlCarcass>
+<c:remove var="err_msg" scope="session"/>
+<c:remove var="addCategoryErrMsg" scope="session"/>
+<c:remove var="editCategoryErrMsg" scope="session"/>

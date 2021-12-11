@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class DeleteCategoryCommand implements Command {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
-    private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -38,9 +37,9 @@ public class DeleteCategoryCommand implements Command {
             return Chain.getErrorPageChain();
         }
 
-        String queryString = handler.getPaginationQueryString(req.getSession());
-        log.debug("received a url params string: '{}'", queryString);
+        String referer = req.getHeader("referer");
+        log.debug("retrieved a referer string: '{}'", referer);
 
-        return Chain.createRedirect(String.format("controller?command=%s&" + queryString, CommandContainer.CommandNames.SHOW_CATEGORIES_PAGE));
+        return Chain.createRedirect(referer);
     }
 }

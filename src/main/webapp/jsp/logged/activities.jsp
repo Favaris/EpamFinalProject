@@ -3,16 +3,33 @@
 <%@taglib tagdir="/WEB-INF/tags/html" prefix="my"%>
 <%@taglib uri="http://com.prusan.finalproject.security" prefix="s"%>
 <%@taglib uri="http://com.prusan.finalproject.util" prefix="ut" %>
-<ut:set-pagination-query includeSorting="true" includeFiltering="true"/>
 <s:check role="${sessionScope.user.role}" permission="logged"/>
-<my:html-carcass title="${sessionScope.user.login} - activities">
+<my:htmlCarcass title="${sessionScope.user.login} - activities">
+
+    <c:if test="${sessionScope.invalidAddActivity != null}">
+        <script>
+            $(window).on('load',function() {
+                $('#addActivityModal').modal('show');
+            });
+        </script>
+    </c:if>
+
+    <c:if test="${sessionScope.invalidEditActivity != null}">
+        <script>
+            $(window).on('load',function() {
+                $('#editActivityModal${sessionScope.invalidEditActivity.id}').modal('show');
+            });
+        </script>
+    </c:if>
+
     <div class="managing sidenav">
         <div class="login-main-text">
             <c:if test="${sessionScope.user.role eq 'admin'}">
-                <form action="${root}/controller">
-                    <input type="hidden" name="command" value="showActivityAddPage"/>
-                    <button type="submit" class="btn btn-black">Add new activity</button>
-                </form>
+
+                <button type="button" class="btn btn-black my-3" data-toggle="modal" data-target="#addActivityModal">
+                    Create new activity
+                </button>
+
                 <form action="${root}/controller">
                     <input type="hidden" name="command" value="showCategoriesPage"/>
                     <button type="submit" class="btn btn-black">Manage categories</button>
@@ -52,93 +69,24 @@
                     </c:choose>
                     <label for="sortByUserAmount">user amount</label><br>
                     <label>Filter by:</label><br>
-                    <c:choose>
-                        <c:when test="${requestScope.filterBy != null}">
-                            <c:forEach var="category" items="${requestScope.categories}">
-
-                                    <c:set var="contains" value="${false}"/>
-                                    <c:forEach var="catId" items="${requestScope.filterBy}">
-                                        <c:if test="${not contains}">
-                                            <c:set var="contains" value="${catId.equals(category.id.toString())}"/>
-                                        </c:if>
-                                    </c:forEach>
-
-                                    <c:choose>
-                                        <c:when test="${contains}">
-                                            <input type="checkbox" name="filterBy" value="${category.id}" id="${category.id}" checked>
-                                            <label for="${category.id}">${category.name}</label><br>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <input type="checkbox" name="filterBy" value="${category.id}" id="${category.id}">
-                                            <label for="${category.id}">${category.name}</label><br>
-                                        </c:otherwise>
-                                    </c:choose>
-
-                            </c:forEach>
-                        </c:when>
-
-                        <c:otherwise>
-                            <c:forEach var="category" items="${requestScope.categories}">
-                                <input type="checkbox" name="filterBy" value="${category.id}" id="${category.id}" checked>
-                                <label for="${category.id}">${category.name}</label><br>
-                            </c:forEach>
-                        </c:otherwise>
-                    </c:choose>
-
+                    <c:forEach var="category" items="${requestScope.categories}">
+                        <c:set var="contains" scope="page" value="${false}"/>
+                        <c:forEach var="catId" items="${requestScope.filterBy}">
+                            <c:if test="${not contains}">
+                                <c:set var="contains" value="${catId.equals(category.id.toString())}"/>
+                            </c:if>
+                        </c:forEach>
+                        <input type="checkbox" name="filterBy" value="${category.id}" id="${category.id}" ${contains ? 'checked' : ''}>
+                        <label for="${category.id}">${category.name}</label><br>
+                    </c:forEach>
                     <button type="submit" class="btn btn-black">OK</button>
                 </form>
             </div>
         </div>
     </div>
     <div class="tables">
-        <form action="${root}/controller">
-            <input type="hidden" name="command" value="showActivitiesPage">
-            <input type="hidden" name="page" value="${requestScope.page - 1}">
-            <input type="hidden" name="pageSize" value="5">
-            <c:choose>
-                <c:when test="${empty requestScope.orderBy}">
-                    <input type="hidden" name="orderBy" value="activityName">
-                </c:when>
-                <c:otherwise>
-                    <input type="hidden" name="orderBy" value="${requestScope.orderBy}">
-                </c:otherwise>
-            </c:choose>
-            <c:choose>
-                <c:when test="${requestScope.page - 1 > 0}">
-                    <button type="submit" class="btn btn-black">Prev</button>
-                </c:when>
-                <c:otherwise>
-                    <button type="submit" class="btn btn-black" disabled>Prev</button>
-                </c:otherwise>
-            </c:choose>
-            <c:forEach var="catId" items="${requestScope.filterBy}">
-                <input type="hidden" name="filterBy" value="${catId}">
-            </c:forEach>
-        </form>
-        <form action="${root}/controller">
-            <input type="hidden" name="command" value="showActivitiesPage">
-            <input type="hidden" name="page" value="${requestScope.page + 1}">
-            <input type="hidden" name="pageSize" value="5">
-            <c:choose>
-                <c:when test="${empty requestScope.orderBy}">
-                    <input type="hidden" name="orderBy" value="activityName">
-                </c:when>
-                <c:otherwise>
-                    <input type="hidden" name="orderBy" value="${requestScope.orderBy}">
-                </c:otherwise>
-            </c:choose>
-            <c:choose>
-                <c:when test="${requestScope.page < requestScope.pageCount}">
-                    <button type="submit" class="btn btn-black">Next</button>
-                </c:when>
-                <c:otherwise>
-                    <button type="submit" class="btn btn-black" disabled>Next</button>
-                </c:otherwise>
-            </c:choose>
-            <c:forEach var="catId" items="${requestScope.filterBy}">
-                <input type="hidden" name="filterBy" value="${catId}">
-            </c:forEach>
-        </form>
+
+        <my:paginationNavigation command="showActivitiesPage"/>
     <table class="table">
         <thead>
         <tr>
@@ -194,16 +142,20 @@
 
                         </c:when>
                         <c:otherwise>
-                            <form action="${root}/controller" method="get">
-                                <input type="hidden" name="command" value="showActivityEditPage"/>
-                                <input type="hidden" name="id" value="${activity.id}"/>
-                                <button type="submit" class="btn btn-black">Edit</button>
-                            </form>
-                            <c:set var="modal_id" value="${'submitActivityDeletion'.concat(activity.id)}"/>
-                            <button type="button" class="btn btn-black" data-toggle="modal" data-target="#${pageScope.modal_id}">
+
+                            <c:choose>
+                                <c:when test="${activity.equals(sessionScope.invalidEditActivity)}">
+                                    <my:activityEditModal activity="${sessionScope.invalidEditActivity}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <my:activityEditModal activity="${activity}"/>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <button type="button" class="btn btn-black" data-toggle="modal" data-target="#submitActivityDeletion${activity.id}">
                                 Delete
                             </button>
-                            <div class="modal fade" id="${pageScope.modal_id}" tabindex="-1" role="dialog" aria-labelledby="Submit deletion" aria-hidden="true">
+                            <div class="modal fade" id="submitActivityDeletion${activity.id}" tabindex="-1" role="dialog" aria-labelledby="Submit deletion" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -233,5 +185,52 @@
         </c:forEach>
         </tbody>
     </table>
+
     </div>
-</my:html-carcass>
+    <div class="modal fade" id="addActivityModal" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form action="${root}/controller" method="post">
+                <input type="hidden" name="command" value="addActivity">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create new activity</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" name="name" class="form-control" required="required" value="${sessionScope.invalidAddActivity.name}"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea rows="5" cols="60" name="description" required>${sessionScope.invalidAddActivity.description}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select name="cId">
+                                <c:forEach var="category" items="${requestScope.categories}">
+                                    <option value="${category.id}" id="${category.id}" ${sessionScope.invalidAddActivity.category.equals(category) ? 'selected' : ''}>${category.name}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <c:if test="${not empty sessionScope.invalidFields}">
+                            You have invalid fields: ${sessionScope.invalidFields}
+                            <c:remove var="invalidFields" scope="session"/>
+                        </c:if>
+                        ${sessionScope.activityAddErrMsg}
+                        <c:remove var="activityAddErrMsg" scope="session"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-black">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</my:htmlCarcass>
+<c:remove var="err_msg" scope="session"/>
+<c:remove var="invalidAddActivity" scope="session"/>
+<c:remove var="invalidEditActivity" scope="session"/>

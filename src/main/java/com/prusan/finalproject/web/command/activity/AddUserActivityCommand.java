@@ -25,7 +25,6 @@ import javax.servlet.http.HttpSession;
  */
 public class AddUserActivityCommand implements Command {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
-    private static final PaginationAttributesHandler handler = PaginationAttributesHandler.getInstance();
 
     @Override
     public Chain execute(HttpServletRequest req, HttpServletResponse resp) {
@@ -46,9 +45,10 @@ public class AddUserActivityCommand implements Command {
             uas.save(ua);
             log.debug("successfully added a new user activity with userId={}, activityId={}", userId, activityId);
 
-            String queryString = handler.getQueryString(session, true, true, true, false);
+            String referer = req.getHeader("referer");
+            log.debug("retrieved a referer string: '{}'", referer);
 
-            return Chain.createRedirect(String.format("controller?command=%s&uId=%d&", CommandContainer.CommandNames.SHOW_ADD_ACTIVITIES_FOR_USER_PAGE, userId) + queryString);
+            return Chain.createRedirect(referer);
         } catch (ServiceException e) {
             log.error("failed to get a user activity by activityId={}", activityId, e);
             session.setAttribute("err_msg", e.getMessage());

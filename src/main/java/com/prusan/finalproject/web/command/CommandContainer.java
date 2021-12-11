@@ -47,8 +47,6 @@ public class CommandContainer {
         String SHOW_CATEGORIES_PAGE = "showCategoriesPage";
         String SHOW_ALL_USERS = "showAllUsers";
         String SHOW_ADD_ACTIVITIES_FOR_USER_PAGE = "showAddActivitiesForUserPage";
-        String SHOW_ACTIVITY_EDIT_PAGE = "showActivityEditPage";
-        String SHOW_ACTIVITY_ADD_PAGE = "showActivityAddPage";
     }
 
 
@@ -78,8 +76,6 @@ public class CommandContainer {
 
         commands.put(CommandNames.MANAGE_USERS_ACTIVITIES, new ManageUsersActivitiesCommand());
         commands.put(CommandNames.SHOW_ACTIVITIES_PAGE, new ShowActivitiesCommand());
-        commands.put(CommandNames.SHOW_ACTIVITY_ADD_PAGE, new ShowActivityAddPageCommand());
-        commands.put(CommandNames.SHOW_ACTIVITY_EDIT_PAGE, new ShowActivityEditPageCommand());
         commands.put(CommandNames.SHOW_ADD_ACTIVITIES_FOR_USER_PAGE, new ShowAddActivitiesForUserPageCommand());
         commands.put(CommandNames.SHOW_ALL_USERS, new ShowAllUsersCommand());
         commands.put(CommandNames.SHOW_CATEGORIES_PAGE, new ShowCategoriesCommand());

@@ -1,0 +1,25 @@
+<%@include file="/WEB-INF/jspf/taglibs.jspf" %>
+
+<c:if test="${hasOrderBy}">
+    <input type="hidden" name="orderBy" value="${requestScope.orderBy}">
+</c:if>
+
+<c:if test="${hasFilterBy}">
+    <c:forEach var="catId" items="${requestScope.filterBy}">
+        <input type="hidden" name="filterBy" value="${catId}">
+    </c:forEach>
+</c:if>
+
+<c:if test="${hasCountLessThen}">
+    <input type="hidden" name="countLessThen" value="${requestScope.countLessThen}">
+</c:if>
+<c:if test="${hasCountBiggerThen}">
+    <input type="hidden" name="countBiggerThen" value="${requestScope.countBiggerThen}">
+</c:if>
+<c:if test="${hasSearchBy}">
+    <input type="hidden" name="searchBy" value="${requestScope.searchBy}">
+</c:if>
+
+<c:if test="${hasUId}">
+    <input type="hidden" name="uId" value="${requestScope.uId}">
+</c:if>

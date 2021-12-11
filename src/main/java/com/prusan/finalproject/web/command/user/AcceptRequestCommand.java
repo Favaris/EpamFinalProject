@@ -1,4 +1,4 @@
-package com.prusan.finalproject.web.command.activity;
+package com.prusan.finalproject.web.command.user;
 
 import com.prusan.finalproject.db.entity.UserActivity;
 import com.prusan.finalproject.db.service.UserActivityService;
@@ -52,6 +52,9 @@ public class AcceptRequestCommand implements Command {
             return Chain.getErrorPageChain();
         }
 
-        return Chain.createRedirect(String.format("controller?command=%s", CommandContainer.CommandNames.SHOW_USERS_REQUESTS));
+        String referer = req.getHeader("referer");
+        log.debug("retrieved a referer string: '{}'", referer);
+
+        return Chain.createRedirect(referer);
     }
 }
