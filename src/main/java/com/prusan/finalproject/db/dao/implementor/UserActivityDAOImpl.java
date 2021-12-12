@@ -14,11 +14,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserActivityDAOImpl extends UserActivityDAO {
+/**
+ * MySQL {@link com.prusan.finalproject.db.dao.UserActivityDAO} implementor
+ */
+public class UserActivityDAOImpl implements UserActivityDAO {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
-    public static final String GET_REQUESTED_USERS_ACTIVITIES =
-            "";
     @Override
     public void add(Connection con, UserActivity ua) throws DAOException {
         try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserActivityQueries.INSERT_USER_ACTIVITY)) {
@@ -101,44 +102,13 @@ public class UserActivityDAOImpl extends UserActivityDAO {
     }
 
 
-    /**
-     * Retrieves a list of all user's activities that are accepted and not requested for abandonment.
-     */
-    @Override
-    public List<UserActivity> getAcceptedByUserId(Connection con, int id) throws DAOException {
-        ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserActivityQueries.GET_ALL_ACCEPTED_ACTIVITIES_BY_ID)) {
-            ps.setInt(1, id);
 
-            rs = ps.executeQuery();
-            List<UserActivity> uas = new ArrayList<>();
-            while (rs.next()) {
-                UserActivity ua = getUserActivity(rs);
-                log.debug("retrieved accepted user activity {}", ua);
-                uas.add(ua);
-            }
-            log.debug("retrieved a list of all accepted user activities, list size: {}", uas.size());
-            return uas;
-        } catch (SQLException throwables) {
-            log.error("error in getRunningActivities(id={})", id, throwables);
-            throw new DAOException("failed to upload activities", throwables);
-        }
-    }
-
-
-    /**
-     * Returns a result of {@link #getRequestedUserActivities(Connection, Integer, int, int)} with a null for the userId parameter.
-     */
     @Override
     public List<UserActivity> getRequestedUserActivities(Connection con, int limit, int offset) throws DAOException {
         return getRequestedUserActivities(con, null, limit, offset);
     }
 
-    /**
-     * Returns a list of user activities that are not accepted or requested for abandonment for user specified by a userId.<br>
-     * If a userId param was null, returns a list of all requested user activities for all users.
-     * @param userId id for whom to download the requests
-     */
+
     @Override
     public List<UserActivity> getRequestedUserActivities(Connection con, Integer userId, int limit, int offset) throws DAOException {
         String query = SQLQueries.UserActivityQueries.GET_REQUESTED_USERS_ACTIVITIES;
@@ -181,17 +151,13 @@ public class UserActivityDAOImpl extends UserActivityDAO {
         }
     }
 
-    /**
-     * Returns a result of {@link #getRequestsCount(Connection, Integer)} with a null for the userId parameter.
-     */
+
     @Override
     public int getRequestsCount(Connection con) throws DAOException {
         return getRequestsCount(con, null);
     }
 
-    /**
-     * Returns a count of requests for specified user id. If id was null, returns count of all users' requests.
-     */
+
     @Override
     public int getRequestsCount(Connection con, Integer userId) throws DAOException {
         String query = SQLQueries.UserActivityQueries.GET_REQUESTS_COUNT;
@@ -229,21 +195,6 @@ public class UserActivityDAOImpl extends UserActivityDAO {
     }
 
     @Override
-    public void removeAllByUserId(Connection con, int userId) throws DAOException {
-        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserActivityQueries.DELETE_ALL_BY_USER_ID)){
-            ps.setInt(1, userId);
-            if (ps.executeUpdate() > 0) {
-                log.debug("successfully deleted all user's activities by userId={}", userId);
-            } else {
-                log.debug("there were no activities to delete for user with userId={}", userId);
-            }
-        } catch (SQLException throwables) {
-            log.error("failed to remove all user's activities by userId={}", userId, throwables);
-            throw new DAOException("unable to delete user's activities", throwables);
-        }
-    }
-
-    @Override
     public int getCountByUserId(Connection con, int userId, String[] filterBy) throws DAOException {
         ResultSet rs = null;
         String query;
@@ -265,30 +216,6 @@ public class UserActivityDAOImpl extends UserActivityDAO {
         } catch (SQLException throwables) {
             log.error("failed to get count of all activities for user with id={}", userId, throwables);
             throw new DAOException("failed to get count of user's activities with userId=" + userId, throwables);
-        } finally {
-            try {
-                close(rs);
-            } catch (DAOException e) {
-                log.warn("unable to close the result set {}", rs, e);
-            }
-        }
-    }
-
-    @Override
-    public int getSummarizedSpentTimeByUserId(Connection con, int userId) throws DAOException {
-        ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserActivityQueries.GET_SUM_OF_MINUTES_BY_USER_ID)) {
-            ps.setInt(1, userId);
-            rs = ps.executeQuery();
-            int sum = 0;
-            if (rs.next()) {
-                sum = rs.getInt(1);
-            }
-            log.debug("retrieved a summarized time spent on activities by user with id={}", userId);
-            return sum;
-        } catch (SQLException throwables) {
-            log.error("failed to get a sum of all minutes spent on activities by userId={}", userId, throwables);
-            throw new DAOException("failed to get a total sum of time spent by user with id=" + userId, throwables);
         } finally {
             try {
                 close(rs);

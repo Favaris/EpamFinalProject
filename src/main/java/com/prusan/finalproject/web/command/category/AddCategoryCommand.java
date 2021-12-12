@@ -9,7 +9,6 @@ import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.Validator;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.command.CommandContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,7 +42,7 @@ public class AddCategoryCommand implements Command {
         log.debug("created a new category instance: {}", cat);
 
         try {
-            cs.save(cat);
+            cs.add(cat);
             log.debug("successfully saved a new category {}", cat);
         } catch (NameIsTakenException ex) {
             log.debug("can not save category {}, this name is already taken", cat, ex);

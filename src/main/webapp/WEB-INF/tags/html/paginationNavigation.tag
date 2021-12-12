@@ -5,8 +5,8 @@
 
 <c:set var="hasOrderBy" value="${not empty requestScope.orderBy}"/>
 <c:set var="hasFilterBy" value="${not empty requestScope.filterBy}"/>
-<c:set var="hasCountLessThen" value="${not empty requestScope.countLessThen}"/>
-<c:set var="hasCountBiggerThen" value="${not empty requestScope.countBiggerThen}"/>
+<c:set var="hascountLessThan" value="${not empty requestScope.countLessThan}"/>
+<c:set var="hascountBiggerThan" value="${not empty requestScope.countBiggerThan}"/>
 <c:set var="hasSearchBy" value="${not empty requestScope.searchBy}"/>
 <c:set var="hasUId" value="${not empty requestScope.uId}"/>
 

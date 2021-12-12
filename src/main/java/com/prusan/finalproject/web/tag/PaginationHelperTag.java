@@ -71,19 +71,19 @@ public class PaginationHelperTag extends SimpleTagSupport {
     }
 
     private void setUpSearchingString(HttpServletRequest req) {
-        String countLessThen = (String) req.getAttribute("countLessThen");
-        log.debug("retrieved a 'countLessThen' attribute: {}", countLessThen);
+        String countLessThan = (String) req.getAttribute("countLessThan");
+        log.debug("retrieved a 'countLessThan' attribute: {}", countLessThan);
 
 
-        String countBiggerThen = (String) req.getAttribute("countBiggerThen");
-        log.debug("retrieved a 'countBiggerThen' attribute: {}", countBiggerThen);
+        String countBiggerThan = (String) req.getAttribute("countBiggerThan");
+        log.debug("retrieved a 'countBiggerThan' attribute: {}", countBiggerThan);
 
 
         String searchBy = (String) req.getAttribute("searchBy");
         log.debug("retrieved a 'searchBy' attribute: {}", searchBy);
 
 
-        String queryString = String.format("countLessThen=%s&countBiggerThen=%s&searchBy=%s", countLessThen, countBiggerThen, searchBy);
+        String queryString = String.format("countLessThan=%s&countBiggerThan=%s&searchBy=%s", countLessThan, countBiggerThan, searchBy);
         req.getSession().setAttribute("searchingQueryString", queryString);
         log.debug("set a 'searchingQueryString' session attribute: '{}'", queryString);
     }

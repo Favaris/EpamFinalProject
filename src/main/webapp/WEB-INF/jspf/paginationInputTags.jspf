@@ -10,11 +10,11 @@
     </c:forEach>
 </c:if>
 
-<c:if test="${hasCountLessThen}">
-    <input type="hidden" name="countLessThen" value="${requestScope.countLessThen}">
+<c:if test="${hascountLessThan}">
+    <input type="hidden" name="countLessThan" value="${requestScope.countLessThan}">
 </c:if>
-<c:if test="${hasCountBiggerThen}">
-    <input type="hidden" name="countBiggerThen" value="${requestScope.countBiggerThen}">
+<c:if test="${hascountBiggerThan}">
+    <input type="hidden" name="countBiggerThan" value="${requestScope.countBiggerThan}">
 </c:if>
 <c:if test="${hasSearchBy}">
     <input type="hidden" name="searchBy" value="${requestScope.searchBy}">

@@ -33,10 +33,10 @@ public class ActivityServiceImpl implements ActivityService {
     /**
      * Saves given activity to the db. Also saves all its categories in the corresponding table.
      * @throws NameIsTakenException if this activity already exists.
-     * @throws ServiceException if transaction was unsuccessful.
+     * @throws ServiceException if operation was unsuccessful.
      */
     @Override
-    public void save(Activity activity) throws ServiceException {
+    public void add(Activity activity) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
             activityDAO.add(con, activity);
 
@@ -65,63 +65,22 @@ public class ActivityServiceImpl implements ActivityService {
         }
     }
 
-    /**
-     * Returns an Activity object by its id.
-     * @throws ServiceException
-     */
     @Override
-    public Activity getById(int id) throws ServiceException {
+    public List<Activity> getActivities(int start, int amount, String orderBy, String... filterBy) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
-            Activity ac = activityDAO.get(con, id);
-
-            log.debug("retrieved an activity by id {}", ac);
-            return ac;
-        } catch (SQLException throwables) {
-            log.error("unable to get connection", throwables);
-            throw new ServiceException("unable to get connection", throwables);
-        } catch (DAOException e) {
-            log.error("unable to get activity by id={}", id, e);
-            throw new NoSuchActivityException("unable to get an activity with id=" + id, e);
-        }
-    }
-
-    @Override
-    public List<Activity> getAll() throws ServiceException {
-        try (Connection con = dbUtils.getConnection()) {
-            List<Activity> activities = activityDAO.getAll(con);
-
-            log.debug("retrieved a list of all activities, list size: {}", activities.size());
-            return activities;
-        } catch (SQLException throwables) {
-            log.error("unable to get connection", throwables);
-            throw new ServiceException("unable to get connection", throwables);
-        } catch (DAOException e) {
-            log.error("unable to get all activities", e);
-            throw new ServiceException("unable to get all activities", e);
-        }
-    }
-
-    @Override
-    public List<Activity> getActivities(int start, int end, String orderBy, String... filterBy) throws ServiceException {
-        try (Connection con = dbUtils.getConnection()) {
-            List<Activity> list = activityDAO.getActivities(con, end, start, orderBy, filterBy);
-            log.debug("retrieved a list of activities sorted by '{}', with start={}, end={}, list size={}", orderBy, start, end, list.size());
+            List<Activity> list = activityDAO.getActivities(con, amount, start, orderBy, filterBy);
+            log.debug("retrieved a list of activities sorted by '{}', with start={}, amount={}, list size={}", orderBy, start, amount, list.size());
 
             return list;
         } catch (SQLException throwables) {
             log.error("unable to get connection", throwables);
             throw new ServiceException("unable to get connection", throwables);
         } catch (DAOException e) {
-            log.error("unable to get a list of activities sorted by {}, start={}, end={}", orderBy, start, end, e);
+            log.error("unable to get a list of activities sorted by {}, start={}, amount={}", orderBy, start, amount, e);
             throw new ServiceException("Failed to get a list of sorted activities", e);
         }
     }
 
-    /**
-     * Returns a number of activities not taken by a certain user and filtered by some categories' ids. If the first value in 'filterBy' is 'all', then just returns a number of all activities without filtering anything.
-     * @param userId an id of user for which to count activities.
-     *  @param filterBy varargs of categories' ids
-     */
     @Override
     public int getActivitiesCount(int userId, String... filterBy) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
@@ -155,9 +114,6 @@ public class ActivityServiceImpl implements ActivityService {
         }
     }
 
-    /**
-     * Returns a list of all activities that are not taken by this user. An activity is 'taken' by a certain user even if it is not yet accepted by an admin.
-     */
     @Override
     public List<Activity> getActivitiesNotTakenByUser(int userId, int start, int end, String orderBy, String... filterBy) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {

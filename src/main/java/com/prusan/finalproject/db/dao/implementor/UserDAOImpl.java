@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Implementor class for UserDAO. Has SQL queries as private static fields.
  */
-public class UserDAOImpl extends UserDAO {
+public class UserDAOImpl implements UserDAO {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     /**
@@ -131,25 +131,6 @@ public class UserDAOImpl extends UserDAO {
     }
 
     @Override
-    public List<User> getAll(Connection con) throws DAOException {
-        List<User> users = new ArrayList<>();
-        try (Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(SQLQueries.UserQueries.SELECT_ALL_USERS))
-        {
-            while (rs.next()) {
-                User u = getUser(rs);
-                addInfoIfNeeded(con, u);
-                users.add(u);
-                log.debug("extracted a user: {}", u);
-            }
-        } catch (SQLException throwables) {
-            log.warn("unable to extract all users ", throwables);
-            throw new DAOException("unable to extract all users", throwables);
-        }
-        return users;
-    }
-
-    @Override
     public User getByLogin(Connection con, String login) throws DAOException {
         ResultSet rs = null;
         try (PreparedStatement ps = con.prepareStatement(SQLQueries.UserQueries.SELECT_USER_BY_LOGIN)){
@@ -184,16 +165,11 @@ public class UserDAOImpl extends UserDAO {
         return null;
     }
 
-
-    /**
-     * Returns a list of users with role='user'.
-     * @throws DAOException if there are some issues with the connection to the db.
-     */
-    @Override
-    public List<User> getWithRoleUser(Connection con, int limit, int offset, String orderBy, String countLessThen, String countBiggerThen, String like) throws DAOException {
+   @Override
+    public List<User> getWithRoleUser(Connection con, int limit, int offset, String orderBy, String countLessThan, String countBiggerThan, String like) throws DAOException {
         List<User> users = new ArrayList<>();
         ResultSet rs = null;
-        try (PreparedStatement ps = con.prepareStatement(PaginationQueries.getUserQuery(orderBy, countLessThen, countBiggerThen, like))) {
+        try (PreparedStatement ps = con.prepareStatement(PaginationQueries.getUserQuery(orderBy, countLessThan, countBiggerThan, like))) {
             ps.setInt(1, limit);
             ps.setInt(2, offset);
             rs = ps.executeQuery();
@@ -218,13 +194,13 @@ public class UserDAOImpl extends UserDAO {
     }
 
     @Override
-    public int getCountWithRoleUser(Connection con, String countLessThen, String countBiggerThen, String like) throws DAOException {
+    public int getCountWithRoleUser(Connection con, String countLessThan, String countBiggerThan, String like) throws DAOException {
         StringBuilder builder = new StringBuilder();
-        if (!countLessThen.isEmpty()) {
-            builder.append("AND ").append(String.format("%s < %s", Fields.USER_INFOS_ACTIVITIES_COUNT, countLessThen));
+        if (!countLessThan.isEmpty()) {
+            builder.append("AND ").append(String.format("%s < %s", Fields.USER_INFOS_ACTIVITIES_COUNT, countLessThan));
         }
-        if (!countBiggerThen.isEmpty()) {
-            builder.append(" AND ").append(String.format("%s > %s", Fields.USER_INFOS_ACTIVITIES_COUNT, countBiggerThen));
+        if (!countBiggerThan.isEmpty()) {
+            builder.append(" AND ").append(String.format("%s > %s", Fields.USER_INFOS_ACTIVITIES_COUNT, countBiggerThan));
         }
         String query = String.format(SQLQueries.UserQueries.GET_COUNT_WITH_ROLE_USER, like, builder);
         log.debug("generated query for counting users: '{}'", query);

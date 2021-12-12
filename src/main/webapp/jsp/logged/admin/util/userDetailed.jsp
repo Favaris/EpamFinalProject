@@ -87,7 +87,7 @@
 
         <br>
         <label>
-            <fmt:message key="entities.fields.total_time_spent"/>: <ut:convert minutes="${requestScope.userToShow.info.totalTime}" minutesLabel="mins" hoursLabel="hrs"/>
+            <fmt:message key="entities.fields.total_time_spent"/>: <my:convert minutes="${requestScope.userToShow.info.totalTime}"/>
         </label>
 <br>
         <form action="${root}/controller">

@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
 
 
 /**
- * Encryption class. Has methods for password encodings. NOT used.
+ * Encryption class. Has methods for password encodings.
  */
 public abstract class Encryptor {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());

@@ -4,7 +4,7 @@ package com.prusan.finalproject.db.service.exception;
  * Exception for cases when user tries to create an acc with already taken login. Has the field with that login.
  */
 public class LoginIsTakenException extends ServiceException {
-    private String login;
+    private final String login;
 
     public LoginIsTakenException(String login) {
         this.login = login;

@@ -8,16 +8,18 @@ import java.util.List;
 /**
  * Service class for managing the categories.
  */
-public interface CategoryService {
+public interface CategoryService extends BasicService<Category> {
     List<Category> getAll() throws ServiceException;
 
-    List<Category> getCategories(int start, int end) throws ServiceException;
+    /**
+     * Returns a list of categories starting from the given index and with max size=amount
+     * @throws ServiceException if operation was unsuccessful
+     */
+    List<Category> getCategories(int start, int amount) throws ServiceException;
 
+    /**
+     * @return a number of all categories
+     * @throws ServiceException if operation was unsuccessful
+     */
     int getCount() throws ServiceException;
-
-    void save(Category category) throws ServiceException;
-
-    void update(Category category) throws ServiceException;
-
-    void delete(int id) throws ServiceException;
 }

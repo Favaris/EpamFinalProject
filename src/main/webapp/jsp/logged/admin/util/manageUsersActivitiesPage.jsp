@@ -111,7 +111,7 @@
                             ${activity.category.name}
                     </td>
                     <td>${activity.description}</td>
-                    <td><ut:convert minutes="${activity.minutesSpent}" minutesLabel="mins" hoursLabel="hrs"/></td>
+                    <td><my:convert minutes="${activity.minutesSpent}"/></td>
                     <td>
                         <button type="button" class="btn btn-black" data-toggle="modal" data-target="#confirmActivityDeletion${activity.id}">
                             <fmt:message key="tables.rows.modal.remove_user_activity.label"/>

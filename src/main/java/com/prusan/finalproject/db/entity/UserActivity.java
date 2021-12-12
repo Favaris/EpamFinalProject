@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Entity class for the 'users_m2m_activities' table.
+ * Entity class for the 'users_m2m_activities' table. Implements builder pattern.
  */
 public class UserActivity extends Activity {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());

@@ -45,7 +45,7 @@ public class SignUpCommand implements Command {
 
         UserService us = ServiceFactory.getInstance().getUserService();
         try {
-            us.save(u);
+            us.add(u);
             s.setAttribute("user", u);
             return Chain.createRedirect(Pages.HOME_JSP);
         } catch (LoginIsTakenException ex) {

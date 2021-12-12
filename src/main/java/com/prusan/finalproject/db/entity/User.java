@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.Serializable;
 
 /**
- * Entity for table 'users'.
+ * Entity for table 'users'. Implements builder pattern.
  */
 public class User implements Serializable {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());

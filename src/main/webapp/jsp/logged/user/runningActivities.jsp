@@ -101,7 +101,7 @@
                 </td>
                 <td>${activity.description}</td>
                 <td>
-                    <ut:convert minutes="${activity.minutesSpent}" minutesLabel="mins" hoursLabel="hrs"/>
+                    <my:convert minutes="${activity.minutesSpent}"/>
                 </td>
                 <td>
                     <button type="button" class="btn btn-black" data-toggle="modal" data-target="#updateTime${activity.id}">

@@ -5,7 +5,7 @@
 <s:check role="${sessionScope.user.role}"  permission="admin"/>
 <%@taglib uri="http://com.prusan.finalproject.util" prefix="ut" %>
 
-<c:set var="backPage" scope="session" value="page=${requestScope.page}&pageSize=${requestScope.pageSize}&orderBy=${requestScope.orderBy}&countLessThen=${requestScope.countLessThen}&countBiggerThen=${requestScope.countBiggerThen}&searchBy=${requestScope.searchBy}"/>
+<c:set var="backPage" scope="session" value="page=${requestScope.page}&pageSize=${requestScope.pageSize}&orderBy=${requestScope.orderBy}&countLessThan=${requestScope.countLessThan}&countBiggerThan=${requestScope.countBiggerThan}&searchBy=${requestScope.searchBy}"/>
 
 <my:htmlCarcass title="${sessionScope.user.login} - users list">
     <div class="managing sidenav">
@@ -54,10 +54,10 @@
             </c:choose>
             <label for="time"><fmt:message key="users_jsp.sidenav.sort_by.total_time"/></label> <br>
             <label><fmt:message key="users_jsp.sidenav.ac_count_less"/>:</label>
-            <input type="number" name="countLessThen" value="${requestScope.countLessThen}">
+            <input type="number" name="countLessThan" value="${requestScope.countLessThan}">
             <br>
             <label><fmt:message key="users_jsp.sidenav.ac_count_bigger"/>:</label>
-            <input type="number" name="countBiggerThen" value="${requestScope.countBiggerThen}">
+            <input type="number" name="countBiggerThan" value="${requestScope.countBiggerThan}">
             <br>
             <label><fmt:message key="users_jsp.sidenav.search_by_login"/>: </label><br>
             <input type="text" name="searchBy" value="${requestScope.searchBy}">
@@ -95,7 +95,7 @@
                         </c:otherwise>
                     </c:choose>
                 </td>
-                <td><ut:convert minutes="${user.info.totalTime}" minutesLabel="mins" hoursLabel="hrs"/></td>
+                <td><my:convert minutes="${user.info.totalTime}"/></td>
                 <td>
                     <a href="${root}/controller?command=showDetailedUserInfo&uId=${user.id}"><fmt:message key="tables.rows.show_details"/></a>
                 </td>

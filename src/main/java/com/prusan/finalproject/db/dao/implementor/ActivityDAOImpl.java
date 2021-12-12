@@ -17,15 +17,9 @@ import java.util.List;
 /**
  * a DAO layer for Activity entity.
  */
-public class ActivityDAOImpl extends ActivityDAO {
+public class ActivityDAOImpl implements ActivityDAO {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
-    /**
-     * Returns a list of activities sorted by a given entity name in ASC order.
-     * @param limit start position
-     * @param offset end position
-     * @param orderBy name of a certain attr in the 'activities' table to be sorted by
-     */
     @Override
     public List<Activity> getActivities(Connection con, int limit, int offset, String orderBy, String... filterBy) throws DAOException {
         ResultSet rs = null;
@@ -55,9 +49,6 @@ public class ActivityDAOImpl extends ActivityDAO {
         }
     }
 
-    /**
-     * Returns a number of all activities.
-     */
     @Override
     public int getCount(Connection con, int userId) throws DAOException {
         ResultSet rs = null;
@@ -82,13 +73,6 @@ public class ActivityDAOImpl extends ActivityDAO {
         }
     }
 
-
-
-
-    /**
-     * Gets a list of Activities that are already taken by the given user. Activity is 'taken' even if it is not yet accepted by an admin.
-     * @throws DAOException if connection error occurs.
-     */
     @Override
     public List<Activity> getAvailableActivitiesForUserId(Connection con, int userId, int limit, int offset, String orderBy, String... filterBy) throws DAOException {
         ResultSet rs = null;
@@ -179,28 +163,6 @@ public class ActivityDAOImpl extends ActivityDAO {
         }
     }
 
-    /**
-     * Returns list of all activities in db.
-     * @param con connection to db.
-     * @throws DAOException only if some exceptions caught while executing statement/getting result set or closing these resources.
-     */
-    @Override
-    public List<Activity> getAll(Connection con) throws DAOException {
-        List<Activity> actvts = new ArrayList<>();
-        try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(ActivityQueries.GET_ALL_ACTIVITIES))
-        {
-            while (rs.next()) {
-                Activity ac = getActivity(rs);
-                actvts.add(ac);
-            }
-        } catch (SQLException throwables) {
-            log.debug("unable to get all activities", throwables);
-            log.warn("exception in #getAll()", throwables);
-            throw new DAOException(throwables);
-        }
-        return actvts;
-    }
 
     /**
      * Get activity by its id.

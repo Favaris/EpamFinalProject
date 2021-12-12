@@ -49,7 +49,7 @@ public class AddUserCommand implements Command {
         UserService us = ServiceFactory.getInstance().getUserService();
 
         try {
-            us.save(u);
+            us.add(u);
             log.debug("successfully created a new user: {}", u);
             return Chain.createRedirect(String.format("controller?command=%s", CommandContainer.CommandNames.SHOW_ALL_USERS));
         } catch (LoginIsTakenException e) {

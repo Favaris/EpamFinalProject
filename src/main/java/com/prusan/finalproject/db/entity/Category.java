@@ -2,6 +2,9 @@ package com.prusan.finalproject.db.entity;
 
 import java.io.Serializable;
 
+/**
+ * Entity class for category table.
+ */
 public class Category implements Serializable {
     private Integer id;
     private String name;

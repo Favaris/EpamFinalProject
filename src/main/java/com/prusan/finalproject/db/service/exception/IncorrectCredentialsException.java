@@ -1,5 +1,8 @@
 package com.prusan.finalproject.db.service.exception;
 
+/**
+ * Exception thrown when login and password does not match any existing user.
+ */
 public class IncorrectCredentialsException extends ServiceException {
     private String login;
 

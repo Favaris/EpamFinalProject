@@ -8,7 +8,6 @@ import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
 import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.command.CommandContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +33,7 @@ public class RequestActivityAdditionCommand implements Command {
 
         UserActivityService uas = ServiceFactory.getInstance().getUserActivityService();
         try {
-            uas.save(ua);
+            uas.add(ua);
         } catch (DependencyAlreadyExistsException e) {
             log.debug("this user activity already exists");
             req.setAttribute("err_msg", "this user activity already exists");

@@ -7,7 +7,6 @@ import com.prusan.finalproject.db.service.exception.NameIsTakenException;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
-import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.Validator;
 import com.prusan.finalproject.web.command.Command;
 import org.apache.logging.log4j.LogManager;
@@ -54,7 +53,7 @@ public class AddActivityCommand implements Command {
 
         ActivityService s = ServiceFactory.getInstance().getActivityService();
         try {
-            s.save(ac);
+            s.add(ac);
             log.debug("successfully saved an activity {}", ac);
             session.removeAttribute("categories");
             session.removeAttribute("invalidActivity");

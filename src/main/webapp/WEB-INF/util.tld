@@ -8,27 +8,6 @@
     <uri>http://com.prusan.finalproject.util</uri>
 
     <tag>
-        <name>convert</name>
-        <tag-class>com.prusan.finalproject.web.tag.TimeSpentTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>minutes</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>minutesLabel</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>hoursLabel</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <tag>
         <name>set-pagination-query</name>
         <tag-class>com.prusan.finalproject.web.tag.PaginationHelperTag</tag-class>
         <body-content>empty</body-content>

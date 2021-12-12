@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Abstract class that contains constants that represent queries for PreparedSet that are used for pagination with sorting.
+ * Abstract class that contains constants that represent queries for PreparedStatement that are used for pagination with sorting/filtering/searching.
  */
 public abstract class PaginationQueries {
     private static final Logger log = LogManager.getLogger(PaginationQueries.class);
@@ -41,6 +41,8 @@ public abstract class PaginationQueries {
                 "JOIN user_infos ui ON u_id = ui_user_id AND u_login LIKE '%%%s%%' %s " +
                 "ORDER BY %s DESC LIMIT ? OFFSET ?");
 
+        ///////////////////
+
         names = new HashMap<>();
 
         names.put("activityName", Fields.ACTIVITY_NAME);
@@ -53,6 +55,10 @@ public abstract class PaginationQueries {
         names.put("totalTime", Fields.USER_INFOS_TOTAL_TIME);
     }
 
+    /**
+     * @return a query for activity entities.
+     *
+     */
     public static String getActivityQuery(String orderBy, String... filterBy) {
         if ("all".equals(filterBy[0])) {
             String query = String.format(queries.get("activityAll"), names.get(orderBy));
@@ -62,6 +68,9 @@ public abstract class PaginationQueries {
         return getQueryWithFilters(orderBy, filterBy, "activity");
     }
 
+    /**
+     * @return a query for activity entities regarding user ID.
+     */
     public static String getActivityQueryForUser(String orderBy, String... filterBy) {
         if ("all".equals(filterBy[0])) {
             String query = String.format(queries.get("activityForUserAll"), names.get(orderBy));
@@ -71,6 +80,9 @@ public abstract class PaginationQueries {
         return getQueryWithFilters(orderBy, filterBy, "activityForUser");
     }
 
+    /**
+     * @return a query for user activity entities.
+     */
     public static String getUserActivityQuery(String orderBy, String... filterBy) {
         if ("all".equals(filterBy[0])) {
             String query = String.format(queries.get("userActivityAll"), names.get(orderBy));
@@ -80,17 +92,20 @@ public abstract class PaginationQueries {
         return getQueryWithFilters(orderBy, filterBy, "userActivity");
     }
 
-    public static String getUserQuery(String orderBy, String countLessThen, String countBiggerThen, String like) {
+    /**
+     * @return a query for user entities.
+     */
+    public static String getUserQuery(String orderBy, String countLessThan, String countBiggerThan, String like) {
         StringBuilder restrictionQueryBuilder = new StringBuilder();
 
-        if (!countLessThen.isEmpty()) {
-            String lessThenQuery = String.format("%s < %s", Fields.USER_INFOS_ACTIVITIES_COUNT, countLessThen);
+        if (!countLessThan.isEmpty()) {
+            String lessThenQuery = String.format("%s < %s", Fields.USER_INFOS_ACTIVITIES_COUNT, countLessThan);
             log.debug("generated a less then restriction: '{}'", lessThenQuery);
             restrictionQueryBuilder.append("AND ").append(lessThenQuery);
         }
 
-        if (!countBiggerThen.isEmpty()) {
-            String biggerThenQuery = String.format("%s > %s", Fields.USER_INFOS_ACTIVITIES_COUNT, countBiggerThen);
+        if (!countBiggerThan.isEmpty()) {
+            String biggerThenQuery = String.format("%s > %s", Fields.USER_INFOS_ACTIVITIES_COUNT, countBiggerThan);
             log.debug("generated a bigger then restriction: '{}'", biggerThenQuery);
             restrictionQueryBuilder.append(" AND ").append(biggerThenQuery);
         }

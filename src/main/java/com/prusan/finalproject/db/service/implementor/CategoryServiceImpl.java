@@ -31,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> getAll() throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
-            List<Category> categories = categoryDAO.getAll(con);
+            List<Category> categories = categoryDAO.getCategories(con, Integer.MAX_VALUE, 0);
             log.debug("got a list of all categories, list size: {}", categories.size());
             return categories;
         } catch (DAOException e) {
@@ -44,16 +44,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> getCategories(int start, int end) throws ServiceException {
+    public List<Category> getCategories(int start, int amount) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
-            List<Category> categories = categoryDAO.getCategories(con, end, start);
-            log.debug("received a list of categories, start={}, end={}, list size: {}", start, end, categories.size());
+            List<Category> categories = categoryDAO.getCategories(con, amount, start);
+            log.debug("received a list of categories, start={}, amount={}, list size: {}", start, amount, categories.size());
             return categories;
         } catch (SQLException throwables) {
             log.error("unable to get connection", throwables);
             throw new ServiceException("can not get connection with the db", throwables);
         } catch (DAOException e) {
-            log.error("failed to get all categories with start={}, end={}", start, end, e);
+            log.error("failed to get all categories with start={}, amount={}", start, amount, e);
             throw new ServiceException("Failed to get a list of categories", e);
         }
     }
@@ -74,7 +74,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void save(Category category) throws ServiceException {
+    public void add(Category category) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
             categoryDAO.add(con, category);
             log.debug("successfully added a new category {}", category);

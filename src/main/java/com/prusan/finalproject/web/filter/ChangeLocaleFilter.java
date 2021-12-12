@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Filter that changes the locale. Redirects to the 'referer' header.
+ */
 @WebFilter("/changeLocale")
 public class ChangeLocaleFilter implements Filter {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());

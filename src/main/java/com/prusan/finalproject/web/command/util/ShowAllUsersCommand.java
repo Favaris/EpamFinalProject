@@ -29,20 +29,20 @@ public class ShowAllUsersCommand implements Command {
         int page = handler.getPageFromParameters(req);
         int pageSize = handler.getPageSizeFromParameters(req);
         String orderBy = handler.getOrderByFromParameters(req, "userLogin");
-        String countLessThen = handler.getCountLessThenFromParameters(req);
-        String countBiggerThen = handler.getCountBiggerThenFromParameters(req);
+        String countLessThan = handler.getcountLessThanFromParameters(req);
+        String countBiggerThan = handler.getcountBiggerThanFromParameters(req);
         String searchBy = handler.getSearchByFromParameters(req);
 
         try {
-            List<User> usersList = us.getWithRoleUser(pageSize * (page - 1), pageSize, orderBy, countLessThen, countBiggerThen, searchBy);
+            List<User> usersList = us.getWithRoleUser(pageSize * (page - 1), pageSize, orderBy, countLessThan, countBiggerThan, searchBy);
             log.debug("got a usersList, list size: {}", usersList.size());
-            int usersCount = us.getDefaultUsersCount(countLessThen, countBiggerThen, searchBy);
+            int usersCount = us.getDefaultUsersCount(countLessThan, countBiggerThan, searchBy);
             log.debug("received a users amount: {}", usersCount);
 
             req.setAttribute("usersList", usersList);
             handler.setPaginationParametersAsRequestAttributes(req, usersCount, pageSize, page, orderBy, null);
-            req.setAttribute("countLessThen", countLessThen);
-            req.setAttribute("countBiggerThen", countBiggerThen);
+            req.setAttribute("countLessThan", countLessThan);
+            req.setAttribute("countBiggerThan", countBiggerThan);
             req.setAttribute("searchBy", searchBy);
             log.debug("set up all needed request params");
             return Chain.createForward(Pages.USERS_JSP);

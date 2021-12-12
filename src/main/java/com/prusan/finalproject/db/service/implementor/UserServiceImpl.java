@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
      * @param user a user to add to the db.
      */
     @Override
-    public void save(User user) throws ServiceException {
+    public void add(User user) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
             userDAO.add(con, user);
         } catch (SQLException throwables) {
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
         if (u != null) {
             return u;
         }
-        throw new NoSuchUserException(id);
+        throw new NoSuchUserException("There is no user with id="+id);
     }
 
     @Override
@@ -104,13 +104,13 @@ public class UserServiceImpl implements UserService {
      * @throws ServiceException if there are some connection issues with the db.
      * @param end
      * @param start
-     * @param countLessThen
-     * @param countBiggerThen
+     * @param countLessThan
+     * @param countBiggerThan
      */
     @Override
-    public List<User> getWithRoleUser(int start, int amount, String orderBy, String countLessThen, String countBiggerThen, String searchBy) throws ServiceException {
+    public List<User> getWithRoleUser(int start, int amount, String orderBy, String countLessThan, String countBiggerThan, String searchBy) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
-            List<User> users = userDAO.getWithRoleUser(con, amount, start, orderBy, countLessThen, countBiggerThen, searchBy);
+            List<User> users = userDAO.getWithRoleUser(con, amount, start, orderBy, countLessThan, countBiggerThan, searchBy);
             log.debug("retrieved a list of all users with role='user', list size: {}", users.size());
             return users;
         } catch (SQLException throwables) {
@@ -123,9 +123,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int getDefaultUsersCount(String countLessThen, String countBiggerThen, String searchBy) throws ServiceException {
+    public int getDefaultUsersCount(String countLessThan, String countBiggerThan, String searchBy) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
-            int count = userDAO.getCountWithRoleUser(con, countLessThen, countBiggerThen, searchBy);
+            int count = userDAO.getCountWithRoleUser(con, countLessThan, countBiggerThan, searchBy);
             log.debug("received a default users count: {}", count);
             return count;
         } catch (SQLException throwables) {

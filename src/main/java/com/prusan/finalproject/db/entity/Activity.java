@@ -6,6 +6,9 @@ import org.apache.logging.log4j.Logger;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Entity class for activity table. Implements builder pattern.
+ */
 public class Activity implements Serializable {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 

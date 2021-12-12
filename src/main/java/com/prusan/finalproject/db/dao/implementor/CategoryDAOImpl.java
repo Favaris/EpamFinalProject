@@ -12,7 +12,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryDAOImpl extends CategoryDAO {
+public class CategoryDAOImpl implements CategoryDAO {
     private static final Logger log = LogManager.getLogger(Thread.currentThread().getStackTrace()[1].getClassName());
 
     /**
@@ -45,26 +45,6 @@ public class CategoryDAOImpl extends CategoryDAO {
         }
     }
 
-    /**
-     * Returns all categories in the db.
-     * @return a list of all categories in the db.
-     * @throws DAOException only if statement or result set throw an ex.
-     */
-    @Override
-    public List<Category> getAll(Connection con) throws DAOException {
-        List<Category> categories = new ArrayList<>();
-        try (Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(SQLQueries.CategoryQueries.GET_ALL_CATEGORIES)) {
-            while (rs.next()) {
-                Category ct = getCategory(rs);
-                categories.add(ct);
-            }
-        } catch (SQLException throwables) {
-            log.warn("exception in #getAll()", throwables);
-            throw new DAOException(throwables);
-        }
-        return categories;
-    }
 
     /**
      *

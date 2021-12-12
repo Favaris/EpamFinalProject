@@ -5,9 +5,7 @@ import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.exception.ServiceException;
 import com.prusan.finalproject.db.util.ServiceFactory;
 import com.prusan.finalproject.web.Chain;
-import com.prusan.finalproject.web.PaginationAttributesHandler;
 import com.prusan.finalproject.web.command.Command;
-import com.prusan.finalproject.web.command.CommandContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,7 +40,7 @@ public class AddUserActivityCommand implements Command {
             UserActivity ua = UserActivity.createAcceptedWithIds(userId, activityId);
             log.debug("created a stub for user activity: {}", ua);
 
-            uas.save(ua);
+            uas.add(ua);
             log.debug("successfully added a new user activity with userId={}, activityId={}", userId, activityId);
 
             String referer = req.getHeader("referer");

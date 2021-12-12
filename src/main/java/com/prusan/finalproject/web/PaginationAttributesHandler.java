@@ -85,34 +85,34 @@ public class PaginationAttributesHandler {
         return filterBy;
     }
 
-    public String getCountLessThenFromParameters(HttpServletRequest req) {
-        return getCountLessThenFromParameters(req, DEFAULT_LESS_THEN);
+    public String getcountLessThanFromParameters(HttpServletRequest req) {
+        return getcountLessThanFromParameters(req, DEFAULT_LESS_THEN);
     }
 
-    public String getCountLessThenFromParameters(HttpServletRequest req, String defaultValue) {
-        String countLessThen = req.getParameter("countLessThen");
-        log.debug("retrieved a 'countLessThen' parameter: {}", countLessThen);
-        if (countLessThen == null) {
-            countLessThen = defaultValue;
-            log.debug("set default value to countLessThen: '{}'", countLessThen);
+    public String getcountLessThanFromParameters(HttpServletRequest req, String defaultValue) {
+        String countLessThan = req.getParameter("countLessThan");
+        log.debug("retrieved a 'countLessThan' parameter: {}", countLessThan);
+        if (countLessThan == null) {
+            countLessThan = defaultValue;
+            log.debug("set default value to countLessThan: '{}'", countLessThan);
         }
-        log.debug("returned a countLessThen: '{}'", countLessThen);
-        return countLessThen;
+        log.debug("returned a countLessThan: '{}'", countLessThan);
+        return countLessThan;
     }
 
-    public String getCountBiggerThenFromParameters(HttpServletRequest req) {
-        return getCountBiggerThenFromParameters(req, DEFAULT_BIGGER_THEN);
+    public String getcountBiggerThanFromParameters(HttpServletRequest req) {
+        return getcountBiggerThanFromParameters(req, DEFAULT_BIGGER_THEN);
     }
 
-    public String getCountBiggerThenFromParameters(HttpServletRequest req, String defaultValue) {
-        String countBiggerThen = req.getParameter("countBiggerThen");
-        log.debug("retrieved a 'countBiggerThen' parameter: {}", countBiggerThen);
-        if (countBiggerThen == null) {
-            countBiggerThen = defaultValue;
-            log.debug("set default value to countBiggerThen: '{}'", countBiggerThen);
+    public String getcountBiggerThanFromParameters(HttpServletRequest req, String defaultValue) {
+        String countBiggerThan = req.getParameter("countBiggerThan");
+        log.debug("retrieved a 'countBiggerThan' parameter: {}", countBiggerThan);
+        if (countBiggerThan == null) {
+            countBiggerThan = defaultValue;
+            log.debug("set default value to countBiggerThan: '{}'", countBiggerThan);
         }
-        log.debug("returned a countBiggerThen: '{}'", countBiggerThen);
-        return countBiggerThen;
+        log.debug("returned a countBiggerThan: '{}'", countBiggerThan);
+        return countBiggerThan;
     }
 
     public String getSearchByFromParameters(HttpServletRequest req) {

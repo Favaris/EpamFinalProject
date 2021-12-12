@@ -25,7 +25,7 @@ public class UserActivityServiceImpl implements UserActivityService {
     }
 
     @Override
-    public void save(UserActivity ua) throws ServiceException {
+    public void add(UserActivity ua) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
             userActivityDAO.add(con, ua);
         } catch (SQLException throwables) {
@@ -37,10 +37,6 @@ public class UserActivityServiceImpl implements UserActivityService {
         }
     }
 
-    /**
-     * Gets a List of all users' activities that are not accepted or requested for abandon.
-
-     */
     @Override
     public List<UserActivity> getRequestedActivitiesForAllUsers(int start, int amount) throws ServiceException {
         try (Connection con = dbUtils.getConnection()) {
@@ -56,37 +52,18 @@ public class UserActivityServiceImpl implements UserActivityService {
         }
     }
 
-    /**
-     * Gets a list of all user's activities that are accepted and not requested for abandonment.
-     * @throws ServiceException if some connection error occurs.
-     */
-    @Override
-    public List<UserActivity> getAllAcceptedForUser(int userId) throws ServiceException {
-        try (Connection con = dbUtils.getConnection()) {
-            List<UserActivity> list = userActivityDAO.getAcceptedByUserId(con, userId);
-            log.debug("got a list of running activities, list size: {}", list.size());
 
+    @Override
+    public List<UserActivity> getAcceptedForUser(int userId, int start, int amount, String orderBy, String[] filterBy) throws ServiceException {
+        try (Connection con = dbUtils.getConnection()) {
+            List<UserActivity> list = userActivityDAO.getAcceptedByUserId(con, userId, amount, start, orderBy, filterBy);
+            log.debug("received a list of user activities for user #{} with start={}, end={}, orderBy={}, filterBy={}", userId, start, amount, orderBy, Arrays.toString(filterBy));
             return list;
         } catch (SQLException throwables) {
             log.error("unable to get the connection", throwables);
             throw new ServiceException("unable to get the connection", throwables);
         } catch (DAOException e) {
-            log.error("unable to get all running activities", e);
-            throw new ServiceException("error while trying to load all running activities", e);
-        }
-    }
-
-    @Override
-    public List<UserActivity> getAcceptedForUser(int userId, int start, int end, String orderBy, String[] filterBy) throws ServiceException {
-        try (Connection con = dbUtils.getConnection()) {
-            List<UserActivity> list = userActivityDAO.getAcceptedByUserId(con, userId, end, start, orderBy, filterBy);
-            log.debug("received a list of user activities for user #{} with start={}, end={}, orderBy={}, filterBy={}", userId, start, end, orderBy, Arrays.toString(filterBy));
-            return list;
-        } catch (SQLException throwables) {
-            log.error("unable to get the connection", throwables);
-            throw new ServiceException("unable to get the connection", throwables);
-        } catch (DAOException e) {
-            log.error("unable to get user activities by userId={}, start={}, end={}", userId, start, end, e);
+            log.error("unable to get user activities by userId={}, start={}, end={}", userId, start, amount, e);
             throw new ServiceException("Failed to download user's activities", e);
         }
     }
@@ -106,20 +83,6 @@ public class UserActivityServiceImpl implements UserActivityService {
         }
     }
 
-    @Override
-    public int getSummarizedSpentTimeForUser(int userId) throws ServiceException {
-        try (Connection con = dbUtils.getConnection()) {
-            int sum = userActivityDAO.getSummarizedSpentTimeByUserId(con, userId);
-            log.debug("received a sum of time spent by user with id={}, sum={}", userId, sum);
-            return sum;
-        } catch (SQLException throwables) {
-            log.error("unable to get the connection", throwables);
-            throw new ServiceException("unable to get the connection", throwables);
-        } catch (DAOException e) {
-            log.error("failed to get sum of time spent by user id ={}", userId, e);
-            throw new ServiceException("Failed to get a sum of time spent by user on activities", e);
-        }
-    }
 
     @Override
     public UserActivity get(int userId, int activityId) throws ServiceException {
