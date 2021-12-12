@@ -137,7 +137,7 @@ public class CategoryDAOImpl implements CategoryDAO {
     @Override
     public int getCount(Connection con) throws DAOException {
         try (Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM categories")) {
+            ResultSet rs = st.executeQuery(SQLQueries.CategoryQueries.GET_ALL_CATEGORIES_COUNT)) {
             int count = 0;
             if (rs.next()) {
                 count = rs.getInt(1);

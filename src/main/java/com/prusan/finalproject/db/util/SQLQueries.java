@@ -23,7 +23,7 @@ public abstract class SQLQueries {
         String UPDATE_CATEGORY_BY_ID = "UPDATE categories SET c_name = ? WHERE c_id = ?";
         String DELETE_CATEGORY_BY_ID = "DELETE FROM categories WHERE c_id = ?";
         String GET_BY_ID = "SELECT * FROM categories WHERE c_id = ?";
-
+        String GET_ALL_CATEGORIES_COUNT = "SELECT COUNT(*) FROM categories";
         String GET_ALL_WITH_LIMIT_OFFSET = "SELECT * FROM categories LIMIT ? OFFSET ?";
     }
 
