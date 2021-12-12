@@ -13,7 +13,7 @@
                     <input type="hidden" name="uId" value="${requestScope.uId}">
                     <input type="hidden" name="page" value="1">
                     <input type="hidden" name="pageSize" value="5">
-                    <label>Sort by:</label><br>
+                    <label><fmt:message key="activities_jsp.sidenav.sort_by.label"/>:</label><br>
                     <c:choose>
                         <c:when test="${'activityName'.equals(requestScope.orderBy)}">
                             <input type="radio" name="orderBy" value="activityName" id="sortByName" checked>
@@ -22,7 +22,7 @@
                             <input type="radio" name="orderBy" value="activityName" id="sortByName">
                         </c:otherwise>
                     </c:choose>
-                    <label for="sortByName">name</label><br>
+                    <label for="sortByName"><fmt:message key="activities_jsp.sidenav.sort_by.name"/></label><br>
                     <c:choose>
                         <c:when test="${'categoryName'.equals(requestScope.orderBy)}">
                             <input type="radio" name="orderBy" value="categoryName" id="sortByCategory" checked>
@@ -31,7 +31,7 @@
                             <input type="radio" name="orderBy" value="categoryName" id="sortByCategory">
                         </c:otherwise>
                     </c:choose>
-                    <label for="sortByCategory">category</label><br>
+                    <label for="sortByCategory"><fmt:message key="activities_jsp.sidenav.sort_by.category"/></label><br>
                     <c:choose>
                         <c:when test="${'usersCount'.equals(requestScope.orderBy)}">
                             <input type="radio" name="orderBy" value="usersCount" id="sortByUserAmount" checked>
@@ -40,8 +40,8 @@
                             <input type="radio" name="orderBy" value="usersCount" id="sortByUserAmount">
                         </c:otherwise>
                     </c:choose>
-                    <label for="sortByUserAmount">user amount</label><br>
-                    <label>Filter by:</label><br>
+                    <label for="sortByUserAmount"><fmt:message key="activities_jsp.sidenav.sort_by.user_amount"/></label><br>
+                    <label><fmt:message key="activities_jsp.sidenav.filter_by.label"/>:</label><br>
                     <c:choose>
                         <c:when test="${requestScope.filterBy != null}">
                             <c:forEach var="category" items="${requestScope.categories}">
@@ -75,7 +75,7 @@
                         </c:otherwise>
                     </c:choose>
 
-                    <button type="submit" class="btn btn-black">OK</button>
+                    <button type="submit" class="btn btn-black"><fmt:message key="activities_jsp.sidenav.ok"/></button>
                 </form>
             </div>
         </div>
@@ -84,17 +84,17 @@
     <form action="${root}/controller" method="get">
         <input type="hidden" name="command" value="manageUsersActivities">
         <input type="hidden" name="uId" value="${requestScope.uId}">
-        <button type="submit" class="btn btn-black">Back to managing user's activities</button>
+        <button type="submit" class="btn btn-black"><fmt:message key="add_activities_for_user_page.back_to_managing"/></button>
     </form>
         <br>
         <my:paginationNavigation command="showAddActivitiesForUserPage"/>
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">name</th>
-            <th scope="col">categories</th>
-            <th scope="col">description</th>
-            <th scope="col">users amount</th>
+            <th scope="col"><fmt:message key="tables.titles.name"/></th>
+            <th scope="col"><fmt:message key="tables.titles.category"/></th>
+            <th scope="col"><fmt:message key="tables.titles.description"/></th>
+            <th scope="col"><fmt:message key="tables.titles.amount_of_users"/></th>
         </tr>
         </thead>
         <tbody>
@@ -111,7 +111,7 @@
                         <input type="hidden" name="command" value="addUserActivity"/>
                         <input type="hidden" name="uId" value="${requestScope.uId}">
                         <input type="hidden" name="aId" value="${activity.id}">
-                        <button type="submit" class="btn btn-black">Add</button>
+                        <button type="submit" class="btn btn-black"><fmt:message key="manage_users_activities_jsp.add_new_activities"/></button>
                     </form>
                 </td>
             </tr>

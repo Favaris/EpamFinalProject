@@ -9,21 +9,21 @@
         <div class="container" style="margin-top:30px">
             <div class="row">
                 <div class="col-sm-12">
-                    <h1 class="text-center">Welcome back, ${sessionScope.user.name} ${sessionScope.user.surname}!</h1>
+                    <h1 class="text-center"><fmt:message key="home_jsp.welcome_title"/> , ${sessionScope.user.name} ${sessionScope.user.surname}!</h1>
                     <c:choose>
                         <c:when test="${sessionScope.user.role eq 'user'}">
-                            <h3 class="mt-5">There are currently ${sessionScope.user.info.activitiesCount} ongoing activities on your account.</h3>
-                            <p>You can access them <a href="${root}/controller?command=showRunningActivities">here</a>. </p>
-                            <p>You can request the addition of new activities on your account <a href="${root}/controller?command=showActivitiesPage">here</a>.</p>
-                            <p>Or you can manage your requests <a href="${root}/controller?command=showUsersRequests">here</a>.</p>
-                            <h3 class="mt-5">In total, you have spent <ut:convert minutes="${sessionScope.user.info.totalTime}" minutesLabel="minutes" hoursLabel="hours and"/> doing these activities!</h3>
+                            <h3 class="mt-5"><fmt:message key="home_jsp.ongoing_activities_pt1"/> ${sessionScope.user.info.activitiesCount} <fmt:message key="home_jsp.ongoing_activities_pt2"/>.</h3>
+                            <p><fmt:message key="home_jsp.acces_activities"/> <a href="${root}/controller?command=showRunningActivities"><fmt:message key="home_jsp.here"/></a>. </p>
+                            <p><fmt:message key="home_jsp.request_addition"/> <a href="${root}/controller?command=showActivitiesPage"><fmt:message key="home_jsp.here"/></a>.</p>
+                            <p><fmt:message key="home_jsp.user_manage_requests"/> <a href="${root}/controller?command=showUsersRequests"><fmt:message key="home_jsp.here"/></a>.</p>
+                            <h3 class="mt-5"><fmt:message key="home_jsp.in_total_spent_pt1"/> <my:convert minutes="${sessionScope.user.info.totalTime}"/> <fmt:message key="home_jsp.in_total_spent_pt2"/>!</h3>
                         </c:when>
                         <c:otherwise>
-                            <h3 class="mt-5">You can manage activities  <a href="${root}/controller?command=showActivitiesPage">here</a>.</h3>
-                            <p class="my-3">or</p>
-                            <h3 >You can manage users' requests  <a href="${root}/controller?command=showUsersRequests">here</a>.</h3>
-                            <p class="my-3">or</p>
-                            <h3 >You can manage users <a href="${root}/controller?command=showAllUsers">here</a>.</h3>
+                            <h3 class="mt-5"><fmt:message key="home_jsp.manage_activities"/>  <a href="${root}/controller?command=showActivitiesPage"><fmt:message key="home_jsp.here"/></a>.</h3>
+                            <p class="my-3"><fmt:message key="home_jsp.or"/></p>
+                            <h3 ><fmt:message key="home_jsp.manage_requests"/>  <a href="${root}/controller?command=showUsersRequests"><fmt:message key="home_jsp.here"/></a>.</h3>
+                            <p class="my-3"><fmt:message key="home_jsp.or"/></p>
+                            <h3 ><fmt:message key="home_jsp.manage_users"/> <a href="${root}/controller?command=showAllUsers"><fmt:message key="home_jsp.here"/></a>.</h3>
                         </c:otherwise>
                     </c:choose>
                 </div>

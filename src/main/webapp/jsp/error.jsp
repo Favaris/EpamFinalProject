@@ -5,8 +5,8 @@
     <div class="row">
         <div class="col-2"></div>
         <div class="col-8">
-            <h1>Sorry, we've run on some issues while processing your request</h1>
-            <h2>Error message: ${sessionScope.err_msg}</h2>
+            <h1><fmt:message key="error_jsp.error_notification"/></h1>
+            <h2><fmt:message key="error_jsp.error_message"/>: ${sessionScope.err_msg}</h2>
         </div>
         <div class="col-2"></div>
     </div>

@@ -25,13 +25,13 @@
         <div class="login-main-text">
             <form>
             <button type="button" class="btn btn-black" data-toggle="modal" data-target="#createNewCategoryAction">
-                Add new category
+                <fmt:message key="categories_jsp.sidenav.add_new_category"/>
             </button>
             </form>
 
             <form action="${root}/controller">
                 <input type="hidden" name="command" value="showActivitiesPage"/>
-                <button type="submit" class="btn btn-black">Manage activities</button>
+                <button type="submit" class="btn btn-black"><fmt:message key="categories_jsp.sidenav.manage_activities"/></button>
             </form>
         </div>
     </div>
@@ -41,8 +41,8 @@
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">name</th>
-            <th scope="col">options</th>
+            <th scope="col"><fmt:message key="tables.titles.name"/> </th>
+            <th scope="col"><fmt:message key="tables.titles.actions"/></th>
         </tr>
         </thead>
         <tbody>
@@ -54,7 +54,7 @@
                 <td>${category.name}</td>
                 <td>
                     <button type="button" class="btn btn-black" data-toggle="modal" data-target="#editCategoryModal${category.id}">
-                        Edit
+                        <fmt:message key="tables.rows.modal.edit_activity.label"/>
                     </button>
                     <div class="modal show" id="editCategoryModal${category.id}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -63,23 +63,25 @@
                                 <input type="hidden" name="id" value="${category.id}">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">Edit</h5>
+                                    <h5 class="modal-title"><fmt:message key="tables.rows.modal.edit_activity.label"/></h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick = "$('.modal').removeClass('show').addClass('fade');">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <label>Name</label>
+                                    <label><fmt:message key="entities.fields.name"/> </label>
                                     <input type="text" name="name" value="${category.name}" required>
                                 </div>
                                 <c:if test="${not empty sessionScope.invalidInputError}">
-                                    Category with this name already exists. Try another one.
+                                    <fmt:message key="error_messages.invalid_input_fields"/>: ${sessionScope.invalidInputError}
                                     <c:remove var="invalidInputError" scope="session"/>
                                 </c:if>
-                                    ${sessionScope.editCategoryErrMsg}
+                                 <c:if test="${sessionScope.editCategoryErrMsg}">
+                                     <fmt:message key="error_messages.name_is_taken"/>
+                                 </c:if>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick = "$('.modal').removeClass('show').addClass('fade');">Cancel</button>
-                                    <button type="submit" class="btn btn-black">Save</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick = "$('.modal').removeClass('show').addClass('fade');"><fmt:message key="tables.rows.modal.cancel"/></button>
+                                    <button type="submit" class="btn btn-black"><fmt:message key="tables.rows.modal.save"/></button>
                                 </div>
                             </div>
                             </form>
@@ -87,30 +89,29 @@
                     </div>
 
                     <button type="button" class="btn btn-black" data-toggle="modal" data-target="#confirmCategoryDeletion${category.id}">
-                        Delete
+                        <fmt:message key="tables.rows.modal.delete_activity.label"/>
                     </button>
                     <div class="modal fade" id="confirmCategoryDeletion${category.id}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">Confirm action</h5>
+                                    <h5 class="modal-title"><fmt:message key="tables.rows.modal.delete_activity.label"/></h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    Do you really want to delete this category?
+                                    <fmt:message key="tables.rows.modal.delete_category.question"/>
                                     <h5>
-                                        Warn: Category can be deleted only if there are no activities with it.
-                                        You must make sure that there are no activities of that category.
+                                        <fmt:message key="tables.rows.modal.delete_category.warn"/>
                                     </h5>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="tables.rows.modal.cancel"/></button>
                                     <form action="${root}/controller" method="post">
                                         <input type="hidden" name="command" value="deleteCategory"/>
                                         <input type="hidden" name="id" value="${category.id}"/>
-                                        <button type="submit" class="btn btn-black">Delete</button>
+                                        <button type="submit" class="btn btn-black"><fmt:message key="tables.rows.modal.delete_activity.label"/></button>
                                     </form>
                                 </div>
                             </div>
@@ -129,20 +130,22 @@
                 <form action="${root}/controller" method="post">
                     <input type="hidden" name="command" value="addCategory"/>
                     <div class="modal-header">
-                        <h5 class="modal-title">Add new category</h5>
+                        <h5 class="modal-title"><fmt:message key="tables.rows.modal.create_new_category.label"/> </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <label>Set a name for new category:</label>
+                        <label><fmt:message key="entities.fields.name"/>:</label>
                         <input type="text" name="name" required/>
                     </div>
                     <c:if test="${not empty sessionScope.invalidInputError}">
-                        Category with this name already exists. Try another one.
+                        <fmt:message key="error_messages.invalid_input_fields"/>: ${sessionScope.invalidInputError}
                         <c:remove var="invalidInputError" scope="session"/>
                     </c:if>
-                    ${sessionScope.addCategoryErrMsg}
+                    <c:if test="${sessionScope.addCategoryErrMsg}">
+                        <fmt:message key="error_messages.name_is_taken"/>
+                    </c:if>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-black">Add</button>

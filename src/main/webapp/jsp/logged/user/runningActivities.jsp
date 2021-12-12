@@ -13,7 +13,7 @@
                     <input type="hidden" name="command" value="showRunningActivities"/>
                     <input type="hidden" name="page" value="1">
                     <input type="hidden" name="pageSize" value="5">
-                    <label>Sort by:</label><br>
+                    <label><fmt:message key="activities_jsp.sidenav.sort_by.label"/> :</label><br>
                     <c:choose>
                         <c:when test="${'activityName'.equals(requestScope.orderBy)}">
                             <input type="radio" name="orderBy" value="activityName" id="sortByName" checked>
@@ -22,7 +22,7 @@
                             <input type="radio" name="orderBy" value="activityName" id="sortByName">
                         </c:otherwise>
                     </c:choose>
-                    <label for="sortByName">name</label><br>
+                    <label for="sortByName"><fmt:message key="activities_jsp.sidenav.sort_by.name"/></label><br>
                     <c:choose>
                         <c:when test="${'categoryName'.equals(requestScope.orderBy)}">
                             <input type="radio" name="orderBy" value="categoryName" id="sortByCategory" checked>
@@ -31,7 +31,7 @@
                             <input type="radio" name="orderBy" value="categoryName" id="sortByCategory">
                         </c:otherwise>
                     </c:choose>
-                    <label for="sortByCategory">category</label><br>
+                    <label for="sortByCategory"><fmt:message key="activities_jsp.sidenav.sort_by.category"/></label><br>
                     <c:choose>
                         <c:when test="${'timeSpent'.equals(requestScope.orderBy)}">
                             <input type="radio" name="orderBy" value="timeSpent" id="sortByTimeSpent" checked>
@@ -40,8 +40,8 @@
                             <input type="radio" name="orderBy" value="timeSpent" id="sortByTimeSpent">
                         </c:otherwise>
                     </c:choose>
-                    <label for="sortByTimeSpent">time spent</label><br>
-                    <label>Filter by:</label><br>
+                    <label for="sortByTimeSpent"><fmt:message key="activities_jsp.sidenav.sort_by.time_spent"/></label><br>
+                    <label><fmt:message key="activities_jsp.sidenav.filter_by.label"/>:</label><br>
                     <c:choose>
                         <c:when test="${requestScope.filterBy != null}">
                             <c:forEach var="category" items="${requestScope.categories}">
@@ -75,7 +75,7 @@
                         </c:otherwise>
                     </c:choose>
 
-                    <button type="submit" class="btn btn-black">OK</button>
+                    <button type="submit" class="btn btn-black"><fmt:message key="activities_jsp.sidenav.ok"/></button>
                 </form>
             </div>
         </div>
@@ -86,10 +86,10 @@
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">name</th>
-            <th scope="col">category</th>
-            <th scope="col">description</th>
-            <th scope="col">time spent</th>
+            <th scope="col"><fmt:message key="tables.titles.activity_name"/></th>
+            <th scope="col"><fmt:message key="tables.titles.category"/></th>
+            <th scope="col"><fmt:message key="tables.titles.description"/></th>
+            <th scope="col"><fmt:message key="tables.titles.time_spent"/></th>
         </tr>
         </thead>
         <tbody>
@@ -104,10 +104,10 @@
                     <ut:convert minutes="${activity.minutesSpent}" minutesLabel="mins" hoursLabel="hrs"/>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-black" data-toggle="modal" data-target="#${'updateTime'.concat(activity.id)}">
-                        Add time
+                    <button type="button" class="btn btn-black" data-toggle="modal" data-target="#updateTime${activity.id}">
+                        <fmt:message key="tables.rows.modal.add_time.label"/>
                     </button>
-                    <div class="modal fade" id="${'updateTime'.concat(activity.id)}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
+                    <div class="modal fade" id="updateTime${activity.id}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <form action="${root}/controller" method="post">
                                 <input type="hidden" name="command" value="updateSpentTime"/>
@@ -115,52 +115,54 @@
                                 <input type="hidden" name="aId" value="${activity.id}">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Update spent time on ${activity.name}</h5>
+                                        <h5 class="modal-title"><fmt:message key="tables.rows.modal.add_time.label"/></h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <label>Enter new time that you have spent. <strong>Warn: this values will be added to your current time span.</strong></label> <br>
-                                        <label>Hours:</label>
+                                        <label><fmt:message key="tables.rows.modal.add_time.message"/>.
+                                            <strong><fmt:message key="tables.rows.modal.add_time.message_strong"/>.</strong>
+                                        </label>
+                                        <br>
+                                        <label><fmt:message key="tables.rows.modal.add_time.hours"/>:</label>
                                         <input type="number" name="hours" min="0" value="0"/> <br>
-                                        <label>Minutes:</label>
+                                        <label><fmt:message key="tables.rows.modal.add_time.minutes"/>:</label>
                                         <input type="number" name="minutes" min="0" max="60" value="0"/>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-black">Save</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="tables.rows.modal.cancel"/></button>
+                                        <button type="submit" class="btn btn-black"><fmt:message key="tables.rows.modal.save"/></button>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-black" data-toggle="modal" data-target="#${'requestActivityAbandonment'.concat(activity.id)}">
-                        Request abandonment
+                    <button type="button" class="btn btn-black" data-toggle="modal" data-target="#requestActivityAbandonment${activity.id}">
+                        <fmt:message key="tables.rows.modal.request_abandon.label"/>
                     </button>
-                    <div class="modal fade" id="${'requestActivityAbandonment'.concat(activity.id)}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
+                    <div class="modal fade" id="requestActivityAbandonment${activity.id}" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Confirm abandoning ${activity.name}</h5>
+                                        <h5 class="modal-title"><fmt:message key="tables.rows.modal.request_abandon.label"/></h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        Are you sure that you want to abandon this activity?<br>
+                                        <fmt:message key="tables.rows.modal.request_abandon.question"/><br>
                                         <strong>
-                                            Warn: this action will only send a request for abandoning this activity. Only admin can decide whether accept or deny your request.
-                                            Remember that you always can cancel this request in window 'Your requests'.
+                                            <fmt:message key="tables.rows.modal.request_abandon.warn"/>
                                         </strong>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="tables.rows.modal.cancel"/></button>
                                         <form action="${root}/controller" method="post">
                                             <input type="hidden" name="command" value="requestActivityAbandonment">
                                             <input type="hidden" name="aId" value="${activity.id}">
                                             <input type="hidden" name="uId" value="${sessionScope.user.id}">
-                                            <button type="submit" class="btn btn-black">Confirm</button>
+                                            <button type="submit" class="btn btn-black"><fmt:message key="tables.rows.modal.confirm"/></button>
                                         </form>
                                     </div>
                                 </div>

@@ -27,12 +27,12 @@
             <c:if test="${sessionScope.user.role eq 'admin'}">
 
                 <button type="button" class="btn btn-black my-3" data-toggle="modal" data-target="#addActivityModal">
-                    Create new activity
+                    <fmt:message key="activities_jsp.sidenav.create_new_activity"/>
                 </button>
 
                 <form action="${root}/controller">
                     <input type="hidden" name="command" value="showCategoriesPage"/>
-                    <button type="submit" class="btn btn-black">Manage categories</button>
+                    <button type="submit" class="btn btn-black"><fmt:message key="activities_jsp.sidenav.manage_categories"/></button>
                 </form>
             </c:if>
             <div class="sorting-panel container">
@@ -40,7 +40,7 @@
                     <input type="hidden" name="command" value="showActivitiesPage"/>
                     <input type="hidden" name="page" value="1">
                     <input type="hidden" name="pageSize" value="5">
-                    <label>Sort by:</label><br>
+                    <label><fmt:message key="activities_jsp.sidenav.sort_by.label"/>:</label><br>
                     <c:choose>
                         <c:when test="${'activityName'.equals(requestScope.orderBy)}">
                             <input type="radio" name="orderBy" value="activityName" id="sortByName" checked>
@@ -49,7 +49,7 @@
                             <input type="radio" name="orderBy" value="activityName" id="sortByName">
                         </c:otherwise>
                     </c:choose>
-                    <label for="sortByName">name</label><br>
+                    <label for="sortByName"><fmt:message key="activities_jsp.sidenav.sort_by.name"/></label><br>
                     <c:choose>
                         <c:when test="${'categoryName'.equals(requestScope.orderBy)}">
                             <input type="radio" name="orderBy" value="categoryName" id="sortByCategory" checked>
@@ -58,7 +58,7 @@
                             <input type="radio" name="orderBy" value="categoryName" id="sortByCategory">
                         </c:otherwise>
                     </c:choose>
-                    <label for="sortByCategory">category</label><br>
+                    <label for="sortByCategory"><fmt:message key="activities_jsp.sidenav.sort_by.category"/></label><br>
                     <c:choose>
                         <c:when test="${'usersCount'.equals(requestScope.orderBy)}">
                             <input type="radio" name="orderBy" value="usersCount" id="sortByUserAmount" checked>
@@ -67,8 +67,8 @@
                             <input type="radio" name="orderBy" value="usersCount" id="sortByUserAmount">
                         </c:otherwise>
                     </c:choose>
-                    <label for="sortByUserAmount">user amount</label><br>
-                    <label>Filter by:</label><br>
+                    <label for="sortByUserAmount"><fmt:message key="activities_jsp.sidenav.sort_by.user_amount"/></label><br>
+                    <label><fmt:message key="activities_jsp.sidenav.filter_by.label"/>:</label><br>
                     <c:forEach var="category" items="${requestScope.categories}">
                         <c:set var="contains" scope="page" value="${false}"/>
                         <c:forEach var="catId" items="${requestScope.filterBy}">
@@ -79,7 +79,7 @@
                         <input type="checkbox" name="filterBy" value="${category.id}" id="${category.id}" ${contains ? 'checked' : ''}>
                         <label for="${category.id}">${category.name}</label><br>
                     </c:forEach>
-                    <button type="submit" class="btn btn-black">OK</button>
+                    <button type="submit" class="btn btn-black"><fmt:message key="activities_jsp.sidenav.ok"/></button>
                 </form>
             </div>
         </div>
@@ -90,10 +90,10 @@
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">name</th>
-            <th scope="col">category</th>
-            <th scope="col">description</th>
-            <th scope="col">amount of users</th>
+            <th scope="col"><fmt:message key="tables.titles.activity_name"/></th>
+            <th scope="col"><fmt:message key="tables.titles.category"/></th>
+            <th scope="col"><fmt:message key="tables.titles.description"/></th>
+            <th scope="col"><fmt:message key="tables.titles.amount_of_users"/></th>
         </tr>
         </thead>
         <tbody>
@@ -109,31 +109,30 @@
                     <c:choose>
                         <c:when test="${sessionScope.user.role eq 'user'}">
                             <button type="button" class="btn btn-black" data-toggle="modal" data-target="#confirmActivityAddition">
-                                Add
+                                <fmt:message key="tables.rows.modal.add_activity.title"/>
                             </button>
                             <div class="modal fade" id="confirmActivityAddition" tabindex="-1" role="dialog" aria-labelledby="Confirm addition" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Confirm action</h5>
+                                            <h5 class="modal-title"><fmt:message key="tables.rows.modal.add_activity.confirm_action"/></h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            Do you really want to add this activity?
+                                            <fmt:message key="tables.rows.modal.add_activity.question"/>
                                             <h5>
-                                                Warn: this action will only send a request to admin for adding this activity to your account.
-                                                Only admin can decide what activity you should have.
+                                                <fmt:message key="tables.rows.modal.add_activity.warn"/>
                                             </h5>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="tables.rows.modal.cancel"/></button>
                                             <form action="${pageContext.request.contextPath}/controller" method="post">
                                                 <input type="hidden" name="command" value="requestActivityAddition"/>
                                                 <input type="hidden" name="uId" value="${sessionScope.user.id}"/>
                                                 <input type="hidden" name="aId" value="${activity.id}"/>
-                                                <button type="submit" class="btn btn-black">Add</button>
+                                                <button type="submit" class="btn btn-black"><fmt:message key="tables.rows.modal.add_activity.title"/></button>
                                             </form>
                                         </div>
                                     </div>
@@ -153,26 +152,26 @@
                             </c:choose>
 
                             <button type="button" class="btn btn-black" data-toggle="modal" data-target="#submitActivityDeletion${activity.id}">
-                                Delete
+                                <fmt:message key="tables.rows.modal.delete_activity.label"/>
                             </button>
                             <div class="modal fade" id="submitActivityDeletion${activity.id}" tabindex="-1" role="dialog" aria-labelledby="Submit deletion" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+                                            <h5 class="modal-title" id="exampleModalLabel"><fmt:message key="tables.rows.modal.delete_activity.question"/>?</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            Are you sure you want to delete this activity? This will lead to deletion of this activity from all users.
+                                            <fmt:message key="tables.rows.modal.delete_activity.message"/>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="tables.rows.modal.cancel"/></button>
                                             <form action="${root}/controller" method="post">
                                                 <input type="hidden" name="command" value="deleteActivity"/>
                                                 <input type="hidden" name="id" value="${activity.id}"/>
-                                                <button type="submit" class="btn btn-black">Delete</button>
+                                                <button type="submit" class="btn btn-black"><fmt:message key="tables.rows.modal.delete_activity.label"/></button>
                                             </form>
                                         </div>
                                     </div>
@@ -193,22 +192,22 @@
                 <input type="hidden" name="command" value="addActivity">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Create new activity</h5>
+                        <h5 class="modal-title"><fmt:message key="tables.rows.modal.create_activity.label"/></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Name</label>
+                            <label><fmt:message key="entities.fields.name"/></label>
                             <input type="text" name="name" class="form-control" required="required" value="${sessionScope.invalidAddActivity.name}"/>
                         </div>
                         <div class="form-group">
-                            <label>Description</label>
+                            <label><fmt:message key="entities.fields.description"/></label>
                             <textarea rows="5" cols="60" name="description" required>${sessionScope.invalidAddActivity.description}</textarea>
                         </div>
                         <div class="form-group">
-                            <label>Category</label>
+                            <label><fmt:message key="entities.fields.category"/></label>
                             <select name="cId">
                                 <c:forEach var="category" items="${requestScope.categories}">
                                     <option value="${category.id}" id="${category.id}" ${sessionScope.invalidAddActivity.category.equals(category) ? 'selected' : ''}>${category.name}</option>
@@ -216,15 +215,17 @@
                             </select>
                         </div>
                         <c:if test="${not empty sessionScope.invalidFields}">
-                            You have invalid fields: ${sessionScope.invalidFields}
+                            <fmt:message key="error_messages.invalid_input_fields"/>: ${sessionScope.invalidFields}
                             <c:remove var="invalidFields" scope="session"/>
                         </c:if>
-                        ${sessionScope.activityAddErrMsg}
-                        <c:remove var="activityAddErrMsg" scope="session"/>
+                            <c:if test="${sessionScope.activityAddErrMsg != null}">
+                                <fmt:message key="error_messages.name_is_taken"/>: ${sessionScope.invalidFields}
+                                <c:remove var="activityAddErrMsg" scope="session"/>
+                            </c:if>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-black">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="tables.rows.modal.cancel"/></button>
+                        <button type="submit" class="btn btn-black"><fmt:message key="tables.rows.modal.save"/></button>
                     </div>
                 </div>
             </form>

@@ -12,11 +12,11 @@
         <div class="login-main-text">
             <form action="${root}/controller" method="get">
                 <input type="hidden" name="command" value="showUsersReport">
-                <button type="submit" class="btn btn-black">Get users report</button>
+                <button type="submit" class="btn btn-black"><fmt:message key="users_jsp.sidenav.get_users_report"/></button>
             </form>
 
             <form action="${root}/jsp/logged/admin/util/userAddPage.jsp" method="get">
-                <button type="submit" class="btn btn-black">Create new user</button>
+                <button type="submit" class="btn btn-black"><fmt:message key="users_jsp.sidenav.create_new_user"/></button>
             </form>
         </div>
 
@@ -25,7 +25,7 @@
             <input type="hidden" name="command" value="showAllUsers">
             <input type="hidden" name="page" value="1">
             <input type="hidden" name="pageSize" value="5">
-            <label>Sort by:</label><br>
+            <label><fmt:message key="activities_jsp.sidenav.sort_by.label"/>:</label><br>
             <c:choose>
                 <c:when test="${'userLogin'.equals(requestScope.orderBy)}">
                     <input type="radio" name="orderBy" value="userLogin" id="userLoginId" checked>
@@ -34,7 +34,7 @@
                     <input type="radio" name="orderBy" value="userLogin" id="userLoginId">
                 </c:otherwise>
             </c:choose>
-            <label for="userLoginId">Login</label><br>
+            <label for="userLoginId"><fmt:message key="users_jsp.sidenav.sort_by.login"/></label><br>
             <c:choose>
                 <c:when test="${'activitiesCount'.equals(requestScope.orderBy)}">
                     <input type="radio" name="orderBy" value="activitiesCount" id="count" checked>
@@ -43,7 +43,7 @@
                     <input type="radio" name="orderBy" value="activitiesCount" id="count">
                 </c:otherwise>
             </c:choose>
-            <label for="count">Activities count</label><br>
+            <label for="count"><fmt:message key="users_jsp.sidenav.sort_by.activities_count"/></label><br>
             <c:choose>
                 <c:when test="${'totalTime'.equals(requestScope.orderBy)}">
                     <input type="radio" name="orderBy" value="totalTime" id="time" checked>
@@ -52,14 +52,14 @@
                     <input type="radio" name="orderBy" value="totalTime" id="time">
                 </c:otherwise>
             </c:choose>
-            <label for="time">Total time</label> <br>
-            <label>Activities count less then:</label>
+            <label for="time"><fmt:message key="users_jsp.sidenav.sort_by.total_time"/></label> <br>
+            <label><fmt:message key="users_jsp.sidenav.ac_count_less"/>:</label>
             <input type="number" name="countLessThen" value="${requestScope.countLessThen}">
             <br>
-            <label>Activities count bigger then:</label>
+            <label><fmt:message key="users_jsp.sidenav.ac_count_bigger"/>:</label>
             <input type="number" name="countBiggerThen" value="${requestScope.countBiggerThen}">
             <br>
-            <label>Search by login: </label><br>
+            <label><fmt:message key="users_jsp.sidenav.search_by_login"/>: </label><br>
             <input type="text" name="searchBy" value="${requestScope.searchBy}">
             <br>
             <button type="submit" class="btn btn-black">OK</button>
@@ -71,12 +71,12 @@
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">login</th>
-            <th scope="col">name</th>
-            <th scope="col">surname</th>
-            <th scope="col">activities count</th>
-            <th scope="col">total time</th>
-            <th scope="col">options</th>
+            <th scope="col"><fmt:message key="tables.titles.user_login"/> </th>
+            <th scope="col"><fmt:message key="tables.titles.name"/></th>
+            <th scope="col"><fmt:message key="tables.titles.surname"/></th>
+            <th scope="col"><fmt:message key="tables.titles.activities_count"/></th>
+            <th scope="col"><fmt:message key="tables.titles.time_spent"/></th>
+            <th scope="col"><fmt:message key="tables.titles.actions"/></th>
         </tr>
         </thead>
         <tbody>
@@ -88,7 +88,7 @@
                 <td>
                     <c:choose>
                         <c:when test="${user.info.activitiesCount == 0}">
-                            No activities yet
+                            <fmt:message key="tables.rows.no_activities_yet"/>
                         </c:when>
                         <c:otherwise>
                             ${user.info.activitiesCount}
@@ -97,7 +97,7 @@
                 </td>
                 <td><ut:convert minutes="${user.info.totalTime}" minutesLabel="mins" hoursLabel="hrs"/></td>
                 <td>
-                    <a href="${root}/controller?command=showDetailedUserInfo&uId=${user.id}">show details</a>
+                    <a href="${root}/controller?command=showDetailedUserInfo&uId=${user.id}"><fmt:message key="tables.rows.show_details"/></a>
                 </td>
             </tr>
         </c:forEach>

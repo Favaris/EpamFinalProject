@@ -13,7 +13,7 @@
                     <input type="hidden" name="uId" value="${requestScope.uId}">
                     <input type="hidden" name="page" value="1">
                     <input type="hidden" name="pageSize" value="5">
-                    <label>Sort by:</label><br>
+                    <label><fmt:message key="activities_jsp.sidenav.sort_by.label"/> :</label><br>
                     <c:choose>
                         <c:when test="${'activityName'.equals(requestScope.orderBy)}">
                             <input type="radio" name="orderBy" value="activityName" id="sortByName" checked>
@@ -22,7 +22,7 @@
                             <input type="radio" name="orderBy" value="activityName" id="sortByName">
                         </c:otherwise>
                     </c:choose>
-                    <label for="sortByName">name</label><br>
+                    <label for="sortByName"><fmt:message key="activities_jsp.sidenav.sort_by.name"/> </label><br>
                     <c:choose>
                         <c:when test="${'categoryName'.equals(requestScope.orderBy)}">
                             <input type="radio" name="orderBy" value="categoryName" id="sortByCategory" checked>
@@ -31,7 +31,7 @@
                             <input type="radio" name="orderBy" value="categoryName" id="sortByCategory">
                         </c:otherwise>
                     </c:choose>
-                    <label for="sortByCategory">category</label><br>
+                    <label for="sortByCategory"><fmt:message key="activities_jsp.sidenav.sort_by.category"/></label><br>
                     <c:choose>
                         <c:when test="${'timeSpent'.equals(requestScope.orderBy)}">
                             <input type="radio" name="orderBy" value="timeSpent" id="sortByTimeSpent" checked>
@@ -40,8 +40,8 @@
                             <input type="radio" name="orderBy" value="timeSpent" id="sortByTimeSpent">
                         </c:otherwise>
                     </c:choose>
-                    <label for="sortByTimeSpent">time spent</label><br>
-                    <label>Filter by:</label><br>
+                    <label for="sortByTimeSpent"><fmt:message key="activities_jsp.sidenav.sort_by.time_spent"/></label><br>
+                    <label><fmt:message key="activities_jsp.sidenav.filter_by.label"/>:</label><br>
                     <c:choose>
                         <c:when test="${requestScope.filterBy != null}">
                             <c:forEach var="category" items="${requestScope.categories}">
@@ -75,7 +75,7 @@
                         </c:otherwise>
                     </c:choose>
 
-                    <button type="submit" class="btn btn-black">OK</button>
+                    <button type="submit" class="btn btn-black"><fmt:message key="activities_jsp.sidenav.ok"/></button>
                 </form>
             </div>
         </div>
@@ -84,23 +84,23 @@
         <form action="${root}/controller" method="get">
             <input type="hidden" name="command" value="showDetailedUserInfo">
             <input type="hidden" name="uId" value="${requestScope.uId}">
-            <button type="submit" class="btn btn-black">Back to editing user</button>
+            <button type="submit" class="btn btn-black"><fmt:message key="manage_users_activities_jsp.back_to_editing"/> </button>
         </form>
 
         <form action="${root}/controller" method="get">
             <input type="hidden" name="command" value="showAddActivitiesForUserPage">
             <input type="hidden" name="uId" value="${requestScope.uId}">
-            <button type="submit" class="btn btn-black">Add new activities</button>
+            <button type="submit" class="btn btn-black"><fmt:message key="manage_users_activities_jsp.add_new_activities"/></button>
         </form>
         <br>
         <my:paginationNavigation command="manageUsersActivities"/>
         <table class="table">
             <thead>
             <tr>
-                <th scope="col">name</th>
-                <th scope="col">categories</th>
-                <th scope="col">description</th>
-                <th scope="col">time spent</th>
+                <th scope="col"><fmt:message key="tables.titles.name"/></th>
+                <th scope="col"><fmt:message key="tables.titles.category"/></th>
+                <th scope="col"><fmt:message key="tables.titles.description"/></th>
+                <th scope="col"><fmt:message key="tables.titles.time_spent"/></th>
             </tr>
             </thead>
             <tbody>
@@ -114,29 +114,29 @@
                     <td><ut:convert minutes="${activity.minutesSpent}" minutesLabel="mins" hoursLabel="hrs"/></td>
                     <td>
                         <button type="button" class="btn btn-black" data-toggle="modal" data-target="#confirmActivityDeletion${activity.id}">
-                            Remove
+                            <fmt:message key="tables.rows.modal.remove_user_activity.label"/>
                         </button>
                         <div class="modal fade" id="confirmActivityDeletion${activity.id}" tabindex="-1" role="dialog" aria-labelledby="Confirm deletion" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Confirm action</h5>
+                                        <h5 class="modal-title"><fmt:message key="tables.rows.modal.remove_user_activity.label"/></h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        Do you really want to remove this activity?
-                                        <strong>Warn: this action is irreversible. It will lead to deletion of user's recorded time for this activity.
+                                        <fmt:message key="tables.rows.modal.remove_user_activity.question"/>?
+                                        <strong><fmt:message key="tables.rows.modal.remove_user_activity.warn"/>
                                         </strong>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="tables.rows.modal.cancel"/></button>
                                         <form action="${root}/controller" method="post">
                                             <input type="hidden" name="command" value="removeUserActivity"/>
                                             <input type="hidden" name="uId" value="${requestScope.uId}">
                                             <input type="hidden" name="aId" value="${activity.id}">
-                                            <button type="submit" class="btn btn-black">Remove</button>
+                                            <button type="submit" class="btn btn-black"><fmt:message key="tables.rows.modal.remove_user_activity.label"/></button>
                                         </form>
                                     </div>
                                 </div>
