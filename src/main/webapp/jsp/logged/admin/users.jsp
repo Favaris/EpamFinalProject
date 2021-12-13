@@ -12,6 +12,9 @@
         <div class="login-main-text">
             <form action="${root}/controller" method="get">
                 <input type="hidden" name="command" value="showUsersReport">
+                <input type="hidden" name="countLessThan" value="${requestScope.countLessThan}">
+                <input type="hidden" name="countBiggerThan" value="${requestScope.countBiggerThan}">
+                <input type="hidden" name="searchBy" value="${requestScope.searchBy}">
                 <button type="submit" class="btn btn-black"><fmt:message key="users_jsp.sidenav.get_users_report"/></button>
             </form>
 
@@ -54,10 +57,10 @@
             </c:choose>
             <label for="time"><fmt:message key="users_jsp.sidenav.sort_by.total_time"/></label> <br>
             <label><fmt:message key="users_jsp.sidenav.ac_count_less"/>:</label>
-            <input type="number" name="countLessThan" value="${requestScope.countLessThan}">
+            <input type="number" name="countLessThan" value="${requestScope.countLessThan}" min="0">
             <br>
             <label><fmt:message key="users_jsp.sidenav.ac_count_bigger"/>:</label>
-            <input type="number" name="countBiggerThan" value="${requestScope.countBiggerThan}">
+            <input type="number" name="countBiggerThan" value="${requestScope.countBiggerThan}" min="0">
             <br>
             <label><fmt:message key="users_jsp.sidenav.search_by_login"/>: </label><br>
             <input type="text" name="searchBy" value="${requestScope.searchBy}">

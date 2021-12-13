@@ -4,7 +4,7 @@ delimiter //
 CREATE PROCEDURE fill_users(count INT) 
 BEGIN
 	WHILE count > 0 DO
-		INSERT INTO users(u_login, u_password, u_name, u_surname) VALUES (concat('user', count), '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', concat('name', count), concat('фамилия', count));
+		INSERT INTO users(u_login, u_password, u_name, u_surname) VALUES (concat('user', count), '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', 'Name', 'Surname');
         SET count = count - 1;
     END WHILE;
 END//
@@ -12,7 +12,7 @@ delimiter ;
 
 DELETE FROM users;
 
-INSERT INTO users VALUES (DEFAULT, "admin", "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918", "admin", "admin", "admin");
+INSERT INTO users VALUES (DEFAULT, 'admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'admin', 'admin', 'admin');
 CALL fill_users(15);
 SELECT * FROM users;
 

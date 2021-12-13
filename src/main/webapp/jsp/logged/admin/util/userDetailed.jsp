@@ -36,7 +36,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <label><fmt:message key="entities.fields.name"/></label>
+                                <label><fmt:message key="sign_up_jsp.main.name_label"/></label>
                                 <input type="text" name="name" value="${requestScope.userToShow.name}" required>
                             </div>
                             <div class="modal-footer">

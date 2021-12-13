@@ -47,6 +47,7 @@ public class CommandContainer {
         String SHOW_CATEGORIES_PAGE = "showCategoriesPage";
         String SHOW_ALL_USERS = "showAllUsers";
         String SHOW_ADD_ACTIVITIES_FOR_USER_PAGE = "showAddActivitiesForUserPage";
+        String SHOW_USERS_REPORT = "showUsersReport";
     }
 
 
@@ -82,6 +83,7 @@ public class CommandContainer {
         commands.put(CommandNames.SHOW_DETAILED_USER_INFO, new ShowDetailedUserInfoCommand());
         commands.put(CommandNames.SHOW_RUNNING_ACTIVITIES, new ShowRunningActivitiesCommand());
         commands.put(CommandNames.SHOW_USERS_REQUESTS, new ShowRequestsCommand());
+        commands.put(CommandNames.SHOW_USERS_REPORT, new ShowUsersReportCommand());
     }
 
     public static Command getCommand(String command) {

@@ -10,7 +10,7 @@ import com.prusan.finalproject.db.service.UserActivityService;
 import com.prusan.finalproject.db.service.UserService;
 
 /**
- * Factory method interface. Contains methods that are used to get different service and dao implementors.
+ * Abstract factory. Contains methods that are used to get different service and dao implementors.
  */
 public interface ServiceFactory {
     UserService getUserService();

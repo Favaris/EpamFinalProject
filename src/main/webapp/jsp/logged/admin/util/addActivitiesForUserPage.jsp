@@ -111,7 +111,7 @@
                         <input type="hidden" name="command" value="addUserActivity"/>
                         <input type="hidden" name="uId" value="${requestScope.uId}">
                         <input type="hidden" name="aId" value="${activity.id}">
-                        <button type="submit" class="btn btn-black"><fmt:message key="manage_users_activities_jsp.add_new_activities"/></button>
+                        <button type="submit" class="btn btn-black"><fmt:message key="tables.rows.modal.add_activity.title"/></button>
                     </form>
                 </td>
             </tr>

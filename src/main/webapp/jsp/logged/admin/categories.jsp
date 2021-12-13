@@ -38,6 +38,7 @@
     <div class="tables">
 
         <my:paginationNavigation command="showCategoriesPage"/>
+        ${sessionScope.err_msg}
     <table class="table">
         <thead>
         <tr>
@@ -47,12 +48,12 @@
         </thead>
         <tbody>
         <c:forEach var="category" items="${sessionScope.categories}">
-            <c:if test="${sessionScope.invalidEditCategory.equals(category)}">
-                <c:set var="category" value="${sessionScope.invalidEditCategory}"/>
-            </c:if>
             <tr>
                 <td>${category.name}</td>
                 <td>
+                    <c:if test="${sessionScope.invalidEditCategory.equals(category)}">
+                        <c:set var="category" value="${sessionScope.invalidEditCategory}"/>
+                    </c:if>
                     <button type="button" class="btn btn-black" data-toggle="modal" data-target="#editCategoryModal${category.id}">
                         <fmt:message key="tables.rows.modal.edit_activity.label"/>
                     </button>
@@ -64,7 +65,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title"><fmt:message key="tables.rows.modal.edit_activity.label"/></h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick = "$('.modal').removeClass('show').addClass('fade');">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -76,11 +77,11 @@
                                     <fmt:message key="error_messages.invalid_input_fields"/>: ${sessionScope.invalidInputError}
                                     <c:remove var="invalidInputError" scope="session"/>
                                 </c:if>
-                                 <c:if test="${sessionScope.editCategoryErrMsg}">
+                                 <c:if test="${not empty sessionScope.editCategoryErrMsg}">
                                      <fmt:message key="error_messages.name_is_taken"/>
                                  </c:if>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick = "$('.modal').removeClass('show').addClass('fade');"><fmt:message key="tables.rows.modal.cancel"/></button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="tables.rows.modal.cancel"/></button>
                                     <button type="submit" class="btn btn-black"><fmt:message key="tables.rows.modal.save"/></button>
                                 </div>
                             </div>
@@ -137,18 +138,18 @@
                     </div>
                     <div class="modal-body">
                         <label><fmt:message key="entities.fields.name"/>:</label>
-                        <input type="text" name="name" required/>
+                        <input type="text" name="name" value="${sessionScope.invalidAddCategory.name}" required/>
                     </div>
                     <c:if test="${not empty sessionScope.invalidInputError}">
                         <fmt:message key="error_messages.invalid_input_fields"/>: ${sessionScope.invalidInputError}
                         <c:remove var="invalidInputError" scope="session"/>
                     </c:if>
-                    <c:if test="${sessionScope.addCategoryErrMsg}">
+                    <c:if test="${not empty sessionScope.addCategoryErrMsg}">
                         <fmt:message key="error_messages.name_is_taken"/>
                     </c:if>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-black">Add</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><fmt:message key="tables.rows.modal.cancel"/> </button>
+                        <button type="submit" class="btn btn-black"><fmt:message key="tables.rows.modal.add_activity.title"/></button>
                     </div>
                 </form>
             </div>
@@ -158,3 +159,5 @@
 <c:remove var="err_msg" scope="session"/>
 <c:remove var="addCategoryErrMsg" scope="session"/>
 <c:remove var="editCategoryErrMsg" scope="session"/>
+<c:remove var="invalidAddCategory" scope="session"/>
+<c:remove var="invalidEditCategory" scope="session"/>

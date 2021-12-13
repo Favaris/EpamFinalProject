@@ -6,6 +6,7 @@
 <my:htmlCarcass title="Sign up">
     <div class="sidenav login-sidenav">
         <div class="login-main-text">
+            <%@include file="/WEB-INF/jspf/changeLocaleForm.jspf" %>
             <h2><fmt:message key="sign_in_jsp.sidenav.label"/></h2>
             <p><fmt:message key="sign_in_jsp.sidenav.p"/></p>
         </div>

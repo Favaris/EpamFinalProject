@@ -21,7 +21,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label><fmt:message key="entities.fields.name"/></label>
-                        <input type="text" name="name" class="form-control" required="required" value="${activity.name}"/>
+                        <input type="text" name="name" class="form-control" required="required" value="${activity.name}" pattern="[A-ZА-ЯІЇЄЁa-zа-яіїєґё 0-9]{1,30}"/>
                     </div>
                     <div class="form-group">
                         <label><fmt:message key="entities.fields.description"/></label>
