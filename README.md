@@ -1,3 +1,12 @@
+Final project at EPAM University external cource. 
+Technology stack:
+- Java EE 8, JDBC, Servlet API (using Apache Tomcat), including JSP, JSPF, custom JSP tags
+- JUnit 5, Mockito, Log4j 2 
+- MySQL
+- Maven
+- HTML5 (bootstrap), CSS3, JS
+
+
 Облік часу
 
 Існують ролі: адміністратор і користувач системи.
