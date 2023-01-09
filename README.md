@@ -6,7 +6,7 @@ Technology stack:
 - Maven
 - HTML5 (bootstrap), CSS3, JS
 
-
+Project's subject:
 Облік часу
 
 Існують ролі: адміністратор і користувач системи.
