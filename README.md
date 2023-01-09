@@ -1,6 +1,6 @@
 Final project at EPAM University external cource. 
 Technology stack:
-- Java EE 8, JDBC, Servlet API (using Apache Tomcat), including JSP, JSPF, custom JSP tags
+- Java EE 8, JDBC, Servlet API (using Apache Tomcat), including JSP, JSPF, custom JSTL tags
 - JUnit 5, Mockito, Log4j 2 
 - MySQL
 - Maven
