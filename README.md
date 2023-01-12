@@ -1,4 +1,4 @@
-Final project at EPAM University external cource. You can see the full task description in a file "OnlineUA Final Task Description UA.pdf". 
+Final project at EPAM University external cource. You can see full task description in the file "OnlineUA Final Task Description UA.pdf". 
 Technology stack:
 - Java EE 8, JDBC, Servlet API (using Apache Tomcat), including JSP, JSPF, custom JSTL tags
 - JUnit 5, Mockito, Log4j 2 
